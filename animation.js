@@ -128,33 +128,33 @@
 
                     // Draw blue glow circles at both nodes if flashing
                     if (flashIntensity > 0.01) {
-                        const glowRadius = 20 + flashIntensity * 30;
-
-                        // Glow at node A
+                        // Glow at node A - scale to node size
+                        const glowRadiusA = nodeA.size * 2;
                         const flashGlowA = ctx.createRadialGradient(
                             posA.x, posA.y, 0,
-                            posA.x, posA.y, glowRadius
+                            posA.x, posA.y, glowRadiusA
                         );
                         flashGlowA.addColorStop(0, `rgba(135, 206, 250, ${flashIntensity * 0.5})`);
                         flashGlowA.addColorStop(0.5, `rgba(135, 206, 250, ${flashIntensity * 0.2})`);
                         flashGlowA.addColorStop(1, `rgba(135, 206, 250, 0)`);
 
                         ctx.beginPath();
-                        ctx.arc(posA.x, posA.y, glowRadius, 0, Math.PI * 2);
+                        ctx.arc(posA.x, posA.y, glowRadiusA, 0, Math.PI * 2);
                         ctx.fillStyle = flashGlowA;
                         ctx.fill();
 
-                        // Glow at node B
+                        // Glow at node B - scale to node size
+                        const glowRadiusB = nodeB.size * 2;
                         const flashGlowB = ctx.createRadialGradient(
                             posB.x, posB.y, 0,
-                            posB.x, posB.y, glowRadius
+                            posB.x, posB.y, glowRadiusB
                         );
                         flashGlowB.addColorStop(0, `rgba(135, 206, 250, ${flashIntensity * 0.5})`);
                         flashGlowB.addColorStop(0.5, `rgba(135, 206, 250, ${flashIntensity * 0.2})`);
                         flashGlowB.addColorStop(1, `rgba(135, 206, 250, 0)`);
 
                         ctx.beginPath();
-                        ctx.arc(posB.x, posB.y, glowRadius, 0, Math.PI * 2);
+                        ctx.arc(posB.x, posB.y, glowRadiusB, 0, Math.PI * 2);
                         ctx.fillStyle = flashGlowB;
                         ctx.fill();
                     }

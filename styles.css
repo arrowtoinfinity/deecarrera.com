@@ -434,6 +434,112 @@ section h2 {
     color: var(--text-light);
 }
 
+/* Literature page */
+.lit-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+}
+
+.lit-tab {
+    padding: 0.5rem 1rem;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    font-size: 0.9rem;
+    color: var(--text-light);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: inherit;
+}
+
+.lit-tab:hover {
+    border-color: var(--text-light);
+}
+
+.lit-tab.active {
+    background: var(--text);
+    border-color: var(--text);
+    color: #fff;
+}
+
+.lit-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.lit-item {
+    padding: 1.5rem 2rem;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+    position: relative;
+}
+
+.lit-type-label {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    background: var(--border);
+    color: var(--text-light);
+    border-radius: 10px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.75rem;
+}
+
+.lit-item time {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--text-light);
+    margin-bottom: 0.5rem;
+}
+
+.lit-item h2 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    text-transform: none;
+    letter-spacing: normal;
+    color: var(--text);
+}
+
+.lit-item h2 a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.lit-item h2 a:hover {
+    text-decoration: underline;
+}
+
+.lit-item p {
+    color: var(--text-light);
+    font-size: 0.95rem;
+}
+
+/* Meditation style */
+.lit-meditation {
+    text-align: center;
+    padding: 2.5rem 3rem;
+}
+
+.lit-meditation blockquote {
+    font-size: 1.3rem;
+    font-style: italic;
+    color: var(--text);
+    line-height: 1.7;
+    margin-bottom: 1rem;
+}
+
+.lit-meditation cite {
+    font-size: 0.9rem;
+    color: var(--text-light);
+    font-style: normal;
+}
+
 /* Media page - Video Carousel */
 .video-carousel-section {
     margin-bottom: 4rem;
@@ -569,5 +675,17 @@ footer {
 
     .photo-grid {
         grid-template-columns: repeat(2, 1fr);
+    }
+
+    .lit-tabs {
+        flex-wrap: wrap;
+    }
+
+    .lit-meditation {
+        padding: 2rem 1.5rem;
+    }
+
+    .lit-meditation blockquote {
+        font-size: 1.1rem;
     }
 }

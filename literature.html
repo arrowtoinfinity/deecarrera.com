@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Literature - Daniel Carrera</title>
+    <link rel="icon" type="image/png" href="logo.png">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav>
+        <a href="/" class="nav-name">
+            <img src="logo.png" alt="Logo" class="nav-logo">
+            Daniel Carrera
+        </a>
+        <div class="nav-links">
+            <a href="/apps.html">Apps</a>
+            <a href="/literature.html" class="active">Literature</a>
+            <a href="/art.html">Art</a>
+        </div>
+    </nav>
+
+    <main>
+        <section class="page-header">
+            <h1>Literature</h1>
+        </section>
+
+        <div class="lit-tabs">
+            <button class="lit-tab active" data-filter="all">All</button>
+            <button class="lit-tab" data-filter="essay">Essays</button>
+            <button class="lit-tab" data-filter="meditation">Meditations</button>
+            <button class="lit-tab" data-filter="post">Posts</button>
+        </div>
+
+        <section class="lit-list">
+            <article class="lit-item" data-type="essay">
+                <span class="lit-type-label">Essay</span>
+                <time datetime="2026-01-20">January 20, 2026</time>
+                <h2><a href="#">On the Nature of Creative Work</a></h2>
+                <p>A longer exploration of how creativity intersects with discipline, and why the most meaningful work often emerges from constraint rather than freedom.</p>
+            </article>
+
+            <article class="lit-item lit-meditation" data-type="meditation">
+                <span class="lit-type-label">Meditation</span>
+                <blockquote>
+                    "The impediment to action advances action. What stands in the way becomes the way."
+                </blockquote>
+                <cite>- Marcus Aurelius, Meditations</cite>
+            </article>
+
+            <article class="lit-item" data-type="post">
+                <span class="lit-type-label">Post</span>
+                <time datetime="2026-01-23">January 23, 2026</time>
+                <h2><a href="#">Your First Blog Post</a></h2>
+                <p>This is where your blog post excerpt will appear. Write about anything that interests you.</p>
+            </article>
+
+            <article class="lit-item lit-meditation" data-type="meditation">
+                <span class="lit-type-label">Meditation</span>
+                <blockquote>
+                    "Waste no more time arguing about what a good man should be. Be one."
+                </blockquote>
+                <cite>- Marcus Aurelius, Meditations</cite>
+            </article>
+
+            <article class="lit-item" data-type="essay">
+                <span class="lit-type-label">Essay</span>
+                <time datetime="2026-01-15">January 15, 2026</time>
+                <h2><a href="#">The Quiet Architecture of Habit</a></h2>
+                <p>How small, repeated actions compound into the invisible structure of our lives, and why understanding this changes everything about how we approach change.</p>
+            </article>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Daniel Carrera</p>
+    </footer>
+
+    <script>
+        // Filter functionality
+        const tabs = document.querySelectorAll('.lit-tab');
+        const items = document.querySelectorAll('.lit-item');
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Update active tab
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+
+                // Filter items
+                const filter = tab.dataset.filter;
+                items.forEach(item => {
+                    if (filter === 'all' || item.dataset.type === filter) {
+                        item.style.display = '';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

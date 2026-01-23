@@ -56,16 +56,14 @@
 
     // Get scroll-adjusted position for 3D parallax
     function getNodePosition(node) {
-        // Base position relative to scroll
-        const baseY = node.baseY - scrollY;
-
-        // Far nodes (z=0) move with scroll, near nodes (z=1) move faster (parallax)
-        const parallaxStrength = node.z * config.scrollDepthMultiplier;
+        // Near nodes (z=1) move MORE with scroll, far nodes (z=0) move LESS
+        // This creates the parallax effect where close things move faster
+        const parallaxStrength = 1 - (node.z * config.scrollDepthMultiplier);
         const yOffset = scrollY * parallaxStrength;
 
         return {
             x: node.baseX,
-            y: baseY + yOffset
+            y: node.baseY - yOffset
         };
     }
 

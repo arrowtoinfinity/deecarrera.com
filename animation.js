@@ -126,24 +126,36 @@
                     ctx.lineWidth = 0.5 + avgDepth * 0.5;
                     ctx.stroke();
 
-                    // Draw blue glow circles at connection midpoint if flashing
+                    // Draw blue glow circles at both nodes if flashing
                     if (flashIntensity > 0.01) {
-                        const midX = (posA.x + posB.x) / 2;
-                        const midY = (posA.y + posB.y) / 2;
-                        const glowRadius = 30 + flashIntensity * 40;
+                        const glowRadius = 20 + flashIntensity * 30;
 
-                        const flashGlow = ctx.createRadialGradient(
-                            midX, midY, 0,
-                            midX, midY, glowRadius
+                        // Glow at node A
+                        const flashGlowA = ctx.createRadialGradient(
+                            posA.x, posA.y, 0,
+                            posA.x, posA.y, glowRadius
                         );
-                        // Lighter blue (sky blue)
-                        flashGlow.addColorStop(0, `rgba(135, 206, 250, ${flashIntensity * 0.5})`);
-                        flashGlow.addColorStop(0.5, `rgba(135, 206, 250, ${flashIntensity * 0.2})`);
-                        flashGlow.addColorStop(1, `rgba(135, 206, 250, 0)`);
+                        flashGlowA.addColorStop(0, `rgba(135, 206, 250, ${flashIntensity * 0.5})`);
+                        flashGlowA.addColorStop(0.5, `rgba(135, 206, 250, ${flashIntensity * 0.2})`);
+                        flashGlowA.addColorStop(1, `rgba(135, 206, 250, 0)`);
 
                         ctx.beginPath();
-                        ctx.arc(midX, midY, glowRadius, 0, Math.PI * 2);
-                        ctx.fillStyle = flashGlow;
+                        ctx.arc(posA.x, posA.y, glowRadius, 0, Math.PI * 2);
+                        ctx.fillStyle = flashGlowA;
+                        ctx.fill();
+
+                        // Glow at node B
+                        const flashGlowB = ctx.createRadialGradient(
+                            posB.x, posB.y, 0,
+                            posB.x, posB.y, glowRadius
+                        );
+                        flashGlowB.addColorStop(0, `rgba(135, 206, 250, ${flashIntensity * 0.5})`);
+                        flashGlowB.addColorStop(0.5, `rgba(135, 206, 250, ${flashIntensity * 0.2})`);
+                        flashGlowB.addColorStop(1, `rgba(135, 206, 250, 0)`);
+
+                        ctx.beginPath();
+                        ctx.arc(posB.x, posB.y, glowRadius, 0, Math.PI * 2);
+                        ctx.fillStyle = flashGlowB;
                         ctx.fill();
                     }
                 }

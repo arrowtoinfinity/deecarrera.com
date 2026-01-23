@@ -118,19 +118,34 @@
                     // Check for flash
                     const flashIntensity = flashingConnections.get(connectionKey) || 0;
 
+                    // Draw line
                     ctx.beginPath();
                     ctx.moveTo(posA.x, posA.y);
                     ctx.lineTo(posB.x, posB.y);
-
-                    if (flashIntensity > 0.001) {
-                        // Blue flash
-                        ctx.strokeStyle = `rgba(0, 122, 255, ${flashIntensity + opacity})`;
-                    } else {
-                        ctx.strokeStyle = `rgba(100, 100, 100, ${opacity})`;
-                    }
-
+                    ctx.strokeStyle = `rgba(100, 100, 100, ${opacity})`;
                     ctx.lineWidth = 0.5 + avgDepth * 0.5;
                     ctx.stroke();
+
+                    // Draw blue glow circles at connection midpoint if flashing
+                    if (flashIntensity > 0.01) {
+                        const midX = (posA.x + posB.x) / 2;
+                        const midY = (posA.y + posB.y) / 2;
+                        const glowRadius = 30 + flashIntensity * 40;
+
+                        const flashGlow = ctx.createRadialGradient(
+                            midX, midY, 0,
+                            midX, midY, glowRadius
+                        );
+                        // Lighter blue (sky blue)
+                        flashGlow.addColorStop(0, `rgba(135, 206, 250, ${flashIntensity * 0.5})`);
+                        flashGlow.addColorStop(0.5, `rgba(135, 206, 250, ${flashIntensity * 0.2})`);
+                        flashGlow.addColorStop(1, `rgba(135, 206, 250, 0)`);
+
+                        ctx.beginPath();
+                        ctx.arc(midX, midY, glowRadius, 0, Math.PI * 2);
+                        ctx.fillStyle = flashGlow;
+                        ctx.fill();
+                    }
                 }
             }
         }

@@ -209,45 +209,11 @@
         });
     }
 
-    // Update hero title shadow based on nodes behind it
-    function updateHeroShadow() {
-        const heroTitle = document.querySelector('.hero h1');
-        if (!heroTitle) return;
-
-        const rect = heroTitle.getBoundingClientRect();
-        const centerX = rect.left + rect.width / 2;
-        const centerY = rect.top + rect.height / 2;
-
-        const shadows = ['0 0 20px rgba(255, 255, 255, 0.5)', '0 0 40px rgba(255, 255, 255, 0.3)']; // Base white glow
-
-        nodes.forEach(node => {
-            const pos = getNodePosition(node);
-
-            // Check if node is behind text
-            if (pos.x > rect.left - node.size * 2 &&
-                pos.x < rect.right + node.size * 2 &&
-                pos.y > rect.top - node.size * 2 &&
-                pos.y < rect.bottom + node.size * 2) {
-
-                // Calculate offset from text center
-                const offsetX = pos.x - centerX;
-                const offsetY = pos.y - centerY;
-                const shadowSize = node.size * 2;
-                const opacity = 0.15 * node.z; // Closer nodes cast stronger shadows
-
-                shadows.push(`${offsetX}px ${offsetY}px ${shadowSize}px rgba(0, 0, 0, ${opacity})`);
-            }
-        });
-
-        heroTitle.style.textShadow = shadows.join(', ');
-    }
-
     // Render frame
     function render() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         drawConnections();
         drawNodes();
-        updateHeroShadow();
     }
 
     // Animation loop - continuous

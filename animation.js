@@ -123,18 +123,10 @@
             ctx.fillStyle = gradient;
             ctx.fill();
 
-            // Core dot with subtle spherical shading
-            const sphereGradient = ctx.createRadialGradient(
-                pos.x - node.size * 0.3, pos.y - node.size * 0.3, 0,
-                pos.x, pos.y, node.size
-            );
-            sphereGradient.addColorStop(0, '#fff');
-            sphereGradient.addColorStop(0.5, '#fafafa');
-            sphereGradient.addColorStop(1, '#f2f2f2');
-
+            // Core dot
             ctx.beginPath();
             ctx.arc(pos.x, pos.y, node.size, 0, Math.PI * 2);
-            ctx.fillStyle = sphereGradient;
+            ctx.fillStyle = '#fff';
             ctx.fill();
         });
     }

@@ -194,7 +194,7 @@
             container.innerHTML = posts.map(post => `
                 <div class="admin-post-card" data-id="${post.id}">
                     <div class="admin-post-info">
-                        <span class="admin-post-type">${post.type}</span>
+                        <span class="admin-post-type">${post.type === 'meditation' ? 'reflection' : post.type}</span>
                         <span class="admin-post-title">${post.type === 'meditation' ? (post.content || post.quote || '').substring(0, 50) + '...' : post.title}</span>
                         ${post.date ? `<span class="admin-post-date">${formatDate(post.date)}</span>` : ''}
                     </div>

@@ -1,6 +1,6 @@
 // Constellation Network Animation
-// Static at rest, 3D movement on scroll, monochrome
-// Full page background with large foreground nodes
+// Slow drifting nodes with dynamic connections
+// Blue flash on new connections
 
 (function() {
     const canvas = document.getElementById('constellation');
@@ -12,14 +12,15 @@
     const config = {
         nodeCount: window.innerWidth < 768 ? 50 : 90,
         connectionDistance: 150,
-        scrollDepthMultiplier: 1.2
+        scrollDepthMultiplier: 1.2,
+        driftSpeed: 0.15
     };
 
     let nodes = [];
     let scrollY = 0;
-    let lastScrollY = 0;
-    let needsRender = true;
     let pageHeight = 0;
+    let activeConnections = new Set();
+    let flashingConnections = new Map(); // connectionKey -> flashIntensity
 
     // Resize canvas to full page
     function resize() {
@@ -27,7 +28,6 @@
         canvas.height = window.innerHeight;
         pageHeight = document.documentElement.scrollHeight;
         initNodes();
-        needsRender = true;
     }
 
     // Initialize nodes spread across entire page height
@@ -40,24 +40,36 @@
 
             nodes.push({
                 baseX: Math.random() * canvas.width,
-                // Spread nodes across entire scrollable page
                 baseY: Math.random() * pageHeight,
+                // Drift velocity
+                vx: (Math.random() - 0.5) * config.driftSpeed,
+                vy: (Math.random() - 0.5) * config.driftSpeed,
                 z: depth,
-                // Size: far = 1px, near = 25px (really large for close ones)
                 size: 1 + depth * depth * 24,
-                // Opacity: far = 0.08, near = 0.5
                 opacity: 0.08 + depth * 0.42
             });
         }
 
-        // Sort by depth so far nodes render first, close nodes render last (on top)
+        // Sort by depth so far nodes render first
         nodes.sort((a, b) => a.z - b.z);
+    }
+
+    // Update node positions (drift)
+    function updateNodes() {
+        nodes.forEach(node => {
+            node.baseX += node.vx;
+            node.baseY += node.vy;
+
+            // Wrap around edges
+            if (node.baseX < -50) node.baseX = canvas.width + 50;
+            if (node.baseX > canvas.width + 50) node.baseX = -50;
+            if (node.baseY < -50) node.baseY = pageHeight + 50;
+            if (node.baseY > pageHeight + 50) node.baseY = -50;
+        });
     }
 
     // Get scroll-adjusted position for 3D parallax
     function getNodePosition(node) {
-        // Near nodes (z=1) move MORE with scroll, far nodes (z=0) move LESS
-        // This creates the parallax effect where close things move faster
         const parallaxStrength = 1 - (node.z * config.scrollDepthMultiplier);
         const yOffset = scrollY * parallaxStrength;
 
@@ -67,8 +79,15 @@
         };
     }
 
+    // Generate connection key
+    function getConnectionKey(i, j) {
+        return i < j ? `${i}-${j}` : `${j}-${i}`;
+    }
+
     // Draw connections between nearby nodes
     function drawConnections() {
+        const newConnections = new Set();
+
         for (let i = 0; i < nodes.length; i++) {
             for (let j = i + 1; j < nodes.length; j++) {
                 const nodeA = nodes[i];
@@ -82,20 +101,52 @@
                 );
 
                 if (distance < config.connectionDistance) {
+                    const connectionKey = getConnectionKey(i, j);
+                    newConnections.add(connectionKey);
+
+                    // Check if this is a new connection
+                    if (!activeConnections.has(connectionKey)) {
+                        // Start blue flash
+                        flashingConnections.set(connectionKey, 0.05); // 5% intensity
+                    }
+
                     // Line opacity based on distance and average depth
                     const avgDepth = (nodeA.z + nodeB.z) / 2;
                     const distanceFade = 1 - distance / config.connectionDistance;
                     const opacity = distanceFade * avgDepth * 0.3;
 
+                    // Check for flash
+                    const flashIntensity = flashingConnections.get(connectionKey) || 0;
+
                     ctx.beginPath();
                     ctx.moveTo(posA.x, posA.y);
                     ctx.lineTo(posB.x, posB.y);
-                    ctx.strokeStyle = `rgba(100, 100, 100, ${opacity})`;
+
+                    if (flashIntensity > 0.001) {
+                        // Blue flash
+                        ctx.strokeStyle = `rgba(0, 122, 255, ${flashIntensity + opacity})`;
+                    } else {
+                        ctx.strokeStyle = `rgba(100, 100, 100, ${opacity})`;
+                    }
+
                     ctx.lineWidth = 0.5 + avgDepth * 0.5;
                     ctx.stroke();
                 }
             }
         }
+
+        // Update active connections
+        activeConnections = newConnections;
+
+        // Decay flash intensity
+        flashingConnections.forEach((intensity, key) => {
+            const newIntensity = intensity * 0.95; // Decay
+            if (newIntensity < 0.001) {
+                flashingConnections.delete(key);
+            } else {
+                flashingConnections.set(key, newIntensity);
+            }
+        });
     }
 
     // Draw nodes
@@ -103,12 +154,12 @@
         nodes.forEach(node => {
             const pos = getNodePosition(node);
 
-            // Skip if off screen (with margin for large nodes)
+            // Skip if off screen
             const margin = node.size * 4;
             if (pos.y < -margin || pos.y > canvas.height + margin) return;
             if (pos.x < -margin || pos.x > canvas.width + margin) return;
 
-            // Glow for all nodes, larger glow for near nodes
+            // Glow
             const glowSize = node.size * 2.5;
             const gradient = ctx.createRadialGradient(
                 pos.x, pos.y, 0,
@@ -138,18 +189,10 @@
         drawNodes();
     }
 
-    // Animation loop - only renders when needed
+    // Animation loop - continuous
     function animate() {
-        if (scrollY !== lastScrollY) {
-            needsRender = true;
-            lastScrollY = scrollY;
-        }
-
-        if (needsRender) {
-            render();
-            needsRender = false;
-        }
-
+        updateNodes();
+        render();
         requestAnimationFrame(animate);
     }
 
@@ -165,8 +208,6 @@
         window.addEventListener('resize', resize);
         window.addEventListener('scroll', handleScroll, { passive: true });
 
-        // Initial render
-        render();
         animate();
     }
 

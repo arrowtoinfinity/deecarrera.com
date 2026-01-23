@@ -18,16 +18,13 @@
 
     let nodes = [];
     let scrollY = 0;
+    let targetScrollY = 0;
     let pageHeight = 0;
     let activeConnections = new Set();
     let flashingConnections = new Map(); // connectionKey -> {intensity, color}
 
-    // Accent colors (Tiempo red, Synesthesia yellow, Arrow blue)
-    const accentColors = [
-        { r: 230, g: 80, b: 80 },    // Red
-        { r: 230, g: 220, b: 0 },    // Yellow
-        { r: 135, g: 206, b: 250 }   // Blue
-    ];
+    // Flash color (blue only)
+    const flashColor = { r: 135, g: 206, b: 250 };
 
     // Resize canvas to full page
     function resize() {
@@ -113,9 +110,8 @@
 
                     // Check if this is a new connection
                     if (!activeConnections.has(connectionKey)) {
-                        // Start flash with random accent color
-                        const color = accentColors[Math.floor(Math.random() * accentColors.length)];
-                        flashingConnections.set(connectionKey, { intensity: 0.4, color });
+                        // Start flash with blue color
+                        flashingConnections.set(connectionKey, { intensity: 0.4, color: flashColor });
                     }
 
                     // Line opacity based on distance and average depth
@@ -230,6 +226,7 @@
 
     // Animation loop - continuous
     function animate() {
+        updateScroll();
         updateNodes();
         render();
         requestAnimationFrame(animate);
@@ -238,13 +235,20 @@
     // Handle scroll
     function handleScroll() {
         // Clamp to 0 to handle iOS bounce/elastic scrolling
-        scrollY = Math.max(0, window.scrollY);
+        targetScrollY = Math.max(0, window.scrollY);
+    }
+
+    // Smooth scroll interpolation
+    function updateScroll() {
+        // Lerp toward target for smooth mobile experience
+        scrollY += (targetScrollY - scrollY) * 0.15;
     }
 
     // Initialize
     function init() {
         // Get initial scroll position
-        scrollY = Math.max(0, window.scrollY);
+        targetScrollY = Math.max(0, window.scrollY);
+        scrollY = targetScrollY;
 
         resize();
 

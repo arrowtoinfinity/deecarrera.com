@@ -20,7 +20,14 @@
     let scrollY = 0;
     let pageHeight = 0;
     let activeConnections = new Set();
-    let flashingConnections = new Map(); // connectionKey -> flashIntensity
+    let flashingConnections = new Map(); // connectionKey -> {intensity, color}
+
+    // Accent colors (Tiempo red, Synesthesia yellow, Arrow blue)
+    const accentColors = [
+        { r: 230, g: 80, b: 80 },    // Red
+        { r: 230, g: 220, b: 0 },    // Yellow
+        { r: 135, g: 206, b: 250 }   // Blue
+    ];
 
     // Resize canvas to full page
     function resize() {
@@ -106,8 +113,9 @@
 
                     // Check if this is a new connection
                     if (!activeConnections.has(connectionKey)) {
-                        // Start blue flash
-                        flashingConnections.set(connectionKey, 0.4); // Start brighter, will fade to subtle
+                        // Start flash with random accent color
+                        const color = accentColors[Math.floor(Math.random() * accentColors.length)];
+                        flashingConnections.set(connectionKey, { intensity: 0.4, color });
                     }
 
                     // Line opacity based on distance and average depth
@@ -116,7 +124,9 @@
                     const opacity = distanceFade * avgDepth * 0.3;
 
                     // Check for flash
-                    const flashIntensity = flashingConnections.get(connectionKey) || 0;
+                    const flash = flashingConnections.get(connectionKey);
+                    const flashIntensity = flash ? flash.intensity : 0;
+                    const flashColor = flash ? flash.color : null;
 
                     // Draw line
                     ctx.beginPath();
@@ -126,17 +136,19 @@
                     ctx.lineWidth = 0.5 + avgDepth * 0.5;
                     ctx.stroke();
 
-                    // Draw blue glow circles at both nodes if flashing
-                    if (flashIntensity > 0.01) {
+                    // Draw colored glow circles at both nodes if flashing
+                    if (flashIntensity > 0.01 && flashColor) {
+                        const { r, g, b } = flashColor;
+
                         // Glow at node A - scale to node size
                         const glowRadiusA = nodeA.size * 2;
                         const flashGlowA = ctx.createRadialGradient(
                             posA.x, posA.y, 0,
                             posA.x, posA.y, glowRadiusA
                         );
-                        flashGlowA.addColorStop(0, `rgba(135, 206, 250, ${flashIntensity * 0.5})`);
-                        flashGlowA.addColorStop(0.5, `rgba(135, 206, 250, ${flashIntensity * 0.2})`);
-                        flashGlowA.addColorStop(1, `rgba(135, 206, 250, 0)`);
+                        flashGlowA.addColorStop(0, `rgba(${r}, ${g}, ${b}, ${flashIntensity * 0.5})`);
+                        flashGlowA.addColorStop(0.5, `rgba(${r}, ${g}, ${b}, ${flashIntensity * 0.2})`);
+                        flashGlowA.addColorStop(1, `rgba(${r}, ${g}, ${b}, 0)`);
 
                         ctx.beginPath();
                         ctx.arc(posA.x, posA.y, glowRadiusA, 0, Math.PI * 2);
@@ -149,9 +161,9 @@
                             posB.x, posB.y, 0,
                             posB.x, posB.y, glowRadiusB
                         );
-                        flashGlowB.addColorStop(0, `rgba(135, 206, 250, ${flashIntensity * 0.5})`);
-                        flashGlowB.addColorStop(0.5, `rgba(135, 206, 250, ${flashIntensity * 0.2})`);
-                        flashGlowB.addColorStop(1, `rgba(135, 206, 250, 0)`);
+                        flashGlowB.addColorStop(0, `rgba(${r}, ${g}, ${b}, ${flashIntensity * 0.5})`);
+                        flashGlowB.addColorStop(0.5, `rgba(${r}, ${g}, ${b}, ${flashIntensity * 0.2})`);
+                        flashGlowB.addColorStop(1, `rgba(${r}, ${g}, ${b}, 0)`);
 
                         ctx.beginPath();
                         ctx.arc(posB.x, posB.y, glowRadiusB, 0, Math.PI * 2);
@@ -166,12 +178,12 @@
         activeConnections = newConnections;
 
         // Decay flash intensity
-        flashingConnections.forEach((intensity, key) => {
-            const newIntensity = intensity * 0.96; // 2x longer duration
+        flashingConnections.forEach((flash, key) => {
+            const newIntensity = flash.intensity * 0.96; // 2x longer duration
             if (newIntensity < 0.01) {
                 flashingConnections.delete(key);
             } else {
-                flashingConnections.set(key, newIntensity);
+                flashingConnections.set(key, { ...flash, intensity: newIntensity });
             }
         });
     }

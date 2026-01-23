@@ -153,10 +153,7 @@ section h2 {
 
 /* App-specific colored shadows */
 .card-tiempo:hover {
-    box-shadow:
-        -10px 10px 30px rgba(255, 200, 50, 0.3),
-        0 0 40px rgba(230, 80, 80, 0.25),
-        10px -10px 30px rgba(80, 120, 220, 0.3);
+    box-shadow: 0 8px 40px rgba(230, 80, 80, 0.35);
 }
 
 .card-synesthesia:hover {
@@ -164,11 +161,7 @@ section h2 {
 }
 
 .card-arrow:hover {
-    box-shadow:
-        -10px -10px 25px rgba(230, 80, 60, 0.3),
-        10px -10px 25px rgba(240, 200, 50, 0.3),
-        10px 10px 25px rgba(70, 140, 220, 0.3),
-        -10px 10px 25px rgba(80, 180, 100, 0.3);
+    box-shadow: 0 8px 40px rgba(70, 140, 220, 0.35);
 }
 
 .project-card h3 {

@@ -237,12 +237,21 @@
 
     // Handle scroll
     function handleScroll() {
-        scrollY = window.scrollY;
+        // Clamp to 0 to handle iOS bounce/elastic scrolling
+        scrollY = Math.max(0, window.scrollY);
     }
 
     // Initialize
     function init() {
+        // Get initial scroll position
+        scrollY = Math.max(0, window.scrollY);
+
         resize();
+
+        // Recalculate page height after layout settles (fixes mobile)
+        setTimeout(() => {
+            pageHeight = document.documentElement.scrollHeight;
+        }, 100);
 
         window.addEventListener('resize', resize);
         window.addEventListener('scroll', handleScroll, { passive: true });

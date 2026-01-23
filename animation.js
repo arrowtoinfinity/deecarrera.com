@@ -122,7 +122,7 @@
                     // Check for flash
                     const flash = flashingConnections.get(connectionKey);
                     const flashIntensity = flash ? flash.intensity : 0;
-                    const flashColor = flash ? flash.color : null;
+                    const currentFlashColor = flash ? flash.color : null;
 
                     // Draw line
                     ctx.beginPath();
@@ -133,8 +133,8 @@
                     ctx.stroke();
 
                     // Draw colored glow circles at both nodes if flashing
-                    if (flashIntensity > 0.01 && flashColor) {
-                        const { r, g, b } = flashColor;
+                    if (flashIntensity > 0.01 && currentFlashColor) {
+                        const { r, g, b } = currentFlashColor;
 
                         // Glow at node A - scale to node size
                         const glowRadiusA = nodeA.size * 2;

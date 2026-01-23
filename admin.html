@@ -8,20 +8,8 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <!-- Password Gate -->
-    <div id="login-screen" class="admin-login">
-        <div class="admin-login-box">
-            <h1>Admin Login</h1>
-            <form id="login-form">
-                <input type="password" id="password-input" placeholder="Enter password" autocomplete="current-password">
-                <button type="submit">Login</button>
-            </form>
-            <p id="login-error" class="admin-error"></p>
-        </div>
-    </div>
-
-    <!-- Admin Dashboard (hidden until login) -->
-    <div id="dashboard" class="admin-dashboard" style="display: none;">
+    <!-- Admin Dashboard -->
+    <div id="dashboard" class="admin-dashboard">
         <nav>
             <a href="/" class="nav-name">
                 <img src="logo.png" alt="Logo" class="nav-logo">
@@ -29,7 +17,6 @@
             </a>
             <div class="nav-links">
                 <a href="/literature.html">View Site</a>
-                <button id="logout-btn" class="admin-logout-btn">Logout</button>
             </div>
         </nav>
 
@@ -98,22 +85,7 @@
     </div>
 
     <script>
-        // ===== Configuration =====
-        // CHANGE THIS: Replace with your password hash
-        // To generate: open browser console, run: await crypto.subtle.digest('SHA-256', new TextEncoder().encode('yourpassword')).then(b => Array.from(new Uint8Array(b)).map(x => x.toString(16).padStart(2, '0')).join(''))
-        const ADMIN_HASH = 'PLACEHOLDER_HASH';
-
         const STORAGE_KEY = 'literature_posts';
-        const SESSION_KEY = 'admin_logged_in';
-
-        // ===== Utility Functions =====
-        async function hashPassword(password) {
-            const encoder = new TextEncoder();
-            const data = encoder.encode(password);
-            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-            const hashArray = Array.from(new Uint8Array(hashBuffer));
-            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-        }
 
         function generateId() {
             return 'post_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
@@ -163,18 +135,6 @@
         }
 
         // ===== UI Functions =====
-        function showDashboard() {
-            document.getElementById('login-screen').style.display = 'none';
-            document.getElementById('dashboard').style.display = 'block';
-            renderPostList();
-        }
-
-        function showLogin() {
-            document.getElementById('login-screen').style.display = 'flex';
-            document.getElementById('dashboard').style.display = 'none';
-            sessionStorage.removeItem(SESSION_KEY);
-        }
-
         function renderPostList() {
             const posts = getPosts();
             const container = document.getElementById('post-list');
@@ -268,28 +228,8 @@
 
         // ===== Event Listeners =====
         document.addEventListener('DOMContentLoaded', () => {
-            // Check if already logged in
-            if (sessionStorage.getItem(SESSION_KEY)) {
-                showDashboard();
-            }
-
-            // Login form
-            document.getElementById('login-form').addEventListener('submit', async (e) => {
-                e.preventDefault();
-                const password = document.getElementById('password-input').value;
-                const hash = await hashPassword(password);
-
-                if (hash === ADMIN_HASH || ADMIN_HASH === 'PLACEHOLDER_HASH') {
-                    // Allow login if hash matches OR if placeholder (for initial setup)
-                    sessionStorage.setItem(SESSION_KEY, 'true');
-                    showDashboard();
-                } else {
-                    document.getElementById('login-error').textContent = 'Incorrect password';
-                }
-            });
-
-            // Logout
-            document.getElementById('logout-btn').addEventListener('click', showLogin);
+            // Render posts on load
+            renderPostList();
 
             // New post button
             document.getElementById('new-post-btn').addEventListener('click', () => openEditor());

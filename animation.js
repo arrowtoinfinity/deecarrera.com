@@ -108,17 +108,15 @@
             if (pos.y < -margin || pos.y > canvas.height + margin) return;
             if (pos.x < -margin || pos.x > canvas.width + margin) return;
 
-            const gray = Math.floor(120 + node.z * 60); // 120-180 gray range
-
             // Glow for all nodes, larger glow for near nodes
             const glowSize = node.size * 2.5;
             const gradient = ctx.createRadialGradient(
                 pos.x, pos.y, 0,
                 pos.x, pos.y, glowSize
             );
-            gradient.addColorStop(0, `rgba(${gray}, ${gray}, ${gray}, ${node.opacity * 0.4})`);
-            gradient.addColorStop(0.5, `rgba(${gray}, ${gray}, ${gray}, ${node.opacity * 0.1})`);
-            gradient.addColorStop(1, `rgba(${gray}, ${gray}, ${gray}, 0)`);
+            gradient.addColorStop(0, `rgba(255, 255, 255, ${node.opacity * 0.4})`);
+            gradient.addColorStop(0.5, `rgba(255, 255, 255, ${node.opacity * 0.1})`);
+            gradient.addColorStop(1, `rgba(255, 255, 255, 0)`);
 
             ctx.beginPath();
             ctx.arc(pos.x, pos.y, glowSize, 0, Math.PI * 2);
@@ -128,7 +126,7 @@
             // Core dot
             ctx.beginPath();
             ctx.arc(pos.x, pos.y, node.size, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(${gray}, ${gray}, ${gray}, ${node.opacity})`;
+            ctx.fillStyle = `rgba(255, 255, 255, ${node.opacity})`;
             ctx.fill();
         });
     }

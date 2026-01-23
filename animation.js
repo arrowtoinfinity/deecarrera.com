@@ -123,14 +123,14 @@
             ctx.fillStyle = gradient;
             ctx.fill();
 
-            // Core dot with spherical shading
+            // Core dot with subtle spherical shading
             const sphereGradient = ctx.createRadialGradient(
                 pos.x - node.size * 0.3, pos.y - node.size * 0.3, 0,
                 pos.x, pos.y, node.size
             );
             sphereGradient.addColorStop(0, '#fff');
-            sphereGradient.addColorStop(0.5, '#e8e8e8');
-            sphereGradient.addColorStop(1, '#c0c0c0');
+            sphereGradient.addColorStop(0.5, '#fafafa');
+            sphereGradient.addColorStop(1, '#f2f2f2');
 
             ctx.beginPath();
             ctx.arc(pos.x, pos.y, node.size, 0, Math.PI * 2);

@@ -107,7 +107,7 @@
                     // Check if this is a new connection
                     if (!activeConnections.has(connectionKey)) {
                         // Start blue flash
-                        flashingConnections.set(connectionKey, 0.05); // 5% intensity
+                        flashingConnections.set(connectionKey, 0.4); // Start brighter, will fade to subtle
                     }
 
                     // Line opacity based on distance and average depth
@@ -140,8 +140,8 @@
 
         // Decay flash intensity
         flashingConnections.forEach((intensity, key) => {
-            const newIntensity = intensity * 0.95; // Decay
-            if (newIntensity < 0.001) {
+            const newIntensity = intensity * 0.92; // Slower decay
+            if (newIntensity < 0.01) {
                 flashingConnections.delete(key);
             } else {
                 flashingConnections.set(key, newIntensity);

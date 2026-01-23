@@ -129,7 +129,7 @@
                     // Draw blue glow circles at both nodes if flashing
                     if (flashIntensity > 0.01) {
                         // Glow at node A - scale to node size
-                        const glowRadiusA = nodeA.size * 3;
+                        const glowRadiusA = nodeA.size * 2;
                         const flashGlowA = ctx.createRadialGradient(
                             posA.x, posA.y, 0,
                             posA.x, posA.y, glowRadiusA
@@ -144,7 +144,7 @@
                         ctx.fill();
 
                         // Glow at node B - scale to node size
-                        const glowRadiusB = nodeB.size * 3;
+                        const glowRadiusB = nodeB.size * 2;
                         const flashGlowB = ctx.createRadialGradient(
                             posB.x, posB.y, 0,
                             posB.x, posB.y, glowRadiusB
@@ -167,7 +167,7 @@
 
         // Decay flash intensity
         flashingConnections.forEach((intensity, key) => {
-            const newIntensity = intensity * 0.92; // Slower decay
+            const newIntensity = intensity * 0.96; // 2x longer duration
             if (newIntensity < 0.01) {
                 flashingConnections.delete(key);
             } else {

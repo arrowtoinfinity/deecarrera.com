@@ -32,43 +32,8 @@
             <button class="lit-tab" data-filter="post">Posts</button>
         </div>
 
-        <section class="lit-list">
-            <article class="lit-item" data-type="essay">
-                <span class="lit-type-label">Essay</span>
-                <time datetime="2026-01-20">January 20, 2026</time>
-                <h2><a href="#">On the Nature of Creative Work</a></h2>
-                <p>A longer exploration of how creativity intersects with discipline, and why the most meaningful work often emerges from constraint rather than freedom.</p>
-            </article>
-
-            <article class="lit-item lit-meditation" data-type="meditation">
-                <span class="lit-type-label">Meditation</span>
-                <blockquote>
-                    "The impediment to action advances action. What stands in the way becomes the way."
-                </blockquote>
-                <cite>- Marcus Aurelius, Meditations</cite>
-            </article>
-
-            <article class="lit-item" data-type="post">
-                <span class="lit-type-label">Post</span>
-                <time datetime="2026-01-23">January 23, 2026</time>
-                <h2><a href="#">Your First Blog Post</a></h2>
-                <p>This is where your blog post excerpt will appear. Write about anything that interests you.</p>
-            </article>
-
-            <article class="lit-item lit-meditation" data-type="meditation">
-                <span class="lit-type-label">Meditation</span>
-                <blockquote>
-                    "Waste no more time arguing about what a good man should be. Be one."
-                </blockquote>
-                <cite>- Marcus Aurelius, Meditations</cite>
-            </article>
-
-            <article class="lit-item" data-type="essay">
-                <span class="lit-type-label">Essay</span>
-                <time datetime="2026-01-15">January 15, 2026</time>
-                <h2><a href="#">The Quiet Architecture of Habit</a></h2>
-                <p>How small, repeated actions compound into the invisible structure of our lives, and why understanding this changes everything about how we approach change.</p>
-            </article>
+        <section class="lit-list" id="lit-list">
+            <!-- Posts loaded dynamically from localStorage -->
         </section>
     </main>
 
@@ -77,26 +42,115 @@
     </footer>
 
     <script>
-        // Filter functionality
-        const tabs = document.querySelectorAll('.lit-tab');
-        const items = document.querySelectorAll('.lit-item');
+        const STORAGE_KEY = 'literature_posts';
 
-        tabs.forEach(tab => {
-            tab.addEventListener('click', () => {
-                // Update active tab
-                tabs.forEach(t => t.classList.remove('active'));
-                tab.classList.add('active');
+        // Default sample posts (shown when localStorage is empty)
+        const defaultPosts = [
+            {
+                id: 'default_1',
+                type: 'essay',
+                title: 'On the Nature of Creative Work',
+                date: '2026-01-20',
+                content: 'A longer exploration of how creativity intersects with discipline, and why the most meaningful work often emerges from constraint rather than freedom.',
+                link: '#'
+            },
+            {
+                id: 'default_2',
+                type: 'meditation',
+                quote: 'The impediment to action advances action. What stands in the way becomes the way.',
+                citation: '- Marcus Aurelius, Meditations'
+            },
+            {
+                id: 'default_3',
+                type: 'post',
+                title: 'Your First Blog Post',
+                date: '2026-01-23',
+                content: 'This is where your blog post excerpt will appear. Write about anything that interests you.',
+                link: '#'
+            },
+            {
+                id: 'default_4',
+                type: 'meditation',
+                quote: 'Waste no more time arguing about what a good man should be. Be one.',
+                citation: '- Marcus Aurelius, Meditations'
+            },
+            {
+                id: 'default_5',
+                type: 'essay',
+                title: 'The Quiet Architecture of Habit',
+                date: '2026-01-15',
+                content: 'How small, repeated actions compound into the invisible structure of our lives, and why understanding this changes everything about how we approach change.',
+                link: '#'
+            }
+        ];
 
-                // Filter items
-                const filter = tab.dataset.filter;
-                items.forEach(item => {
-                    if (filter === 'all' || item.dataset.type === filter) {
-                        item.style.display = '';
-                    } else {
-                        item.style.display = 'none';
-                    }
+        function formatDate(dateStr) {
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+        }
+
+        function getPosts() {
+            const data = localStorage.getItem(STORAGE_KEY);
+            const posts = data ? JSON.parse(data) : [];
+            return posts.length > 0 ? posts : defaultPosts;
+        }
+
+        function renderPost(post) {
+            if (post.type === 'meditation') {
+                return `
+                    <article class="lit-item lit-meditation" data-type="meditation">
+                        <span class="lit-type-label">Meditation</span>
+                        <blockquote>
+                            "${post.quote || post.content}"
+                        </blockquote>
+                        <cite>${post.citation || ''}</cite>
+                    </article>
+                `;
+            } else {
+                return `
+                    <article class="lit-item" data-type="${post.type}">
+                        <span class="lit-type-label">${post.type.charAt(0).toUpperCase() + post.type.slice(1)}</span>
+                        <time datetime="${post.date}">${formatDate(post.date)}</time>
+                        <h2><a href="${post.link || '#'}">${post.title}</a></h2>
+                        <p>${post.content}</p>
+                    </article>
+                `;
+            }
+        }
+
+        function renderPosts() {
+            const container = document.getElementById('lit-list');
+            const posts = getPosts();
+            container.innerHTML = posts.map(renderPost).join('');
+        }
+
+        function setupFilters() {
+            const tabs = document.querySelectorAll('.lit-tab');
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    // Update active tab
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+
+                    // Filter items
+                    const filter = tab.dataset.filter;
+                    const items = document.querySelectorAll('.lit-item');
+                    items.forEach(item => {
+                        if (filter === 'all' || item.dataset.type === filter) {
+                            item.style.display = '';
+                        } else {
+                            item.style.display = 'none';
+                        }
+                    });
                 });
             });
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            renderPosts();
+            setupFilters();
         });
     </script>
 </body>

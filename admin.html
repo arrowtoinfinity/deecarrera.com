@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Daniel Carrera</title>
+    <link rel="icon" type="image/png" href="logo.png">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Password Gate -->
+    <div id="login-screen" class="admin-login">
+        <div class="admin-login-box">
+            <h1>Admin Login</h1>
+            <form id="login-form">
+                <input type="password" id="password-input" placeholder="Enter password" autocomplete="current-password">
+                <button type="submit">Login</button>
+            </form>
+            <p id="login-error" class="admin-error"></p>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard (hidden until login) -->
+    <div id="dashboard" class="admin-dashboard" style="display: none;">
+        <nav>
+            <a href="/" class="nav-name">
+                <img src="logo.png" alt="Logo" class="nav-logo">
+                Daniel Carrera
+            </a>
+            <div class="nav-links">
+                <a href="/literature.html">View Site</a>
+                <button id="logout-btn" class="admin-logout-btn">Logout</button>
+            </div>
+        </nav>
+
+        <main>
+            <section class="page-header">
+                <h1>Admin Dashboard</h1>
+            </section>
+
+            <div class="admin-actions">
+                <button id="new-post-btn" class="admin-btn primary">+ New Post</button>
+            </div>
+
+            <section class="admin-post-list" id="post-list">
+                <!-- Posts will be rendered here -->
+            </section>
+        </main>
+    </div>
+
+    <!-- Post Editor Modal -->
+    <div id="editor-modal" class="admin-modal" style="display: none;">
+        <div class="admin-modal-content">
+            <h2 id="editor-title">New Post</h2>
+            <form id="post-form">
+                <input type="hidden" id="post-id">
+
+                <div class="admin-form-group">
+                    <label for="post-type">Type</label>
+                    <select id="post-type" required>
+                        <option value="essay">Essay</option>
+                        <option value="meditation">Meditation</option>
+                        <option value="post">Post</option>
+                    </select>
+                </div>
+
+                <div class="admin-form-group" id="title-group">
+                    <label for="post-title">Title</label>
+                    <input type="text" id="post-title" placeholder="Post title">
+                </div>
+
+                <div class="admin-form-group" id="date-group">
+                    <label for="post-date">Date</label>
+                    <input type="date" id="post-date">
+                </div>
+
+                <div class="admin-form-group" id="content-group">
+                    <label for="post-content" id="content-label">Content</label>
+                    <textarea id="post-content" rows="5" placeholder="Write your content..."></textarea>
+                </div>
+
+                <div class="admin-form-group" id="citation-group" style="display: none;">
+                    <label for="post-citation">Citation</label>
+                    <input type="text" id="post-citation" placeholder="- Author, Source">
+                </div>
+
+                <div class="admin-form-group">
+                    <label for="post-link">Link (optional)</label>
+                    <input type="url" id="post-link" placeholder="https://...">
+                </div>
+
+                <div class="admin-form-actions">
+                    <button type="button" id="cancel-btn" class="admin-btn">Cancel</button>
+                    <button type="submit" class="admin-btn primary">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // ===== Configuration =====
+        // CHANGE THIS: Replace with your password hash
+        // To generate: open browser console, run: await crypto.subtle.digest('SHA-256', new TextEncoder().encode('yourpassword')).then(b => Array.from(new Uint8Array(b)).map(x => x.toString(16).padStart(2, '0')).join(''))
+        const ADMIN_HASH = 'PLACEHOLDER_HASH';
+
+        const STORAGE_KEY = 'literature_posts';
+        const SESSION_KEY = 'admin_logged_in';
+
+        // ===== Utility Functions =====
+        async function hashPassword(password) {
+            const encoder = new TextEncoder();
+            const data = encoder.encode(password);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        function generateId() {
+            return 'post_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        }
+
+        function formatDate(dateStr) {
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+        }
+
+        // ===== Storage Functions =====
+        function getPosts() {
+            const data = localStorage.getItem(STORAGE_KEY);
+            return data ? JSON.parse(data) : [];
+        }
+
+        function savePosts(posts) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(posts));
+        }
+
+        function addPost(post) {
+            const posts = getPosts();
+            post.id = generateId();
+            posts.unshift(post); // Add to beginning
+            savePosts(posts);
+            return post;
+        }
+
+        function updatePost(id, updatedPost) {
+            const posts = getPosts();
+            const index = posts.findIndex(p => p.id === id);
+            if (index !== -1) {
+                posts[index] = { ...posts[index], ...updatedPost };
+                savePosts(posts);
+            }
+        }
+
+        function deletePost(id) {
+            const posts = getPosts();
+            const filtered = posts.filter(p => p.id !== id);
+            savePosts(filtered);
+        }
+
+        function getPost(id) {
+            const posts = getPosts();
+            return posts.find(p => p.id === id);
+        }
+
+        // ===== UI Functions =====
+        function showDashboard() {
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'block';
+            renderPostList();
+        }
+
+        function showLogin() {
+            document.getElementById('login-screen').style.display = 'flex';
+            document.getElementById('dashboard').style.display = 'none';
+            sessionStorage.removeItem(SESSION_KEY);
+        }
+
+        function renderPostList() {
+            const posts = getPosts();
+            const container = document.getElementById('post-list');
+
+            if (posts.length === 0) {
+                container.innerHTML = '<p class="admin-empty">No posts yet. Create your first post!</p>';
+                return;
+            }
+
+            container.innerHTML = posts.map(post => `
+                <div class="admin-post-card" data-id="${post.id}">
+                    <div class="admin-post-info">
+                        <span class="admin-post-type">${post.type}</span>
+                        <span class="admin-post-title">${post.type === 'meditation' ? (post.content || post.quote || '').substring(0, 50) + '...' : post.title}</span>
+                        ${post.date ? `<span class="admin-post-date">${formatDate(post.date)}</span>` : ''}
+                    </div>
+                    <div class="admin-post-actions">
+                        <button class="admin-btn small edit-btn" data-id="${post.id}">Edit</button>
+                        <button class="admin-btn small danger delete-btn" data-id="${post.id}">Delete</button>
+                    </div>
+                </div>
+            `).join('');
+
+            // Add event listeners
+            container.querySelectorAll('.edit-btn').forEach(btn => {
+                btn.addEventListener('click', () => openEditor(btn.dataset.id));
+            });
+            container.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    if (confirm('Are you sure you want to delete this post?')) {
+                        deletePost(btn.dataset.id);
+                        renderPostList();
+                    }
+                });
+            });
+        }
+
+        function openEditor(postId = null) {
+            const modal = document.getElementById('editor-modal');
+            const form = document.getElementById('post-form');
+            const title = document.getElementById('editor-title');
+
+            form.reset();
+            document.getElementById('post-id').value = '';
+
+            if (postId) {
+                const post = getPost(postId);
+                if (post) {
+                    title.textContent = 'Edit Post';
+                    document.getElementById('post-id').value = post.id;
+                    document.getElementById('post-type').value = post.type;
+                    document.getElementById('post-title').value = post.title || '';
+                    document.getElementById('post-date').value = post.date || '';
+                    document.getElementById('post-content').value = post.content || post.quote || '';
+                    document.getElementById('post-citation').value = post.citation || '';
+                    document.getElementById('post-link').value = post.link || '';
+                    updateFormFields();
+                }
+            } else {
+                title.textContent = 'New Post';
+                document.getElementById('post-date').value = new Date().toISOString().split('T')[0];
+                updateFormFields();
+            }
+
+            modal.style.display = 'flex';
+        }
+
+        function closeEditor() {
+            document.getElementById('editor-modal').style.display = 'none';
+        }
+
+        function updateFormFields() {
+            const type = document.getElementById('post-type').value;
+            const titleGroup = document.getElementById('title-group');
+            const dateGroup = document.getElementById('date-group');
+            const citationGroup = document.getElementById('citation-group');
+            const contentLabel = document.getElementById('content-label');
+
+            if (type === 'meditation') {
+                titleGroup.style.display = 'none';
+                dateGroup.style.display = 'none';
+                citationGroup.style.display = 'block';
+                contentLabel.textContent = 'Quote';
+            } else {
+                titleGroup.style.display = 'block';
+                dateGroup.style.display = 'block';
+                citationGroup.style.display = 'none';
+                contentLabel.textContent = 'Content';
+            }
+        }
+
+        // ===== Event Listeners =====
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check if already logged in
+            if (sessionStorage.getItem(SESSION_KEY)) {
+                showDashboard();
+            }
+
+            // Login form
+            document.getElementById('login-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const password = document.getElementById('password-input').value;
+                const hash = await hashPassword(password);
+
+                if (hash === ADMIN_HASH || ADMIN_HASH === 'PLACEHOLDER_HASH') {
+                    // Allow login if hash matches OR if placeholder (for initial setup)
+                    sessionStorage.setItem(SESSION_KEY, 'true');
+                    showDashboard();
+                } else {
+                    document.getElementById('login-error').textContent = 'Incorrect password';
+                }
+            });
+
+            // Logout
+            document.getElementById('logout-btn').addEventListener('click', showLogin);
+
+            // New post button
+            document.getElementById('new-post-btn').addEventListener('click', () => openEditor());
+
+            // Cancel button
+            document.getElementById('cancel-btn').addEventListener('click', closeEditor);
+
+            // Close modal on outside click
+            document.getElementById('editor-modal').addEventListener('click', (e) => {
+                if (e.target.classList.contains('admin-modal')) {
+                    closeEditor();
+                }
+            });
+
+            // Type change
+            document.getElementById('post-type').addEventListener('change', updateFormFields);
+
+            // Post form submit
+            document.getElementById('post-form').addEventListener('submit', (e) => {
+                e.preventDefault();
+
+                const id = document.getElementById('post-id').value;
+                const type = document.getElementById('post-type').value;
+
+                const post = {
+                    type,
+                    link: document.getElementById('post-link').value || '#'
+                };
+
+                if (type === 'meditation') {
+                    post.quote = document.getElementById('post-content').value;
+                    post.citation = document.getElementById('post-citation').value;
+                } else {
+                    post.title = document.getElementById('post-title').value;
+                    post.date = document.getElementById('post-date').value;
+                    post.content = document.getElementById('post-content').value;
+                }
+
+                if (id) {
+                    updatePost(id, post);
+                } else {
+                    addPost(post);
+                }
+
+                closeEditor();
+                renderPostList();
+            });
+        });
+    </script>
+</body>
+</html>

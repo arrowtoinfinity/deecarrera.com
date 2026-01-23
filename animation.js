@@ -126,7 +126,7 @@
             // Core dot
             ctx.beginPath();
             ctx.arc(pos.x, pos.y, node.size, 0, Math.PI * 2);
-            ctx.fillStyle = `rgba(255, 255, 255, ${node.opacity})`;
+            ctx.fillStyle = '#fff';
             ctx.fill();
         });
     }

@@ -87,6 +87,53 @@
     <script>
         const STORAGE_KEY = 'literature_posts';
 
+        // Default posts to seed if localStorage is empty
+        const defaultPosts = [
+            {
+                id: 'default_1',
+                type: 'essay',
+                title: 'On the Nature of Creative Work',
+                date: '2026-01-20',
+                content: 'A longer exploration of how creativity intersects with discipline, and why the most meaningful work often emerges from constraint rather than freedom.',
+                link: '#'
+            },
+            {
+                id: 'default_2',
+                type: 'meditation',
+                quote: 'The impediment to action advances action. What stands in the way becomes the way.',
+                citation: '- Marcus Aurelius, Meditations'
+            },
+            {
+                id: 'default_3',
+                type: 'post',
+                title: 'Your First Blog Post',
+                date: '2026-01-23',
+                content: 'This is where your blog post excerpt will appear. Write about anything that interests you.',
+                link: '#'
+            },
+            {
+                id: 'default_4',
+                type: 'meditation',
+                quote: 'Waste no more time arguing about what a good man should be. Be one.',
+                citation: '- Marcus Aurelius, Meditations'
+            },
+            {
+                id: 'default_5',
+                type: 'essay',
+                title: 'The Quiet Architecture of Habit',
+                date: '2026-01-15',
+                content: 'How small, repeated actions compound into the invisible structure of our lives, and why understanding this changes everything about how we approach change.',
+                link: '#'
+            }
+        ];
+
+        function seedDefaultPosts() {
+            const existing = localStorage.getItem(STORAGE_KEY);
+            if (!existing) {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(defaultPosts));
+            }
+        }
+
         function generateId() {
             return 'post_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
         }
@@ -228,6 +275,9 @@
 
         // ===== Event Listeners =====
         document.addEventListener('DOMContentLoaded', () => {
+            // Seed default posts if localStorage is empty
+            seedDefaultPosts();
+
             // Render posts on load
             renderPostList();
 

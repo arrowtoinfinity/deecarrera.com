@@ -49,7 +49,7 @@
                 vx: (Math.random() - 0.5) * config.driftSpeed,
                 vy: (Math.random() - 0.5) * config.driftSpeed,
                 z: depth,
-                size: 1 + depth * depth * 40,
+                size: 1 + depth * depth * (15 + Math.random() * 30),
                 opacity: 0.08 + depth * 0.42
             });
         }

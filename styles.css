@@ -222,21 +222,22 @@ section h2 {
 .app-subtitle {
     font-size: 0.9rem;
     color: var(--text-light);
-    margin-bottom: 0.75rem;
+    margin-bottom: 0;
 }
 
 .app-store-btn {
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
-    padding: 0.5rem 1rem;
-    background: var(--text);
-    color: var(--bg);
+    padding: 0.5rem 1.25rem;
+    background: #007AFF;
+    color: #fff;
     text-decoration: none;
     border-radius: 20px;
     font-size: 0.85rem;
-    font-weight: 500;
+    font-weight: 600;
     transition: opacity 0.2s;
+    flex-shrink: 0;
 }
 
 .app-store-btn:hover {
@@ -278,6 +279,12 @@ section h2 {
     height: 280px;
     background: linear-gradient(135deg, #e8e8e8 0%, #d8d8d8 100%);
     border-radius: 12px;
+}
+
+/* Horizontal screenshots for VisionOS apps */
+.screenshot-scroll.horizontal .screenshot-placeholder {
+    width: 320px;
+    height: 180px;
 }
 
 /* App description */

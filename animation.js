@@ -129,7 +129,7 @@
                     // Draw blue glow circles at both nodes if flashing
                     if (flashIntensity > 0.01) {
                         // Glow at node A - scale to node size
-                        const glowRadiusA = nodeA.size * 2;
+                        const glowRadiusA = nodeA.size * 3;
                         const flashGlowA = ctx.createRadialGradient(
                             posA.x, posA.y, 0,
                             posA.x, posA.y, glowRadiusA
@@ -144,7 +144,7 @@
                         ctx.fill();
 
                         // Glow at node B - scale to node size
-                        const glowRadiusB = nodeB.size * 2;
+                        const glowRadiusB = nodeB.size * 3;
                         const flashGlowB = ctx.createRadialGradient(
                             posB.x, posB.y, 0,
                             posB.x, posB.y, glowRadiusB
@@ -186,14 +186,14 @@
             if (pos.y < -margin || pos.y > canvas.height + margin) return;
             if (pos.x < -margin || pos.x > canvas.width + margin) return;
 
-            // Glow
-            const glowSize = node.size * 2.5;
+            // White glow/shadow - always visible
+            const glowSize = node.size * 3;
             const gradient = ctx.createRadialGradient(
                 pos.x, pos.y, 0,
                 pos.x, pos.y, glowSize
             );
-            gradient.addColorStop(0, `rgba(255, 255, 255, ${node.opacity * 0.4})`);
-            gradient.addColorStop(0.5, `rgba(255, 255, 255, ${node.opacity * 0.1})`);
+            gradient.addColorStop(0, `rgba(255, 255, 255, 0.6)`);
+            gradient.addColorStop(0.4, `rgba(255, 255, 255, 0.2)`);
             gradient.addColorStop(1, `rgba(255, 255, 255, 0)`);
 
             ctx.beginPath();

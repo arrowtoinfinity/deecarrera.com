@@ -1,5 +1,6 @@
 // Constellation Network Animation
 // Static at rest, 3D movement on scroll, monochrome
+// Full page background with large foreground nodes
 
 (function() {
     const canvas = document.getElementById('constellation');
@@ -9,57 +10,62 @@
 
     // Configuration
     const config = {
-        nodeCount: window.innerWidth < 768 ? 40 : 70,
-        connectionDistance: 120,
-        scrollDepthMultiplier: 0.8
+        nodeCount: window.innerWidth < 768 ? 50 : 90,
+        connectionDistance: 150,
+        scrollDepthMultiplier: 1.2
     };
 
     let nodes = [];
     let scrollY = 0;
     let lastScrollY = 0;
     let needsRender = true;
+    let pageHeight = 0;
 
-    // Resize canvas
+    // Resize canvas to full page
     function resize() {
-        const hero = canvas.parentElement;
-        canvas.width = hero.offsetWidth;
-        canvas.height = hero.offsetHeight;
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        pageHeight = document.documentElement.scrollHeight;
         initNodes();
         needsRender = true;
     }
 
-    // Initialize nodes with fixed positions
+    // Initialize nodes spread across entire page height
     function initNodes() {
         nodes = [];
-        const count = window.innerWidth < 768 ? 40 : 70;
+        const count = window.innerWidth < 768 ? 50 : 90;
 
         for (let i = 0; i < count; i++) {
             const depth = Math.random(); // 0 = far (subtle), 1 = near (bold)
 
             nodes.push({
                 baseX: Math.random() * canvas.width,
-                baseY: Math.random() * canvas.height,
+                // Spread nodes across entire scrollable page
+                baseY: Math.random() * pageHeight,
                 z: depth,
-                // Size: far = 1px, near = 4px
-                size: 1 + depth * 3,
-                // Opacity: far = 0.15, near = 0.8
-                opacity: 0.15 + depth * 0.65
+                // Size: far = 1px, near = 25px (really large for close ones)
+                size: 1 + depth * depth * 24,
+                // Opacity: far = 0.08, near = 0.5
+                opacity: 0.08 + depth * 0.42
             });
         }
 
-        // Sort by depth so far nodes render first
+        // Sort by depth so far nodes render first, close nodes render last (on top)
         nodes.sort((a, b) => a.z - b.z);
     }
 
     // Get scroll-adjusted position for 3D parallax
     function getNodePosition(node) {
-        // Far nodes (z=0) move slowly, near nodes (z=1) move faster
+        // Base position relative to scroll
+        const baseY = node.baseY - scrollY;
+
+        // Far nodes (z=0) move with scroll, near nodes (z=1) move faster (parallax)
         const parallaxStrength = node.z * config.scrollDepthMultiplier;
         const yOffset = scrollY * parallaxStrength;
 
         return {
             x: node.baseX,
-            y: node.baseY - yOffset
+            y: baseY + yOffset
         };
     }
 
@@ -99,26 +105,27 @@
         nodes.forEach(node => {
             const pos = getNodePosition(node);
 
-            // Skip if off screen
-            if (pos.y < -50 || pos.y > canvas.height + 50) return;
+            // Skip if off screen (with margin for large nodes)
+            const margin = node.size * 4;
+            if (pos.y < -margin || pos.y > canvas.height + margin) return;
+            if (pos.x < -margin || pos.x > canvas.width + margin) return;
 
-            const gray = Math.floor(80 + node.z * 80); // 80-160 gray range
+            const gray = Math.floor(120 + node.z * 60); // 120-180 gray range
 
-            // Glow for near nodes
-            if (node.z > 0.5) {
-                const glowSize = node.size * 3;
-                const gradient = ctx.createRadialGradient(
-                    pos.x, pos.y, 0,
-                    pos.x, pos.y, glowSize
-                );
-                gradient.addColorStop(0, `rgba(${gray}, ${gray}, ${gray}, ${node.opacity * 0.3})`);
-                gradient.addColorStop(1, `rgba(${gray}, ${gray}, ${gray}, 0)`);
+            // Glow for all nodes, larger glow for near nodes
+            const glowSize = node.size * 2.5;
+            const gradient = ctx.createRadialGradient(
+                pos.x, pos.y, 0,
+                pos.x, pos.y, glowSize
+            );
+            gradient.addColorStop(0, `rgba(${gray}, ${gray}, ${gray}, ${node.opacity * 0.4})`);
+            gradient.addColorStop(0.5, `rgba(${gray}, ${gray}, ${gray}, ${node.opacity * 0.1})`);
+            gradient.addColorStop(1, `rgba(${gray}, ${gray}, ${gray}, 0)`);
 
-                ctx.beginPath();
-                ctx.arc(pos.x, pos.y, glowSize, 0, Math.PI * 2);
-                ctx.fillStyle = gradient;
-                ctx.fill();
-            }
+            ctx.beginPath();
+            ctx.arc(pos.x, pos.y, glowSize, 0, Math.PI * 2);
+            ctx.fillStyle = gradient;
+            ctx.fill();
 
             // Core dot
             ctx.beginPath();

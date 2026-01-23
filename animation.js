@@ -176,24 +176,8 @@
         });
     }
 
-    // Hero title area (approximate)
-    function getHeroTitleBounds() {
-        const heroTitle = document.querySelector('.hero h1');
-        if (!heroTitle) return null;
-        const rect = heroTitle.getBoundingClientRect();
-        return {
-            left: rect.left,
-            right: rect.right,
-            top: rect.top,
-            bottom: rect.bottom,
-            centerY: rect.top + rect.height / 2
-        };
-    }
-
     // Draw nodes
     function drawNodes() {
-        const heroBounds = getHeroTitleBounds();
-
         nodes.forEach(node => {
             const pos = getNodePosition(node);
 
@@ -201,28 +185,6 @@
             const margin = node.size * 4;
             if (pos.y < -margin || pos.y > canvas.height + margin) return;
             if (pos.x < -margin || pos.x > canvas.width + margin) return;
-
-            // Check if node is behind hero title - draw dark shadow
-            if (heroBounds &&
-                pos.x > heroBounds.left - node.size &&
-                pos.x < heroBounds.right + node.size &&
-                pos.y > heroBounds.top - node.size * 2 &&
-                pos.y < heroBounds.bottom + node.size * 2) {
-
-                const shadowSize = node.size * 2;
-                const shadowGradient = ctx.createRadialGradient(
-                    pos.x, pos.y, 0,
-                    pos.x, pos.y, shadowSize
-                );
-                shadowGradient.addColorStop(0, `rgba(0, 0, 0, 0.15)`);
-                shadowGradient.addColorStop(0.5, `rgba(0, 0, 0, 0.08)`);
-                shadowGradient.addColorStop(1, `rgba(0, 0, 0, 0)`);
-
-                ctx.beginPath();
-                ctx.arc(pos.x, pos.y, shadowSize, 0, Math.PI * 2);
-                ctx.fillStyle = shadowGradient;
-                ctx.fill();
-            }
 
             // White glow/shadow - always visible
             const glowSize = node.size * 3;

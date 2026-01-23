@@ -28,7 +28,7 @@
         <div class="lit-tabs">
             <button class="lit-tab active" data-filter="all">All</button>
             <button class="lit-tab" data-filter="essay">Essays</button>
-            <button class="lit-tab" data-filter="meditation">Meditations</button>
+            <button class="lit-tab" data-filter="meditation">Reflections</button>
             <button class="lit-tab" data-filter="post">Posts</button>
         </div>
 
@@ -99,7 +99,7 @@
             if (post.type === 'meditation') {
                 return `
                     <article class="lit-item lit-meditation" data-type="meditation">
-                        <span class="lit-type-label">Meditation</span>
+                        <span class="lit-type-label">Reflection</span>
                         <blockquote>
                             "${post.quote || post.content}"
                         </blockquote>

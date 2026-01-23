@@ -1,0 +1,300 @@
+/* Reset and base */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --text: #1a1a1a;
+    --text-light: #666;
+    --bg: #fff;
+    --border: #eee;
+    --accent: #000;
+}
+
+html {
+    font-size: 16px;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    line-height: 1.6;
+    color: var(--text);
+    background: var(--bg);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Navigation */
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2rem 4rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.nav-name {
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: var(--text);
+    text-decoration: none;
+}
+
+.nav-links {
+    display: flex;
+    gap: 2rem;
+}
+
+.nav-links a {
+    color: var(--text-light);
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: color 0.2s;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+    color: var(--text);
+}
+
+/* Main content */
+main {
+    flex: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 4rem 4rem;
+    width: 100%;
+}
+
+/* Hero */
+.hero {
+    padding: 6rem 0;
+    text-align: center;
+}
+
+.hero h1 {
+    font-size: 3.5rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+}
+
+/* Page header */
+.page-header {
+    padding: 3rem 0;
+}
+
+.page-header h1 {
+    font-size: 2.5rem;
+    font-weight: 600;
+}
+
+/* Section headers */
+section h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 2rem;
+    color: var(--text-light);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Projects grid */
+.project-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.project-card {
+    display: block;
+    padding: 2rem;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    text-decoration: none;
+    color: var(--text);
+    transition: border-color 0.2s, transform 0.2s;
+}
+
+.project-card:hover {
+    border-color: var(--text-light);
+    transform: translateY(-2px);
+}
+
+.project-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.project-card h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.project-card p {
+    color: var(--text-light);
+    font-size: 0.95rem;
+}
+
+/* Apps page */
+.apps-list {
+    display: flex;
+    flex-direction: column;
+    gap: 4rem;
+}
+
+.app-feature {
+    display: flex;
+    gap: 3rem;
+    align-items: flex-start;
+}
+
+.app-icon-large {
+    font-size: 5rem;
+    flex-shrink: 0;
+}
+
+.app-details h2 {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    text-transform: none;
+    letter-spacing: normal;
+    color: var(--text);
+}
+
+.app-tagline {
+    font-size: 1.1rem;
+    color: var(--text-light);
+    margin-bottom: 1rem;
+}
+
+.app-description {
+    margin-bottom: 1.5rem;
+    max-width: 500px;
+}
+
+.app-links {
+    display: flex;
+    gap: 1rem;
+}
+
+.btn {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    background: var(--text);
+    color: var(--bg);
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    transition: opacity 0.2s;
+}
+
+.btn:hover {
+    opacity: 0.8;
+}
+
+/* Blog page */
+.blog-list {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+}
+
+.blog-post-preview time {
+    font-size: 0.85rem;
+    color: var(--text-light);
+}
+
+.blog-post-preview h2 {
+    font-size: 1.5rem;
+    margin: 0.5rem 0;
+    text-transform: none;
+    letter-spacing: normal;
+    color: var(--text);
+}
+
+.blog-post-preview h2 a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.blog-post-preview h2 a:hover {
+    text-decoration: underline;
+}
+
+.blog-post-preview p {
+    color: var(--text-light);
+}
+
+/* Media page */
+.media-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.media-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.media-placeholder {
+    aspect-ratio: 16 / 9;
+    background: var(--border);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-light);
+}
+
+.media-caption {
+    font-size: 0.9rem;
+    color: var(--text-light);
+}
+
+/* Footer */
+footer {
+    padding: 2rem 4rem;
+    text-align: center;
+    color: var(--text-light);
+    font-size: 0.9rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    nav {
+        padding: 1.5rem 1.5rem;
+    }
+
+    .nav-links {
+        gap: 1.5rem;
+    }
+
+    main {
+        padding: 1.5rem 1.5rem 3rem;
+    }
+
+    .hero {
+        padding: 4rem 0;
+    }
+
+    .hero h1 {
+        font-size: 2.5rem;
+    }
+
+    .app-feature {
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .app-icon-large {
+        font-size: 4rem;
+    }
+}

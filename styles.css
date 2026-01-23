@@ -151,6 +151,19 @@ section h2 {
     margin-bottom: 1rem;
 }
 
+/* App-specific colored shadows */
+.card-tiempo:hover {
+    box-shadow: 0 8px 40px rgba(255, 120, 80, 0.3);
+}
+
+.card-synesthesia:hover {
+    box-shadow: 0 8px 40px rgba(230, 220, 0, 0.35);
+}
+
+.card-arrow:hover {
+    box-shadow: 0 8px 40px rgba(80, 180, 120, 0.3);
+}
+
 .project-card h3 {
     font-size: 1.25rem;
     font-weight: 600;

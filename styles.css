@@ -245,32 +245,89 @@ section h2 {
     color: var(--text-light);
 }
 
-/* Media page */
-.media-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 2rem;
+/* Media page - Video Carousel */
+.video-carousel-section {
+    margin-bottom: 4rem;
 }
 
-.media-item {
+.video-carousel {
+    overflow: hidden;
+    margin: 0 -4rem;
+    padding: 0 4rem;
+}
+
+.video-track {
     display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
+    gap: 1rem;
+    animation: scroll 30s linear infinite;
 }
 
-.media-placeholder {
-    aspect-ratio: 16 / 9;
-    background: var(--border);
-    border-radius: 8px;
+.video-track:hover {
+    animation-play-state: paused;
+}
+
+@keyframes scroll {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+.video-item {
+    flex-shrink: 0;
+    width: 180px;
+}
+
+.video-placeholder {
+    aspect-ratio: 9 / 16;
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    border-radius: 16px;
     display: flex;
     align-items: center;
     justify-content: center;
     color: var(--text-light);
+    font-size: 0.85rem;
 }
 
-.media-caption {
-    font-size: 0.9rem;
+/* Media page - Photo Grid */
+.photo-grid-section h2 {
+    margin-bottom: 1.5rem;
+}
+
+.photo-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+}
+
+.photo-item {
+    aspect-ratio: 1 / 1;
+}
+
+.photo-placeholder {
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     color: var(--text-light);
+    font-size: 0.85rem;
+    transition: all 0.3s ease;
+}
+
+.photo-placeholder:hover {
+    background: rgba(255, 255, 255, 0.8);
+    transform: scale(1.02);
 }
 
 /* Footer */
@@ -310,5 +367,18 @@ footer {
 
     .app-icon-large {
         font-size: 4rem;
+    }
+
+    .video-carousel {
+        margin: 0 -1.5rem;
+        padding: 0 1.5rem;
+    }
+
+    .video-item {
+        width: 140px;
+    }
+
+    .photo-grid {
+        grid-template-columns: repeat(2, 1fr);
     }
 }

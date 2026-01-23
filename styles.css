@@ -129,6 +129,8 @@ section h2 {
 }
 
 .blog-preview-card {
+    position: relative;
+    z-index: 20;
     display: block;
     padding: 1.5rem 2rem;
     background: #fff;
@@ -167,6 +169,8 @@ section h2 {
 }
 
 .media-preview-card {
+    position: relative;
+    z-index: 20;
     display: block;
     text-decoration: none;
     color: var(--text);
@@ -201,6 +205,8 @@ section h2 {
 }
 
 .project-card {
+    position: relative;
+    z-index: 20;
     display: block;
     padding: 2rem;
     background: #fff;

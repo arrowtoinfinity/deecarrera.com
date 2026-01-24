@@ -102,8 +102,14 @@
                 // Horizontal: one full oscillation (-50 to +50 degrees)
                 const rotation = Math.sin(t) * 50;
                 // Vertical: two oscillations (figure-8), centered at 80° (looking up)
-                const tilt = 80 + Math.sin(t * 2) * 18;
+                const tiltOffset = Math.sin(t * 2);
+                const tilt = 80 + tiltOffset * 18;
+
+                // Scale larger when nodding down (tiltOffset > 0)
+                const scale = 1 + tiltOffset * 0.15; // 0.85 to 1.15
+
                 heroModel.setAttribute('camera-orbit', `${rotation}deg ${tilt}deg auto`);
+                heroModel.style.transform = `translate(-50%, -50%) scale(${scale})`;
 
                 requestAnimationFrame(animateRotation);
             }

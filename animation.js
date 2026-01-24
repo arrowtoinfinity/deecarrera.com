@@ -22,16 +22,53 @@
     let pageHeight = 0;
     let activeConnections = new Set();
     let flashingConnections = new Map(); // connectionKey -> {intensity, color}
+    let resizeTimeout = null;
+    let lastWidth = 0;
+    let lastHeight = 0;
 
     // Flash color (blue only)
     const flashColor = { r: 135, g: 206, b: 250 };
 
-    // Resize canvas to full page
-    function resize() {
+    // Resize canvas only (no node regeneration)
+    function resizeCanvas() {
+        const oldWidth = canvas.width || window.innerWidth;
+        const oldPageHeight = pageHeight || document.documentElement.scrollHeight;
+
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
         pageHeight = document.documentElement.scrollHeight;
-        initNodes();
+
+        // Scale existing node positions to new dimensions
+        if (nodes.length > 0 && oldWidth > 0 && oldPageHeight > 0) {
+            const scaleX = canvas.width / oldWidth;
+            const scaleY = pageHeight / oldPageHeight;
+
+            nodes.forEach(node => {
+                node.baseX *= scaleX;
+                node.baseY *= scaleY;
+            });
+        }
+    }
+
+    // Debounced resize handler
+    function handleResize() {
+        // Immediate canvas resize for smooth visuals
+        resizeCanvas();
+
+        // Debounce full reinitialization only if screen size category changes
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+            const isMobile = window.innerWidth < 768;
+            const wasMobile = lastWidth < 768;
+
+            // Only reinitialize nodes if crossing mobile/desktop threshold
+            if (isMobile !== wasMobile && lastWidth > 0) {
+                initNodes();
+            }
+
+            lastWidth = window.innerWidth;
+            lastHeight = window.innerHeight;
+        }, 250);
     }
 
     // Initialize nodes spread across entire page height
@@ -250,14 +287,22 @@
         targetScrollY = Math.max(0, window.scrollY);
         scrollY = targetScrollY;
 
-        resize();
+        // Set initial dimensions
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        pageHeight = document.documentElement.scrollHeight;
+        lastWidth = window.innerWidth;
+        lastHeight = window.innerHeight;
+
+        // Initialize nodes once
+        initNodes();
 
         // Recalculate page height after layout settles (fixes mobile)
         setTimeout(() => {
             pageHeight = document.documentElement.scrollHeight;
         }, 100);
 
-        window.addEventListener('resize', resize);
+        window.addEventListener('resize', handleResize);
         window.addEventListener('scroll', handleScroll, { passive: true });
 
         animate();

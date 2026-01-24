@@ -186,7 +186,7 @@
                         // Create gradient line from large node for depth effect
                         const gradient = ctx.createLinearGradient(posA.x, posA.y, posB.x, posB.y);
                         const largeNodeOpacity = Math.min(0.7, opacity * 3);
-                        if (nodeA.z >= DEPTH_THRESHOLD) {
+                        if (nodeA.size >= SIZE_THRESHOLD) {
                             gradient.addColorStop(0, `rgba(20, 20, 20, ${largeNodeOpacity})`);
                             gradient.addColorStop(1, `rgba(50, 50, 50, ${opacity * 0.5})`);
                         } else {

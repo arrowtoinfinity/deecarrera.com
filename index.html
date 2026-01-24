@@ -88,20 +88,21 @@
     </footer>
     <script src="animation.js"></script>
     <script>
-        // Oscillating rotation for 3D model (-45 to +45 degrees, always looking up)
+        // Figure-8 infinity motion for 3D model
         const heroModel = document.getElementById('hero-model');
         if (heroModel) {
             let startTime = null;
-            const duration = 10000; // 10 seconds for full cycle (slower)
+            const duration = 12000; // 12 seconds for full infinity loop
 
             function animateRotation(timestamp) {
                 if (!startTime) startTime = timestamp;
                 const elapsed = timestamp - startTime;
+                const t = (elapsed / duration) * Math.PI * 2;
 
-                // Oscillate between -45 and +45 degrees using sine wave
-                const rotation = Math.sin((elapsed / duration) * Math.PI * 2) * 45;
-                // Always looking up (75° base), tilts slightly as it turns (±10°)
-                const tilt = 75 + Math.sin((elapsed / duration) * Math.PI * 2) * 10;
+                // Horizontal: one full oscillation (-30 to +30 degrees)
+                const rotation = Math.sin(t) * 30;
+                // Vertical: two oscillations (figure-8), centered at 80° (looking up)
+                const tilt = 80 + Math.sin(t * 2) * 10;
                 heroModel.setAttribute('camera-orbit', `${rotation}deg ${tilt}deg auto`);
 
                 requestAnimationFrame(animateRotation);

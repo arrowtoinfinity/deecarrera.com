@@ -141,6 +141,7 @@ main {
     --poster-color: transparent;
     pointer-events: none;
     z-index: 14;
+    z-index: 14;
 }
 
 .hero-model::part(default-progress-bar) {

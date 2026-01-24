@@ -96,8 +96,8 @@
             let startTime = null;
             const duration = 20000; // 20 seconds for full infinity loop
             let scrollScale = 1;
-            let mouseX = 0; // -1 to 1 (left to right)
-            let mouseY = 0; // -1 to 1 (top to bottom)
+            let mouseRotation = 0;
+            let mouseTilt = 0;
 
             // Update scale based on scroll position
             function updateScrollScale() {
@@ -106,10 +106,19 @@
                 scrollScale = 1 + Math.min(scrollY / maxScroll, 1) * 0.5; // 1.0 to 1.5
             }
 
-            // Track mouse position
+            // Track mouse position relative to model center
             function updateMousePosition(e) {
-                mouseX = (e.clientX / window.innerWidth) * 2 - 1;  // -1 to 1
-                mouseY = (e.clientY / window.innerHeight) * 2 - 1; // -1 to 1
+                const rect = heroModel.getBoundingClientRect();
+                const modelCenterX = rect.left + rect.width / 2;
+                const modelCenterY = rect.top + rect.height / 2;
+
+                // Calculate angle from model to cursor
+                const deltaX = e.clientX - modelCenterX;
+                const deltaY = e.clientY - modelCenterY;
+
+                // Convert to rotation angles (atan2 gives precise angle)
+                mouseRotation = Math.atan2(deltaX, 300) * (180 / Math.PI) * -1;
+                mouseTilt = Math.atan2(deltaY, 300) * (180 / Math.PI) * -1;
             }
 
             window.addEventListener('scroll', updateScrollScale, { passive: true });
@@ -125,10 +134,6 @@
                 const baseRotation = Math.sin(t) * 25;
                 const tiltOffset = Math.sin(t * 2);
                 const baseTilt = 80 + tiltOffset * 10;
-
-                // Add mouse influence - precise gaze tracking at cursor
-                const mouseRotation = mouseX * -35;
-                const mouseTilt = mouseY * -20;
 
                 // Combine base animation with mouse tracking
                 const rotation = baseRotation + mouseRotation;

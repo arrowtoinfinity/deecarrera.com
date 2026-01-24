@@ -143,6 +143,10 @@ main {
     z-index: 14;
 }
 
+.hero-model::part(default-progress-bar) {
+    display: none;
+}
+
 @media (max-width: 768px) {
     .hero-model {
         width: 300px;

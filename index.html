@@ -87,11 +87,11 @@
     </footer>
     <script src="animation.js"></script>
     <script>
-        // Oscillating rotation for 3D model (-45 to +45 degrees)
+        // Oscillating rotation for 3D model (-45 to +45 degrees with tilt)
         const heroModel = document.getElementById('hero-model');
         if (heroModel) {
             let startTime = null;
-            const duration = 6000; // 6 seconds for full cycle
+            const duration = 10000; // 10 seconds for full cycle (slower)
 
             function animateRotation(timestamp) {
                 if (!startTime) startTime = timestamp;
@@ -99,7 +99,9 @@
 
                 // Oscillate between -45 and +45 degrees using sine wave
                 const rotation = Math.sin((elapsed / duration) * Math.PI * 2) * 45;
-                heroModel.setAttribute('camera-orbit', `${rotation}deg 90deg auto`);
+                // Synchronized tilt: tilts up when turning right, down when turning left
+                const tilt = 90 + Math.sin((elapsed / duration) * Math.PI * 2) * 15;
+                heroModel.setAttribute('camera-orbit', `${rotation}deg ${tilt}deg auto`);
 
                 requestAnimationFrame(animateRotation);
             }

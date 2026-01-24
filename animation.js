@@ -3,10 +3,15 @@
 // Blue flash on new connections
 
 (function() {
-    const canvas = document.getElementById('constellation');
-    if (!canvas) return;
+    const canvasBg = document.getElementById('constellation-bg');
+    const canvasFg = document.getElementById('constellation-fg');
+    if (!canvasBg || !canvasFg) return;
 
-    const ctx = canvas.getContext('2d');
+    const ctxBg = canvasBg.getContext('2d');
+    const ctxFg = canvasFg.getContext('2d');
+
+    // Depth threshold for splitting foreground/background
+    const DEPTH_THRESHOLD = 0.5;
 
     // Configuration
     const config = {
@@ -31,16 +36,18 @@
 
     // Resize canvas only (no node regeneration)
     function resizeCanvas() {
-        const oldWidth = canvas.width || window.innerWidth;
+        const oldWidth = canvasBg.width || window.innerWidth;
         const oldPageHeight = pageHeight || document.documentElement.scrollHeight;
 
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+        canvasBg.width = window.innerWidth;
+        canvasBg.height = window.innerHeight;
+        canvasFg.width = window.innerWidth;
+        canvasFg.height = window.innerHeight;
         pageHeight = document.documentElement.scrollHeight;
 
         // Scale existing node positions to new dimensions
         if (nodes.length > 0 && oldWidth > 0 && oldPageHeight > 0) {
-            const scaleX = canvas.width / oldWidth;
+            const scaleX = canvasBg.width / oldWidth;
             const scaleY = pageHeight / oldPageHeight;
 
             nodes.forEach(node => {
@@ -80,7 +87,7 @@
             const depth = Math.random(); // 0 = far (subtle), 1 = near (bold)
 
             nodes.push({
-                baseX: Math.random() * canvas.width,
+                baseX: Math.random() * canvasBg.width,
                 baseY: Math.random() * pageHeight,
                 // Drift velocity
                 vx: (Math.random() - 0.5) * config.driftSpeed,
@@ -102,8 +109,8 @@
             node.baseY += node.vy;
 
             // Wrap around edges
-            if (node.baseX < -50) node.baseX = canvas.width + 50;
-            if (node.baseX > canvas.width + 50) node.baseX = -50;
+            if (node.baseX < -50) node.baseX = canvasBg.width + 50;
+            if (node.baseX > canvasBg.width + 50) node.baseX = -50;
             if (node.baseY < -50) node.baseY = pageHeight + 50;
             if (node.baseY > pageHeight + 50) node.baseY = -50;
         });
@@ -161,11 +168,16 @@
                     const flashIntensity = flash ? flash.intensity : 0;
                     const currentFlashColor = flash ? flash.color : null;
 
-                    // Draw line
+                    // Choose canvas based on node depths
+                    const bothBackground = nodeA.z < DEPTH_THRESHOLD && nodeB.z < DEPTH_THRESHOLD;
+                    const bothForeground = nodeA.z >= DEPTH_THRESHOLD && nodeB.z >= DEPTH_THRESHOLD;
+                    const ctx = bothForeground ? ctxFg : ctxBg;
+
+                    // Draw line (darker color)
                     ctx.beginPath();
                     ctx.moveTo(posA.x, posA.y);
                     ctx.lineTo(posB.x, posB.y);
-                    ctx.strokeStyle = `rgba(100, 100, 100, ${opacity})`;
+                    ctx.strokeStyle = `rgba(50, 50, 50, ${opacity})`;
                     ctx.lineWidth = 0.5 + avgDepth * 0.5;
                     ctx.stroke();
 
@@ -226,6 +238,10 @@
         nodes.forEach(node => {
             const pos = getNodePosition(node);
 
+            // Choose canvas based on depth
+            const ctx = node.z >= DEPTH_THRESHOLD ? ctxFg : ctxBg;
+            const canvas = node.z >= DEPTH_THRESHOLD ? canvasFg : canvasBg;
+
             // Skip if off screen
             const margin = node.size * 4;
             if (pos.y < -margin || pos.y > canvas.height + margin) return;
@@ -256,7 +272,8 @@
 
     // Render frame
     function render() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctxBg.clearRect(0, 0, canvasBg.width, canvasBg.height);
+        ctxFg.clearRect(0, 0, canvasFg.width, canvasFg.height);
         drawConnections();
         drawNodes();
     }
@@ -288,8 +305,10 @@
         scrollY = targetScrollY;
 
         // Set initial dimensions
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+        canvasBg.width = window.innerWidth;
+        canvasBg.height = window.innerHeight;
+        canvasFg.width = window.innerWidth;
+        canvasFg.height = window.innerHeight;
         pageHeight = document.documentElement.scrollHeight;
         lastWidth = window.innerWidth;
         lastHeight = window.innerHeight;

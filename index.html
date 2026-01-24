@@ -105,11 +105,15 @@
                 const tiltOffset = Math.sin(t * 2);
                 const tilt = 80 + tiltOffset * 18;
 
+                // Physical movement along figure-8 path
+                const moveX = Math.sin(t) * 80;         // ±80px horizontal
+                const moveY = Math.sin(t * 2) * 30;     // ±30px vertical (figure-8)
+
                 // Scale larger when nodding down (tiltOffset > 0)
                 const scale = 1 + tiltOffset * 0.15; // 0.85 to 1.15
 
                 heroModel.setAttribute('camera-orbit', `${rotation}deg ${tilt}deg auto`);
-                heroModel.style.transform = `translate(-50%, -50%) scale(${scale})`;
+                heroModel.style.transform = `translate(calc(-50% + ${moveX}px), calc(-50% + ${moveY}px)) scale(${scale})`;
 
                 requestAnimationFrame(animateRotation);
             }

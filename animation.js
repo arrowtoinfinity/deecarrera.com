@@ -13,7 +13,7 @@
         nodeCount: window.innerWidth < 768 ? 50 : 90,
         connectionDistance: 150,
         scrollDepthMultiplier: 1.2,
-        driftSpeed: 0.15
+        driftSpeed: 0.25
     };
 
     let nodes = [];

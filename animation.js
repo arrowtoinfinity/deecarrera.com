@@ -10,8 +10,8 @@
     const ctxBg = canvasBg.getContext('2d');
     const ctxFg = canvasFg.getContext('2d');
 
-    // Depth threshold for splitting foreground/background
-    const DEPTH_THRESHOLD = 0.5;
+    // Depth threshold for splitting foreground/background (only top ~5% in front)
+    const DEPTH_THRESHOLD = 0.95;
 
     // Configuration
     const config = {
@@ -171,14 +171,31 @@
                     // Choose canvas based on node depths
                     const bothBackground = nodeA.z < DEPTH_THRESHOLD && nodeB.z < DEPTH_THRESHOLD;
                     const bothForeground = nodeA.z >= DEPTH_THRESHOLD && nodeB.z >= DEPTH_THRESHOLD;
+                    const eitherForeground = nodeA.z >= DEPTH_THRESHOLD || nodeB.z >= DEPTH_THRESHOLD;
                     const ctx = bothForeground ? ctxFg : ctxBg;
 
-                    // Draw line (darker color)
+                    // Draw line - darker gradient for large foreground nodes
                     ctx.beginPath();
                     ctx.moveTo(posA.x, posA.y);
                     ctx.lineTo(posB.x, posB.y);
-                    ctx.strokeStyle = `rgba(50, 50, 50, ${opacity})`;
-                    ctx.lineWidth = 0.5 + avgDepth * 0.5;
+
+                    if (eitherForeground) {
+                        // Create gradient line from large node for depth effect
+                        const gradient = ctx.createLinearGradient(posA.x, posA.y, posB.x, posB.y);
+                        const largeNodeOpacity = Math.min(0.7, opacity * 3);
+                        if (nodeA.z >= DEPTH_THRESHOLD) {
+                            gradient.addColorStop(0, `rgba(20, 20, 20, ${largeNodeOpacity})`);
+                            gradient.addColorStop(1, `rgba(50, 50, 50, ${opacity * 0.5})`);
+                        } else {
+                            gradient.addColorStop(0, `rgba(50, 50, 50, ${opacity * 0.5})`);
+                            gradient.addColorStop(1, `rgba(20, 20, 20, ${largeNodeOpacity})`);
+                        }
+                        ctx.strokeStyle = gradient;
+                        ctx.lineWidth = 1 + avgDepth * 1.5;
+                    } else {
+                        ctx.strokeStyle = `rgba(50, 50, 50, ${opacity})`;
+                        ctx.lineWidth = 0.5 + avgDepth * 0.5;
+                    }
                     ctx.stroke();
 
                     // Draw colored glow circles at both nodes if flashing

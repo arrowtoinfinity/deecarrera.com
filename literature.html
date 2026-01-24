@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <div class="page-flash"></div>
     <canvas id="constellation-bg"></canvas>
     <canvas id="constellation-fg"></canvas>
     <nav>
@@ -43,6 +44,17 @@
         <p>&copy; 2026 Daniel Carrera</p>
     </footer>
     <script src="animation.js"></script>
+    <script>
+        document.querySelectorAll('nav a').forEach(link => {
+            link.addEventListener('click', function(e) {
+                if (this.href && !this.href.includes('#')) {
+                    e.preventDefault();
+                    document.querySelector('.page-flash').classList.add('active');
+                    setTimeout(() => { window.location.href = this.href; }, 150);
+                }
+            });
+        });
+    </script>
     <script>
         const STORAGE_KEY = 'literature_posts';
 

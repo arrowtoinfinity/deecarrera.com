@@ -9,6 +9,7 @@
     <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 </head>
 <body>
+    <div class="page-flash"></div>
     <canvas id="constellation-bg"></canvas>
     <canvas id="constellation-fg"></canvas>
     <nav>
@@ -89,6 +90,21 @@
         <p>&copy; 2026 Daniel Carrera</p>
     </footer>
     <script src="animation.js"></script>
+    <script>
+        // Page transition flash effect
+        document.querySelectorAll('nav a').forEach(link => {
+            link.addEventListener('click', function(e) {
+                if (this.href && !this.href.includes('#')) {
+                    e.preventDefault();
+                    const flash = document.querySelector('.page-flash');
+                    flash.classList.add('active');
+                    setTimeout(() => {
+                        window.location.href = this.href;
+                    }, 150);
+                }
+            });
+        });
+    </script>
     <script>
         // Figure-8 infinity motion for 3D model with mouse tracking
         const heroModel = document.getElementById('hero-model');

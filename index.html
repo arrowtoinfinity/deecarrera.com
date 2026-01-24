@@ -11,6 +11,20 @@
 <body>
     <div class="page-flash"></div>
     <canvas id="constellation-bg"></canvas>
+    <model-viewer
+        id="hero-model"
+        src="timeless-gaze-compressed.glb"
+        alt="3D Model"
+        loading="eager"
+        camera-orbit="0deg 90deg auto"
+        camera-target="0m 0.15m 0m"
+        interaction-prompt="none"
+        disable-zoom
+        disable-tap
+        disable-pan
+        shadow-intensity="0"
+        class="hero-model"
+    ></model-viewer>
     <canvas id="constellation-fg"></canvas>
     <nav>
         <a href="/" class="nav-name">
@@ -26,20 +40,6 @@
 
     <main>
         <section class="hero">
-            <model-viewer
-                id="hero-model"
-                src="timeless-gaze-compressed.glb"
-                alt="3D Model"
-                loading="eager"
-                camera-orbit="0deg 90deg auto"
-                camera-target="0m 0.15m 0m"
-                interaction-prompt="none"
-                disable-zoom
-                disable-tap
-                disable-pan
-                shadow-intensity="0"
-                class="hero-model"
-            ></model-viewer>
             <h1>Daniel Carrera</h1>
             <p class="hero-subtitle">polymath</p>
         </section>

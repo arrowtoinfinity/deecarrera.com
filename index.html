@@ -24,13 +24,10 @@
 
     <main>
         <section class="hero">
-            <h1>Daniel Carrera</h1>
             <model-viewer
                 id="hero-model"
                 src="timeless-gaze.glb"
                 alt="3D Model"
-                auto-rotate
-                rotation-per-second="30deg"
                 interaction-prompt="none"
                 disable-zoom
                 disable-tap
@@ -38,6 +35,7 @@
                 shadow-intensity="0"
                 class="hero-model"
             ></model-viewer>
+            <h1>Daniel Carrera</h1>
         </section>
 
         <section class="latest-blog">
@@ -86,19 +84,5 @@
         <p>&copy; 2026 Daniel Carrera</p>
     </footer>
     <script src="animation.js"></script>
-    <script>
-        // Scroll-reactive 3D model
-        const heroModel = document.getElementById('hero-model');
-        if (heroModel) {
-            let baseOrbit = 0;
-
-            window.addEventListener('scroll', () => {
-                const scrollY = window.scrollY;
-                const rotation = scrollY * 0.1;
-                const tilt = 75 + (scrollY * 0.02);
-                heroModel.setAttribute('camera-orbit', `${rotation}deg ${tilt}deg auto`);
-            }, { passive: true });
-        }
-    </script>
 </body>
 </html>

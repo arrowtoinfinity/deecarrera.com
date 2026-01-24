@@ -10,8 +10,8 @@
     const ctxBg = canvasBg.getContext('2d');
     const ctxFg = canvasFg.getContext('2d');
 
-    // Depth threshold for splitting foreground/background (only top ~5% in front)
-    const DEPTH_THRESHOLD = 0.95;
+    // Size threshold for splitting foreground/background (only largest nodes in front)
+    const SIZE_THRESHOLD = 35; // Nodes larger than this appear in front of 3D model
 
     // Configuration
     const config = {
@@ -171,10 +171,10 @@
                     const flashIntensity = flash ? flash.intensity : 0;
                     const currentFlashColor = flash ? flash.color : null;
 
-                    // Choose canvas based on node depths
-                    const bothBackground = nodeA.z < DEPTH_THRESHOLD && nodeB.z < DEPTH_THRESHOLD;
-                    const bothForeground = nodeA.z >= DEPTH_THRESHOLD && nodeB.z >= DEPTH_THRESHOLD;
-                    const eitherForeground = nodeA.z >= DEPTH_THRESHOLD || nodeB.z >= DEPTH_THRESHOLD;
+                    // Choose canvas based on node sizes (larger nodes in front of 3D model)
+                    const bothBackground = nodeA.size < SIZE_THRESHOLD && nodeB.size < SIZE_THRESHOLD;
+                    const bothForeground = nodeA.size >= SIZE_THRESHOLD && nodeB.size >= SIZE_THRESHOLD;
+                    const eitherForeground = nodeA.size >= SIZE_THRESHOLD || nodeB.size >= SIZE_THRESHOLD;
                     const ctx = bothForeground ? ctxFg : ctxBg;
 
                     // Draw line - darker gradient for large foreground nodes
@@ -258,9 +258,9 @@
         nodes.forEach(node => {
             const pos = getNodePosition(node);
 
-            // Choose canvas based on depth
-            const ctx = node.z >= DEPTH_THRESHOLD ? ctxFg : ctxBg;
-            const canvas = node.z >= DEPTH_THRESHOLD ? canvasFg : canvasBg;
+            // Choose canvas based on size (larger nodes in front of 3D model)
+            const ctx = node.size >= SIZE_THRESHOLD ? ctxFg : ctxBg;
+            const canvas = node.size >= SIZE_THRESHOLD ? canvasFg : canvasBg;
 
             // Skip if off screen
             const margin = node.size * 4;

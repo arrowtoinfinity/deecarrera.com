@@ -6,6 +6,7 @@
     <title>Daniel Carrera</title>
     <link rel="icon" type="image/png" href="logo.png">
     <link rel="stylesheet" href="styles.css">
+    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 </head>
 <body>
     <canvas id="constellation"></canvas>
@@ -23,6 +24,15 @@
 
     <main>
         <section class="hero">
+            <model-viewer
+                src="timeless-gaze.glb"
+                alt="3D Model"
+                auto-rotate
+                camera-controls
+                disable-zoom
+                shadow-intensity="1"
+                class="hero-model"
+            ></model-viewer>
             <h1>Daniel Carrera</h1>
         </section>
 

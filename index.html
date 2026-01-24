@@ -126,9 +126,9 @@
                 const tiltOffset = Math.sin(t * 2);
                 const baseTilt = 80 + tiltOffset * 10;
 
-                // Add mouse influence (±15° rotation, ±8° tilt)
-                const mouseRotation = mouseX * 15;
-                const mouseTilt = mouseY * 8;
+                // Add mouse influence (±15° rotation, ±8° tilt) - inverted to gaze at cursor
+                const mouseRotation = mouseX * -15;
+                const mouseTilt = mouseY * -8;
 
                 // Combine base animation with mouse tracking
                 const rotation = baseRotation + mouseRotation;

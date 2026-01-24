@@ -29,8 +29,6 @@
                 id="hero-model"
                 src="timeless-gaze.glb"
                 alt="3D Model"
-                auto-rotate
-                rotation-per-second="10deg"
                 camera-orbit="0deg 90deg auto"
                 interaction-prompt="none"
                 disable-zoom
@@ -88,5 +86,26 @@
         <p>&copy; 2026 Daniel Carrera</p>
     </footer>
     <script src="animation.js"></script>
+    <script>
+        // Oscillating rotation for 3D model (-45 to +45 degrees)
+        const heroModel = document.getElementById('hero-model');
+        if (heroModel) {
+            let startTime = null;
+            const duration = 6000; // 6 seconds for full cycle
+
+            function animateRotation(timestamp) {
+                if (!startTime) startTime = timestamp;
+                const elapsed = timestamp - startTime;
+
+                // Oscillate between -45 and +45 degrees using sine wave
+                const rotation = Math.sin((elapsed / duration) * Math.PI * 2) * 45;
+                heroModel.setAttribute('camera-orbit', `${rotation}deg 90deg auto`);
+
+                requestAnimationFrame(animateRotation);
+            }
+
+            requestAnimationFrame(animateRotation);
+        }
+    </script>
 </body>
 </html>

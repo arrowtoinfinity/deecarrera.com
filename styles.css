@@ -120,9 +120,19 @@ main {
     text-shadow: 0 2px 10px rgba(0, 0, 0, 0.04), 0 4px 20px rgba(0, 0, 0, 0.02);
 }
 
+.hero-subtitle {
+    position: relative;
+    z-index: 20;
+    font-size: 1.1rem;
+    color: var(--text-light);
+    margin-top: 0.5rem;
+    letter-spacing: 0.1em;
+    text-transform: lowercase;
+}
+
 .hero-model {
     position: absolute;
-    top: 40%;
+    top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     width: 400px;

@@ -30,6 +30,7 @@
                 src="timeless-gaze.glb"
                 alt="3D Model"
                 camera-orbit="0deg 90deg auto"
+                camera-target="0m 0.15m 0m"
                 interaction-prompt="none"
                 disable-zoom
                 disable-tap
@@ -87,7 +88,7 @@
     </footer>
     <script src="animation.js"></script>
     <script>
-        // Oscillating rotation for 3D model (-45 to +45 degrees with tilt)
+        // Oscillating rotation for 3D model (-45 to +45 degrees, always looking up)
         const heroModel = document.getElementById('hero-model');
         if (heroModel) {
             let startTime = null;
@@ -99,8 +100,8 @@
 
                 // Oscillate between -45 and +45 degrees using sine wave
                 const rotation = Math.sin((elapsed / duration) * Math.PI * 2) * 45;
-                // Synchronized tilt: tilts up when turning right, down when turning left
-                const tilt = 90 + Math.sin((elapsed / duration) * Math.PI * 2) * 15;
+                // Always looking up (75° base), tilts slightly as it turns (±10°)
+                const tilt = 75 + Math.sin((elapsed / duration) * Math.PI * 2) * 10;
                 heroModel.setAttribute('camera-orbit', `${rotation}deg ${tilt}deg auto`);
 
                 requestAnimationFrame(animateRotation);

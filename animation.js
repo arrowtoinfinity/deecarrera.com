@@ -86,12 +86,15 @@
         for (let i = 0; i < count; i++) {
             const depth = Math.random(); // 0 = far (subtle), 1 = near (bold)
 
+            // Larger nodes (higher depth) move faster for parallax effect
+            const speedMultiplier = 0.5 + depth * 1.5; // 0.5x to 2x speed based on depth
+
             nodes.push({
                 baseX: Math.random() * canvasBg.width,
                 baseY: Math.random() * pageHeight,
-                // Drift velocity
-                vx: (Math.random() - 0.5) * config.driftSpeed,
-                vy: (Math.random() - 0.5) * config.driftSpeed,
+                // Drift velocity - faster for larger/closer nodes
+                vx: (Math.random() - 0.5) * config.driftSpeed * speedMultiplier,
+                vy: (Math.random() - 0.5) * config.driftSpeed * speedMultiplier,
                 z: depth,
                 size: 1 + depth * depth * (15 + Math.random() * 30),
                 opacity: 0.08 + depth * 0.42

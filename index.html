@@ -99,15 +99,15 @@
                 const elapsed = timestamp - startTime;
                 const t = (elapsed / duration) * Math.PI * 2;
 
-                // Horizontal: one full oscillation (-50 to +50 degrees)
-                const rotation = Math.sin(t) * 50;
+                // Horizontal: one full oscillation (-25 to +25 degrees)
+                const rotation = Math.sin(t) * 25;
                 // Vertical: two oscillations (figure-8), centered at 80° (looking up)
                 const tiltOffset = Math.sin(t * 2);
-                const tilt = 80 + tiltOffset * 18;
+                const tilt = 80 + tiltOffset * 10;
 
                 // Physical movement along figure-8 path
-                const moveX = Math.sin(t) * 20;         // ±20px horizontal
-                const moveY = Math.sin(t * 2) * 8;      // ±8px vertical (figure-8)
+                const moveX = Math.sin(t) * 10;         // ±10px horizontal
+                const moveY = Math.sin(t * 2) * 4;      // ±4px vertical (figure-8)
 
                 // Scale larger when nodding down (tiltOffset > 0)
                 const scale = 1 + tiltOffset * 0.15; // 0.85 to 1.15

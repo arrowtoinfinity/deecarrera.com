@@ -93,6 +93,16 @@
         if (heroModel) {
             let startTime = null;
             const duration = 20000; // 20 seconds for full infinity loop
+            let scrollScale = 1;
+
+            // Update scale based on scroll position
+            function updateScrollScale() {
+                const scrollY = window.scrollY;
+                const maxScroll = 400; // Fully scaled at 400px scroll
+                scrollScale = 1 + Math.min(scrollY / maxScroll, 1) * 0.5; // 1.0 to 1.5
+            }
+
+            window.addEventListener('scroll', updateScrollScale, { passive: true });
 
             function animateRotation(timestamp) {
                 if (!startTime) startTime = timestamp;
@@ -109,11 +119,12 @@
                 const moveX = Math.sin(t) * 10;         // ±10px horizontal
                 const moveY = Math.sin(t * 2) * 4;      // ±4px vertical (figure-8)
 
-                // Scale larger when nodding down (tiltOffset > 0)
-                const scale = 1 + tiltOffset * 0.15; // 0.85 to 1.15
+                // Scale: base from scroll + nod effect
+                const nodScale = 1 + tiltOffset * 0.15; // 0.85 to 1.15
+                const totalScale = nodScale * scrollScale;
 
                 heroModel.setAttribute('camera-orbit', `${rotation}deg ${tilt}deg auto`);
-                heroModel.style.transform = `translate(calc(-50% + ${moveX}px), calc(-50% + ${moveY}px)) scale(${scale})`;
+                heroModel.style.transform = `translate(calc(-50% + ${moveX}px), calc(-50% + ${moveY}px)) scale(${totalScale})`;
 
                 requestAnimationFrame(animateRotation);
             }

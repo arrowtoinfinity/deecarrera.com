@@ -92,17 +92,17 @@
         const heroModel = document.getElementById('hero-model');
         if (heroModel) {
             let startTime = null;
-            const duration = 12000; // 12 seconds for full infinity loop
+            const duration = 20000; // 20 seconds for full infinity loop
 
             function animateRotation(timestamp) {
                 if (!startTime) startTime = timestamp;
                 const elapsed = timestamp - startTime;
                 const t = (elapsed / duration) * Math.PI * 2;
 
-                // Horizontal: one full oscillation (-30 to +30 degrees)
-                const rotation = Math.sin(t) * 30;
+                // Horizontal: one full oscillation (-50 to +50 degrees)
+                const rotation = Math.sin(t) * 50;
                 // Vertical: two oscillations (figure-8), centered at 80° (looking up)
-                const tilt = 80 + Math.sin(t * 2) * 10;
+                const tilt = 80 + Math.sin(t * 2) * 18;
                 heroModel.setAttribute('camera-orbit', `${rotation}deg ${tilt}deg auto`);
 
                 requestAnimationFrame(animateRotation);

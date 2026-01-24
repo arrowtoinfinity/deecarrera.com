@@ -47,9 +47,9 @@
                 <div class="admin-form-group">
                     <label for="post-type">Type</label>
                     <select id="post-type" required>
-                        <option value="essay">Essay</option>
+                        <option value="essay">Article</option>
                         <option value="meditation">Reflection</option>
-                        <option value="post">Post</option>
+                        <option value="post">Tangent</option>
                     </select>
                 </div>
 
@@ -196,7 +196,7 @@
             container.innerHTML = posts.map(post => `
                 <div class="admin-post-card" data-id="${post.id}">
                     <div class="admin-post-info">
-                        <span class="admin-post-type">${post.type === 'meditation' ? 'reflection' : post.type}</span>
+                        <span class="admin-post-type">${post.type === 'meditation' ? 'reflection' : post.type === 'essay' ? 'article' : post.type === 'post' ? 'tangent' : post.type}</span>
                         <span class="admin-post-title">${post.type === 'meditation' ? (post.content || post.quote || '').substring(0, 50) + '...' : post.title}</span>
                         ${post.date ? `<span class="admin-post-date">${formatDate(post.date)}</span>` : ''}
                     </div>

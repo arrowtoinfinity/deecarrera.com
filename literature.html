@@ -30,9 +30,9 @@
 
         <div class="lit-tabs">
             <button class="lit-tab active" data-filter="all">All</button>
-            <button class="lit-tab" data-filter="essay">Essays</button>
+            <button class="lit-tab" data-filter="essay">Articles</button>
             <button class="lit-tab" data-filter="meditation">Reflections</button>
-            <button class="lit-tab" data-filter="post">Posts</button>
+            <button class="lit-tab" data-filter="post">Tangents</button>
         </div>
 
         <section class="lit-list" id="lit-list">
@@ -123,7 +123,7 @@
             } else {
                 return `
                     <article class="lit-item" data-type="${post.type}">
-                        <span class="lit-type-label">${post.type.charAt(0).toUpperCase() + post.type.slice(1)}</span>
+                        <span class="lit-type-label">${post.type === 'essay' ? 'Article' : post.type === 'post' ? 'Tangent' : post.type.charAt(0).toUpperCase() + post.type.slice(1)}</span>
                         <time datetime="${post.date}">${formatDate(post.date)}</time>
                         <h2><a href="${post.link || '#'}">${post.title}</a></h2>
                         <p>${post.content}</p>

@@ -29,6 +29,8 @@ body {
 
 /* Navigation */
 nav {
+    position: relative;
+    z-index: 20;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -72,6 +74,8 @@ nav {
 
 /* Main content */
 main {
+    position: relative;
+    z-index: 20;
     flex: 1;
     max-width: 1200px;
     margin: 0 auto;
@@ -667,6 +671,8 @@ section h2 {
 
 /* Footer */
 footer {
+    position: relative;
+    z-index: 20;
     padding: 2rem 4rem;
     text-align: center;
     color: var(--text-light);

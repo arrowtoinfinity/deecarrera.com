@@ -90,12 +90,14 @@
     </footer>
     <script src="animation.js"></script>
     <script>
-        // Figure-8 infinity motion for 3D model
+        // Figure-8 infinity motion for 3D model with mouse tracking
         const heroModel = document.getElementById('hero-model');
         if (heroModel) {
             let startTime = null;
             const duration = 20000; // 20 seconds for full infinity loop
             let scrollScale = 1;
+            let mouseX = 0; // -1 to 1 (left to right)
+            let mouseY = 0; // -1 to 1 (top to bottom)
 
             // Update scale based on scroll position
             function updateScrollScale() {
@@ -104,7 +106,14 @@
                 scrollScale = 1 + Math.min(scrollY / maxScroll, 1) * 0.5; // 1.0 to 1.5
             }
 
+            // Track mouse position
+            function updateMousePosition(e) {
+                mouseX = (e.clientX / window.innerWidth) * 2 - 1;  // -1 to 1
+                mouseY = (e.clientY / window.innerHeight) * 2 - 1; // -1 to 1
+            }
+
             window.addEventListener('scroll', updateScrollScale, { passive: true });
+            window.addEventListener('mousemove', updateMousePosition, { passive: true });
             updateScrollScale(); // Initialize on load
 
             function animateRotation(timestamp) {
@@ -112,11 +121,18 @@
                 const elapsed = timestamp - startTime;
                 const t = (elapsed / duration) * Math.PI * 2;
 
-                // Horizontal: one full oscillation (-25 to +25 degrees)
-                const rotation = Math.sin(t) * 25;
-                // Vertical: two oscillations (figure-8), centered at 80° (looking up)
+                // Base figure-8 animation
+                const baseRotation = Math.sin(t) * 25;
                 const tiltOffset = Math.sin(t * 2);
-                const tilt = 80 + tiltOffset * 10;
+                const baseTilt = 80 + tiltOffset * 10;
+
+                // Add mouse influence (±15° rotation, ±8° tilt)
+                const mouseRotation = mouseX * 15;
+                const mouseTilt = mouseY * 8;
+
+                // Combine base animation with mouse tracking
+                const rotation = baseRotation + mouseRotation;
+                const tilt = baseTilt + mouseTilt;
 
                 // Physical movement along figure-8 path
                 const moveX = Math.sin(t) * 10;         // ±10px horizontal

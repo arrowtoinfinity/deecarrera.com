@@ -11,7 +11,7 @@
     const ctxFg = canvasFg.getContext('2d');
 
     // Size threshold for splitting foreground/background (only largest nodes in front)
-    const SIZE_THRESHOLD = 35; // Nodes larger than this appear in front of 3D model
+    const SIZE_THRESHOLD = 45; // Nodes larger than this appear in front of 3D model
 
     // Configuration
     const config = {
@@ -96,7 +96,7 @@
                 vx: (Math.random() - 0.5) * config.driftSpeed * speedMultiplier,
                 vy: (Math.random() - 0.5) * config.driftSpeed * speedMultiplier,
                 z: depth,
-                size: 1 + depth * depth * (15 + Math.random() * 30),
+                size: 2 + depth * depth * (20 + Math.random() * 35),
                 opacity: 0.08 + depth * 0.42
             });
         }

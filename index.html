@@ -103,6 +103,7 @@
             }
 
             window.addEventListener('scroll', updateScrollScale, { passive: true });
+            updateScrollScale(); // Initialize on load
 
             function animateRotation(timestamp) {
                 if (!startTime) startTime = timestamp;

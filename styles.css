@@ -130,16 +130,6 @@ main {
     --poster-color: transparent;
     pointer-events: none;
     z-index: 14;
-    animation: float-bounce 8s ease-in-out infinite;
-}
-
-@keyframes float-bounce {
-    0%, 100% {
-        transform: translate(-50%, -50%) translateY(0px);
-    }
-    50% {
-        transform: translate(-50%, -50%) translateY(-20px);
-    }
 }
 
 @media (max-width: 768px) {

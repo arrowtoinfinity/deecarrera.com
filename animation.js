@@ -160,9 +160,9 @@
                 const nodePhase = circleIndex / numCircleNodes;
 
                 // Use cosine for top weight - peaks at 0 and 1 (top of circle)
-                // angle 0 = top, angle PI = bottom
-                const angle = nodePhase * Math.PI * 2;
-                const topWeight = (Math.cos(angle) + 1) / 2; // 1 at top, 0 at bottom
+                // weightAngle 0 = top, weightAngle PI = bottom
+                const weightAngle = nodePhase * Math.PI * 2;
+                const topWeight = (Math.cos(weightAngle) + 1) / 2; // 1 at top, 0 at bottom
                 const bottomWeight = 1 - topWeight; // 0 at top, 1 at bottom
 
                 // Calculate separate contributions - each node gets ALL frequencies

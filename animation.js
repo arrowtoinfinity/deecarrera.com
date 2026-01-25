@@ -164,18 +164,20 @@
                     node.circleScale = 0.5; // Start small
                 }
 
-                // Target scale based on audio
+                // Dominant frequency determines which nodes are big vs small
+                // When highs up → high nodes big, low nodes small (and vice versa)
                 let targetScale;
                 if (isLowNode) {
-                    // Even nodes react to LOW frequencies
-                    targetScale = Math.max(0.15, 1 + lowNorm * 4.0 - highNorm * 3.0);
+                    // Low nodes: big when low dominant, small when high dominant
+                    targetScale = 0.5 + lowNorm * 3.0 - highNorm * 2.5;
                 } else {
-                    // Odd nodes react to HIGH frequencies
-                    targetScale = Math.max(0.15, 1 + highNorm * 4.5 - lowNorm * 3.0);
+                    // High nodes: big when high dominant, small when low dominant
+                    targetScale = 0.5 + highNorm * 3.5 - lowNorm * 2.5;
                 }
+                targetScale = Math.max(0.1, Math.min(4.0, targetScale));
 
                 // Smooth interpolation to target
-                node.circleScale += (targetScale - node.circleScale) * 0.15;
+                node.circleScale += (targetScale - node.circleScale) * 0.2;
                 node.audioScale = node.circleScale;
 
                 // Smoothly interpolate position

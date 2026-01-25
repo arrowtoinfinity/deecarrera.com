@@ -107,9 +107,13 @@
 
                     analyser.getByteFrequencyData(dataArray);
 
-                    const bass = dataArray.slice(0, 10).reduce((a, b) => a + b, 0) / 10;
-                    const mids = dataArray.slice(10, 80).reduce((a, b) => a + b, 0) / 70;
-                    const treble = dataArray.slice(80, 128).reduce((a, b) => a + b, 0) / 48;
+                    // Frequency bands tuned for piano:
+                    // Bass: bins 0-4 (~0-700 Hz) - low notes
+                    // Mids: bins 4-15 (~700-2600 Hz) - middle notes
+                    // Treble: bins 15-50 (~2600-8600 Hz) - high notes
+                    const bass = dataArray.slice(0, 4).reduce((a, b) => a + b, 0) / 4;
+                    const mids = dataArray.slice(4, 15).reduce((a, b) => a + b, 0) / 11;
+                    const treble = dataArray.slice(15, 50).reduce((a, b) => a + b, 0) / 35;
 
                     window.audioData = {
                         bass: bass,
@@ -118,8 +122,8 @@
                         active: true
                     };
 
-                    if (Math.random() < 0.01) {
-                        console.log('Audio data:', bass.toFixed(1), mids.toFixed(1), treble.toFixed(1));
+                    if (Math.random() < 0.02) {
+                        console.log('Audio: bass:', bass.toFixed(0), 'mids:', mids.toFixed(0), 'treble:', treble.toFixed(0));
                     }
 
                     requestAnimationFrame(updateAudioData);

@@ -39,8 +39,8 @@
 
     // Mouse repulsion config
     const mouseConfig = {
-        clearRadius: 120,      // Radius of clear zone around mouse
-        pushStrength: 0.15     // How strongly nodes are pushed away
+        clearRadius: 180,      // Radius of clear zone around mouse
+        pushStrength: 0.25     // How strongly nodes are pushed away
     };
 
     // Flash color (blue only)

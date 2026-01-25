@@ -33,6 +33,8 @@
     let audioCircleMode = false; // When true, nodes are in circle formation
     let circleNodeIndices = []; // Which nodes participate in the circle
     let sustainedLevel = 0; // Tracks sustained audio for synth-like sounds
+    let circleWarmup = 0; // Eases in audio effects after nodes form (0 to 1)
+    let circleFormationTime = 0; // Timestamp when circle mode started
     let mouseX = -1000; // Mouse position (off-screen by default)
     let mouseY = -1000;
     let mouseActive = false; // Whether mouse is over the canvas area
@@ -132,6 +134,20 @@
             circleNodeIndices = [];
             const shuffled = [...Array(nodes.length).keys()].sort(() => Math.random() - 0.5);
             circleNodeIndices = shuffled.slice(0, numCircleNodes);
+            circleFormationTime = Date.now();
+            circleWarmup = 0; // Reset warmup
+        }
+
+        // Gradually ease in audio effects after nodes form
+        if (audioCircleMode) {
+            const timeSinceStart = Date.now() - circleFormationTime;
+            const warmupDuration = 1500; // 1.5 seconds to fully ease in
+            const formationDelay = 800; // Wait for nodes to mostly form first
+            if (timeSinceStart > formationDelay) {
+                circleWarmup = Math.min(1, (timeSinceStart - formationDelay) / warmupDuration);
+            }
+        } else {
+            circleWarmup = 0;
         }
 
         nodes.forEach((node, index) => {
@@ -190,15 +206,19 @@
                 // Detect if audio is very quiet (song ending) - return to neutral size
                 const isQuiet = lowRaw < 20 && highRaw < 20;
 
+                // Apply warmup factor to audio reactivity (eases in after nodes form)
+                const easedLowNorm = lowNorm * circleWarmup;
+                const easedHighNorm = highNorm * circleWarmup;
+
                 if (isQuiet) {
                     // Smoothly return to neutral size when song ends
                     targetScale = 1.0;
                 } else if (isLowNode) {
                     // Low nodes react to low frequency
-                    targetScale = 0.3 + lowNorm * 2.0;
+                    targetScale = 0.3 + easedLowNorm * 2.0 + (1 - circleWarmup) * 0.7;
                 } else {
                     // High nodes react to high frequency
-                    targetScale = 0.3 + highNorm * 2.0;
+                    targetScale = 0.3 + easedHighNorm * 2.0 + (1 - circleWarmup) * 0.7;
                 }
 
                 // Asymmetric interpolation - fast dropoff, slower rise
@@ -212,7 +232,9 @@
                 const viewportMin = Math.min(window.innerWidth, window.innerHeight);
                 const baseRadius = Math.max(80, Math.min(200, viewportMin * 0.25));
                 const breatheRange = Math.max(30, Math.min(100, viewportMin * 0.12));
-                const radiusOffset = breatheRange * 0.2 + (node.circleScale - 0.3) * breatheRange * 0.8;
+                // Apply warmup to radial pulse - starts at neutral position, then pulses
+                const easedBreathRange = breatheRange * circleWarmup;
+                const radiusOffset = easedBreathRange * 0.2 + (node.circleScale - 0.3) * easedBreathRange * 0.8;
                 const pulseRadius = baseRadius + radiusOffset;
 
                 const targetX = cardCenterX + Math.cos(angle) * pulseRadius;

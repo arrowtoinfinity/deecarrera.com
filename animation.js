@@ -152,24 +152,20 @@
 
                 // Normalize - boost high more since raw values are lower
                 const lowNorm = Math.min(1, lowRaw / 220);
-                const highNorm = Math.min(1, highRaw / 120); // Boost high sensitivity
+                const highNorm = Math.min(1, highRaw / 120);
 
-                // Position in circle: 0 = top, 0.5 = bottom, 1 = top again
-                const nodePhase = circleIndex / numCircleNodes;
-
-                // Use cosine for top weight - peaks at 0 and 1 (top of circle)
-                const weightAngle = nodePhase * Math.PI * 2;
-                const topWeight = (Math.cos(weightAngle) + 1) / 2; // 1 at top, 0 at bottom
-                const bottomWeight = 1 - topWeight; // 0 at top, 1 at bottom
-
-                // Simple inverse relationship - SAME max scale for both
-                const topGrow = topWeight * highNorm * 3.5;
-                const topShrink = topWeight * lowNorm * 2.0;
-                const bottomGrow = bottomWeight * lowNorm * 3.5;  // Same multiplier as top
-                const bottomShrink = bottomWeight * highNorm * 2.0;
+                // Alternating pattern: every other node reacts to low vs high
+                const isLowNode = circleIndex % 2 === 0;
 
                 node.inCircle = true;
-                node.audioScale = Math.max(0.3, 1 + topGrow - topShrink + bottomGrow - bottomShrink);
+
+                if (isLowNode) {
+                    // Even nodes react to LOW frequencies
+                    node.audioScale = Math.max(0.3, 1 + lowNorm * 3.5 - highNorm * 1.5);
+                } else {
+                    // Odd nodes react to HIGH frequencies
+                    node.audioScale = Math.max(0.3, 1 + highNorm * 4.0 - lowNorm * 1.5);
+                }
 
                 // Smoothly interpolate position
                 if (node.renderX === undefined) {

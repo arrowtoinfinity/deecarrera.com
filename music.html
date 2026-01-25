@@ -66,6 +66,7 @@
             let audioBuffer = null;
             let dataArray = null;
             let isPlaying = false;
+            let isLoading = false;
             let startTime = 0;
             let pauseTime = 0;
 
@@ -128,6 +129,9 @@
 
             // Play audio
             async function playAudio() {
+                if (isLoading) return;
+                isLoading = true;
+
                 try {
                     await loadAudioBuffer();
 
@@ -161,22 +165,32 @@
                     pauseIcon.style.display = 'block';
 
                     startAnalysisLoop();
+                    isLoading = false;
                     console.log('Playing from:', pauseTime.toFixed(2));
                 } catch (err) {
                     console.error('Play error:', err);
+                    isLoading = false;
                 }
             }
 
             // Pause audio
             function pauseAudio() {
-                if (bufferSource && isPlaying) {
-                    bufferSource.stop();
-                    pauseTime = audioContext.currentTime - startTime;
-                    isPlaying = false;
-                    window.audioData.active = false;
+                // Always update UI first
+                playIcon.style.display = 'block';
+                pauseIcon.style.display = 'none';
+                window.audioData.active = false;
 
-                    playIcon.style.display = 'block';
-                    pauseIcon.style.display = 'none';
+                if (bufferSource) {
+                    try {
+                        pauseTime = audioContext.currentTime - startTime;
+                        bufferSource.stop();
+                        bufferSource.disconnect();
+                    } catch (e) {
+                        // Already stopped
+                    }
+                    bufferSource = null;
+                }
+                isPlaying = false;
                     console.log('Paused at:', pauseTime.toFixed(2));
                 }
             }

@@ -168,10 +168,10 @@
                 let targetScale;
                 if (isLowNode) {
                     // Low nodes react to low frequency
-                    targetScale = 0.15 + lowNorm * 3.5;
+                    targetScale = 0.15 + lowNorm * 2.0;
                 } else {
                     // High nodes react to high frequency
-                    targetScale = 0.15 + highNorm * 3.5;
+                    targetScale = 0.15 + highNorm * 2.0;
                 }
 
                 // Asymmetric interpolation - fast dropoff, slower rise

@@ -108,17 +108,14 @@
                     analyser.getByteFrequencyData(dataArray);
 
                     // Frequency bands tuned for THIS song:
-                    // Low (345 Hz area): bins 1-2 - bottom nodes
-                    // High (517-689 Hz): bins 2-3 - TOP nodes
-                    // Ultra (1200+ Hz): bins 7+ - ALL nodes uniform
+                    // Low (345 Hz area): bins 1-2
+                    // High (517-1200 Hz): bins 3-7 - expanded range for more reactivity
                     const low = (dataArray[1] + dataArray[2]) / 2;
-                    const high = (dataArray[2] + dataArray[3] + dataArray[4]) / 3;
-                    const ultra = dataArray.slice(7, 20).reduce((a, b) => a + b, 0) / 13;
+                    const high = (dataArray[3] + dataArray[4] + dataArray[5] + dataArray[6] + dataArray[7]) / 5;
 
                     window.audioData = {
                         low: low,
                         high: high,
-                        ultra: ultra,
                         active: true
                     };
 

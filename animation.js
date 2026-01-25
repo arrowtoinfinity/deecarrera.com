@@ -33,6 +33,15 @@
     let audioCircleMode = false; // When true, nodes are in circle formation
     let circleNodeIndices = []; // Which nodes participate in the circle
     let sustainedLevel = 0; // Tracks sustained audio for synth-like sounds
+    let mouseX = -1000; // Mouse position (off-screen by default)
+    let mouseY = -1000;
+    let mouseActive = false; // Whether mouse is over the canvas area
+
+    // Mouse repulsion config
+    const mouseConfig = {
+        clearRadius: 120,      // Radius of clear zone around mouse
+        pushStrength: 0.15     // How strongly nodes are pushed away
+    };
 
     // Flash color (blue only)
     const flashColor = { r: 135, g: 206, b: 250 };
@@ -318,6 +327,26 @@
                     }
                 }
 
+                // Mouse repulsion - push nodes away from cursor
+                if (mouseActive) {
+                    const parallaxStrength = 1 - (node.z * config.scrollDepthMultiplier);
+                    const nodeScreenY = node.baseY - scrollY * parallaxStrength;
+
+                    const dx = node.baseX - mouseX;
+                    const dy = nodeScreenY - mouseY;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < mouseConfig.clearRadius && distance > 0) {
+                        // Stronger push for closer nodes, scaled by depth (larger nodes push more)
+                        const pushFactor = (mouseConfig.clearRadius - distance) / mouseConfig.clearRadius;
+                        const depthScale = 0.5 + node.z * 0.5; // Larger nodes affected more
+                        const push = pushFactor * mouseConfig.pushStrength * depthScale;
+
+                        node.baseX += (dx / distance) * push * 10;
+                        node.baseY += (dy / distance) * push * 10;
+                    }
+                }
+
                 // Wrap around edges
                 if (node.baseX < -50) node.baseX = canvasBg.width + 50;
                 if (node.baseX > canvasBg.width + 50) node.baseX = -50;
@@ -580,6 +609,17 @@
 
         window.addEventListener('resize', handleResize);
         window.addEventListener('scroll', handleScroll, { passive: true });
+
+        // Mouse tracking for repulsion effect
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            mouseActive = true;
+        });
+
+        document.addEventListener('mouseleave', () => {
+            mouseActive = false;
+        });
 
         animate();
     }

@@ -159,7 +159,14 @@
 
                 // Simple: each node reacts to its frequency, same max scale
                 let targetScale;
-                if (isLowNode) {
+
+                // Detect if audio is very quiet (song ending) - return to neutral size
+                const isQuiet = lowRaw < 20 && highRaw < 20;
+
+                if (isQuiet) {
+                    // Smoothly return to neutral size when song ends
+                    targetScale = 1.0;
+                } else if (isLowNode) {
                     // Low nodes react to low frequency
                     targetScale = 0.3 + lowNorm * 2.0;
                 } else {

@@ -224,20 +224,23 @@
                     node.renderX += (targetX - node.renderX) * 0.05; // Slower transition out
                     node.renderY += (targetY - node.renderY) * 0.05;
 
-                    // Smoothly transition scale back to 1
-                    if (node.audioScale !== undefined) {
-                        node.audioScale += (1 - node.audioScale) * 0.05;
+                    // Smoothly transition size from circle size (15) to original node size
+                    if (node.exitSize === undefined) {
+                        node.exitSize = 15 * (node.audioScale || 1); // Start from current circle size
                     }
+                    node.exitSize += (node.size - node.exitSize) * 0.05;
 
                     // Check if close enough to end transition
                     const dx = targetX - node.renderX;
                     const dy = targetY - node.renderY;
-                    if (Math.abs(dx) < 1 && Math.abs(dy) < 1) {
+                    const sizeDiff = Math.abs(node.size - node.exitSize);
+                    if (Math.abs(dx) < 1 && Math.abs(dy) < 1 && sizeDiff < 0.5) {
                         node.exitingCircle = false;
                         node.renderX = undefined;
                         node.renderY = undefined;
                         node.audioScale = 1;
                         node.circleScale = undefined;
+                        node.exitSize = undefined;
                     }
                 } else {
                     node.exitingCircle = false;
@@ -460,9 +463,12 @@
             // For circle nodes or transitioning: base size with audio scaling
             // For regular nodes: normal size
             let displaySize;
-            if (node.inCircle || node.exitingCircle) {
+            if (node.inCircle) {
                 const baseSize = 15; // Larger base size for circle nodes
                 displaySize = baseSize * (node.audioScale || 1);
+            } else if (node.exitingCircle && node.exitSize !== undefined) {
+                // Smoothly transition size during exit
+                displaySize = node.exitSize;
             } else {
                 displaySize = node.size;
             }

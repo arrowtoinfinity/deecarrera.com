@@ -141,8 +141,8 @@
             // Update scale based on scroll position
             function updateScrollScale() {
                 const scrollY = window.scrollY;
-                const maxScroll = 400;
-                scrollScale = 1 + Math.min(scrollY / maxScroll, 1) * 0.5;
+                // Start at 1.3, grow gradually without max cap
+                scrollScale = 1.3 + (scrollY / 500) * 0.4;
             }
 
             // Track mouse position relative to model center (only when not paused)

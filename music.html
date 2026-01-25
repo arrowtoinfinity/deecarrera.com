@@ -40,9 +40,9 @@
                         <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/>
                     </svg>
                 </button>
-                <h2>Infinitum</h2>
+                <h2>Paradox</h2>
                 <audio id="music-player" crossorigin="anonymous">
-                    <source src="Infinitum.wav" type="audio/wav">
+                    <source src="Paradox.mp3" type="audio/mpeg">
                 </audio>
             </article>
         </section>
@@ -83,7 +83,7 @@
                 }
 
                 // Fetch the audio file
-                const response = await fetch('Infinitum.wav');
+                const response = await fetch('Paradox.mp3');
                 const arrayBuffer = await response.arrayBuffer();
                 audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
                 console.log('Audio buffer loaded, duration:', audioBuffer.duration);

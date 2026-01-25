@@ -154,31 +154,31 @@
                 // Normalize with high sensitivity
                 const bassNormalized = Math.min(1, bassRaw / 150);
                 const midsNormalized = Math.min(1, midsRaw / 150);
-                const trebleNormalized = Math.min(1, trebleRaw / 100); // Max boost for treble
+                const trebleNormalized = Math.min(1, trebleRaw / 100);
 
                 // Position in circle: 0 = top, 0.5 = bottom, 1 = top again
                 const nodePhase = circleIndex / numCircleNodes;
 
                 // Use cosine for top weight - peaks at 0 and 1 (top of circle)
-                // weightAngle 0 = top, weightAngle PI = bottom
                 const weightAngle = nodePhase * Math.PI * 2;
                 const topWeight = (Math.cos(weightAngle) + 1) / 2; // 1 at top, 0 at bottom
                 const bottomWeight = 1 - topWeight; // 0 at top, 1 at bottom
 
-                // Calculate separate contributions - each node gets ALL frequencies
-                // but weighted by position
-                const bassContrib = bassNormalized * (0.3 + bottomWeight * 1.2);
-                const midsContrib = midsNormalized * 0.8; // Mids everywhere
-                const trebleContrib = trebleNormalized * (0.3 + topWeight * 2.0); // Strong treble at top
+                // INVERSE VISUALIZATION:
+                // High notes (treble) -> top grows, bottom shrinks
+                // Low notes (bass) -> bottom grows, top shrinks
+                // Mids affect everyone equally
 
-                const nodeLevel = bassContrib + midsContrib + trebleContrib;
+                const midsContrib = midsNormalized * 0.6;
 
-                // Multiplier - everyone reacts, but top and bottom more
-                const reactivityMultiplier = 1.5 + topWeight * 1.5 + bottomWeight * 1.0;
+                // Top nodes: GROW with treble, SHRINK with bass
+                // Bottom nodes: GROW with bass, SHRINK with treble
+                const growFactor = topWeight * trebleNormalized * 2.5 + bottomWeight * bassNormalized * 2.0;
+                const shrinkFactor = topWeight * bassNormalized * 1.2 + bottomWeight * trebleNormalized * 1.2;
 
                 node.inCircle = true;
-                // Direct scale from audio
-                node.audioScale = 1 + nodeLevel * reactivityMultiplier;
+                // Base scale + growth - shrinkage (minimum 0.3 to keep nodes visible)
+                node.audioScale = Math.max(0.3, 1 + midsContrib + growFactor - shrinkFactor);
 
                 // Smoothly interpolate position
                 if (node.renderX === undefined) {

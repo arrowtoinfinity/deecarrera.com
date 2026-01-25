@@ -331,22 +331,17 @@
                 const connectionKey = getConnectionKey(i, j);
                 newConnections.add(connectionKey);
 
-                // Line opacity based on average audio scale
+                // Line opacity based on average audio scale - match normal connection style
                 const avgScale = ((nodeA.audioScale || 1) + (nodeB.audioScale || 1)) / 2;
-                const opacity = 0.3 + avgScale * 0.2;
+                const opacity = 0.15 + avgScale * 0.15;
 
                 // Always use background canvas for circle connections
                 ctxBg.beginPath();
                 ctxBg.moveTo(posA.x, posA.y);
                 ctxBg.lineTo(posB.x, posB.y);
-                ctxBg.strokeStyle = `rgba(255, 255, 255, ${opacity})`;
-                ctxBg.lineWidth = 1.5;
+                ctxBg.strokeStyle = `rgba(50, 50, 50, ${opacity})`;
+                ctxBg.lineWidth = 0.8;
                 ctxBg.stroke();
-
-                // Debug: log first connection position
-                if (c === 0 && Math.random() < 0.01) {
-                    console.log('Circle connection:', posA.x.toFixed(0), posA.y.toFixed(0), '->', posB.x.toFixed(0), posB.y.toFixed(0));
-                }
             }
         }
 

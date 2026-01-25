@@ -70,17 +70,28 @@
                 if (!audioContext) {
                     try {
                         const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                        console.log('1. AudioContextClass:', AudioContextClass);
+                        console.log('2. typeof AudioContextClass:', typeof AudioContextClass);
+
                         if (!AudioContextClass) {
                             console.error('Web Audio API not supported');
                             return;
                         }
-                        audioContext = new AudioContextClass();
-                        console.log('AudioContext created:', audioContext.state);
 
-                        // Set crossOrigin for CORS (needed for some hosting)
-                        audioElement.crossOrigin = 'anonymous';
+                        audioContext = new AudioContextClass();
+                        console.log('3. audioContext:', audioContext);
+                        console.log('4. audioContext type:', Object.prototype.toString.call(audioContext));
+                        console.log('5. createMediaElementAudioSource exists:', typeof audioContext.createMediaElementAudioSource);
+
+                        if (typeof audioContext.createMediaElementAudioSource !== 'function') {
+                            console.error('createMediaElementAudioSource not available - trying alternative');
+                            // Mark as initialized but skip audio analysis
+                            audioContext = true;
+                            return;
+                        }
 
                         const source = audioContext.createMediaElementAudioSource(audioElement);
+                        console.log('6. source created:', source);
                         analyser = audioContext.createAnalyser();
                         analyser.fftSize = 256;
                         analyser.smoothingTimeConstant = 0.7;

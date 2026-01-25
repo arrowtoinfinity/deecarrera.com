@@ -196,11 +196,42 @@
                 node.renderX += (targetX - node.renderX) * 0.1;
                 node.renderY += (targetY - node.renderY) * 0.1;
             } else {
-                // Not in circle - normal behavior
-                node.inCircle = false;
-                node.renderX = undefined;
-                node.renderY = undefined;
-                node.audioScale = 1;
+                // Not in circle - check if transitioning out or normal behavior
+
+                if (node.inCircle && node.renderX !== undefined) {
+                    // Just exited circle mode - start transition
+                    node.inCircle = false;
+                    node.exitingCircle = true;
+                }
+
+                if (node.exitingCircle && node.renderX !== undefined) {
+                    // Smoothly transition back to base position
+                    const parallaxStrength = 1 - (node.z * config.scrollDepthMultiplier);
+                    const targetX = node.baseX;
+                    const targetY = node.baseY - scrollY * parallaxStrength;
+
+                    node.renderX += (targetX - node.renderX) * 0.05; // Slower transition out
+                    node.renderY += (targetY - node.renderY) * 0.05;
+
+                    // Smoothly transition scale back to 1
+                    if (node.audioScale !== undefined) {
+                        node.audioScale += (1 - node.audioScale) * 0.05;
+                    }
+
+                    // Check if close enough to end transition
+                    const dx = targetX - node.renderX;
+                    const dy = targetY - node.renderY;
+                    if (Math.abs(dx) < 1 && Math.abs(dy) < 1) {
+                        node.exitingCircle = false;
+                        node.renderX = undefined;
+                        node.renderY = undefined;
+                        node.audioScale = 1;
+                        node.circleScale = undefined;
+                    }
+                } else {
+                    node.exitingCircle = false;
+                    node.audioScale = 1;
+                }
 
                 // Normal drifting behavior
                 node.baseX += node.vx;
@@ -236,8 +267,8 @@
 
     // Get scroll-adjusted position for 3D parallax
     function getNodePosition(node) {
-        // In circle mode, use pre-calculated viewport positions
-        if (node.inCircle && node.renderX !== undefined) {
+        // In circle mode or transitioning out, use pre-calculated viewport positions
+        if ((node.inCircle || node.exitingCircle) && node.renderX !== undefined) {
             return {
                 x: node.renderX,
                 y: node.renderY
@@ -391,10 +422,10 @@
             if (pos.y < -margin || pos.y > canvas.height + margin) return;
             if (pos.x < -margin || pos.x > canvas.width + margin) return;
 
-            // For circle nodes: base size with audio scaling
+            // For circle nodes or transitioning: base size with audio scaling
             // For regular nodes: normal size
             let displaySize;
-            if (node.inCircle) {
+            if (node.inCircle || node.exitingCircle) {
                 const baseSize = 15; // Larger base size for circle nodes
                 displaySize = baseSize * (node.audioScale || 1);
             } else {

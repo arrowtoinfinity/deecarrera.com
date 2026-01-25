@@ -200,8 +200,9 @@
 
                 // Smoothly interpolate position
                 if (node.renderX === undefined) {
-                    node.renderX = node.baseX;
-                    node.renderY = node.baseY - scrollY;
+                    // Start at target position to avoid darting from off-screen
+                    node.renderX = targetX;
+                    node.renderY = targetY;
                 }
                 node.renderX += (targetX - node.renderX) * 0.1;
                 node.renderY += (targetY - node.renderY) * 0.1;

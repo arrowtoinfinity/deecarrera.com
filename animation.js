@@ -31,6 +31,7 @@
     let lastWidth = 0;
     let lastHeight = 0;
     let audioCircleMode = false; // When true, nodes are in circle formation
+    let circleNodeIndices = []; // Which nodes participate in the circle
 
     // Flash color (blue only)
     const flashColor = { r: 135, g: 206, b: 250 };
@@ -112,40 +113,56 @@
         const audioActive = audio && audio.active;
         const musicCard = document.querySelector('.music-card');
 
+        const wasCircleMode = audioCircleMode;
         audioCircleMode = audioActive && musicCard;
 
+        // Select random nodes for circle when entering circle mode
+        if (audioCircleMode && !wasCircleMode) {
+            const numCircleNodes = 24; // Only use 24 nodes for the circle
+            circleNodeIndices = [];
+            const shuffled = [...Array(nodes.length).keys()].sort(() => Math.random() - 0.5);
+            circleNodeIndices = shuffled.slice(0, numCircleNodes);
+        }
+
         nodes.forEach((node, index) => {
-            if (audioCircleMode) {
+            const isCircleNode = audioCircleMode && circleNodeIndices.includes(index);
+
+            if (isCircleNode) {
                 // Get music card position (center) - in viewport coordinates
                 const rect = musicCard.getBoundingClientRect();
                 const cardCenterX = rect.left + rect.width / 2;
                 const cardCenterY = rect.top + rect.height / 2;
 
-                // Calculate target position in a circle around the card (viewport coords)
-                const numNodes = nodes.length;
-                const angle = (index / numNodes) * Math.PI * 2 - Math.PI / 2; // Start from top
-                const baseRadius = 120 + node.z * 50; // Vary radius by depth
+                // Find position in circle (based on index within circle nodes)
+                const circleIndex = circleNodeIndices.indexOf(index);
+                const numCircleNodes = circleNodeIndices.length;
+                const angle = (circleIndex / numCircleNodes) * Math.PI * 2 - Math.PI / 2;
+
+                // Fixed radius, pulses with bass
                 const bassNormalized = audio.bass / 255;
-                const pulseRadius = baseRadius + bassNormalized * 60; // Pulse with bass
+                const baseRadius = 140;
+                const pulseRadius = baseRadius + bassNormalized * 30;
 
                 const targetX = cardCenterX + Math.cos(angle) * pulseRadius;
                 const targetY = cardCenterY + Math.sin(angle) * pulseRadius;
 
-                // Store viewport position directly (we'll skip parallax in render)
-                node.circleX = targetX;
-                node.circleY = targetY;
+                // Mark as in circle mode for rendering
+                node.inCircle = true;
+                node.audioScale = 1 + bassNormalized * 0.8; // Scale with bass
 
-                // Smoothly interpolate
+                // Smoothly interpolate position
                 if (node.renderX === undefined) {
                     node.renderX = node.baseX;
                     node.renderY = node.baseY - scrollY;
                 }
-                node.renderX += (targetX - node.renderX) * 0.08;
-                node.renderY += (targetY - node.renderY) * 0.08;
+                node.renderX += (targetX - node.renderX) * 0.1;
+                node.renderY += (targetY - node.renderY) * 0.1;
             } else {
-                // Clear circle mode render positions
+                // Not in circle - normal behavior
+                node.inCircle = false;
                 node.renderX = undefined;
                 node.renderY = undefined;
+                node.audioScale = 1;
 
                 // Normal drifting behavior
                 node.baseX += node.vx;
@@ -163,7 +180,7 @@
     // Get scroll-adjusted position for 3D parallax
     function getNodePosition(node) {
         // In circle mode, use pre-calculated viewport positions
-        if (audioCircleMode && node.renderX !== undefined) {
+        if (node.inCircle && node.renderX !== undefined) {
             return {
                 x: node.renderX,
                 y: node.renderY
@@ -305,12 +322,6 @@
 
     // Draw nodes
     function drawNodes() {
-        // Get audio reactivity data if available
-        const audio = window.audioData;
-        const audioActive = audio && audio.active;
-        const bassPulse = audioActive ? (audio.bass / 255) : 0;
-        const trebleGlow = audioActive ? (audio.treble / 255) : 0;
-
         nodes.forEach(node => {
             const pos = getNodePosition(node);
 
@@ -323,20 +334,24 @@
             if (pos.y < -margin || pos.y > canvas.height + margin) return;
             if (pos.x < -margin || pos.x > canvas.width + margin) return;
 
-            // Audio-reactive size when music is playing
-            const sizeMultiplier = audioActive ? (1 + bassPulse * 0.8) : 1;
-            const reactiveSize = node.size * sizeMultiplier;
+            // For circle nodes: uniform medium size with audio scaling
+            // For regular nodes: normal size
+            let displaySize;
+            if (node.inCircle) {
+                const uniformSize = 12; // Medium uniform size for circle nodes
+                displaySize = uniformSize * (node.audioScale || 1);
+            } else {
+                displaySize = node.size;
+            }
 
-            // Audio-reactive glow
-            const glowSize = reactiveSize * (3 + (audioActive ? trebleGlow * 2 : 0));
-            const glowOpacity = audioActive ? (0.6 + trebleGlow * 0.4) : 0.6;
-
+            // Glow
+            const glowSize = displaySize * 3;
             const gradient = ctx.createRadialGradient(
                 pos.x, pos.y, 0,
                 pos.x, pos.y, glowSize
             );
-            gradient.addColorStop(0, `rgba(255, 255, 255, ${glowOpacity})`);
-            gradient.addColorStop(0.4, `rgba(255, 255, 255, ${glowOpacity * 0.33})`);
+            gradient.addColorStop(0, `rgba(255, 255, 255, 0.6)`);
+            gradient.addColorStop(0.4, `rgba(255, 255, 255, 0.2)`);
             gradient.addColorStop(1, `rgba(255, 255, 255, 0)`);
 
             ctx.beginPath();
@@ -346,7 +361,7 @@
 
             // Core dot
             ctx.beginPath();
-            ctx.arc(pos.x, pos.y, reactiveSize, 0, Math.PI * 2);
+            ctx.arc(pos.x, pos.y, displaySize, 0, Math.PI * 2);
             ctx.fillStyle = '#fff';
             ctx.fill();
         });

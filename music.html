@@ -62,6 +62,9 @@
             let analyser = null;
             let dataArray = null;
 
+            // Pre-initialize audioData so animation.js can check it immediately
+            window.audioData = { bass: 0, mids: 0, treble: 0, active: false };
+
             // Initialize audio context on first play (browser requirement)
             audioElement.addEventListener('play', async function initAudio() {
                 if (!audioContext) {

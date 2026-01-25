@@ -159,6 +159,25 @@ main {
     background: transparent !important;
 }
 
+#model-click-overlay {
+    position: fixed;
+    top: 35%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 400px;
+    height: 400px;
+    z-index: 100;
+    cursor: pointer;
+    border-radius: 50%;
+}
+
+@media (max-width: 768px) {
+    #model-click-overlay {
+        width: 300px;
+        height: 300px;
+    }
+}
+
 @media (max-width: 768px) {
     .hero-model {
         width: 300px;

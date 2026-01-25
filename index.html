@@ -26,6 +26,7 @@
         style="background: transparent !important;"
         class="hero-model"
     ></model-viewer>
+    <div id="model-click-overlay"></div>
     <canvas id="constellation-fg"></canvas>
     <nav>
         <a href="/" class="nav-name">
@@ -119,7 +120,8 @@
     <script>
         // Figure-8 infinity motion for 3D model with mouse tracking and drag control
         const heroModel = document.getElementById('hero-model');
-        if (heroModel) {
+        const clickOverlay = document.getElementById('model-click-overlay');
+        if (heroModel && clickOverlay) {
             let startTime = null;
             let pausedTime = null;
             const duration = 20000; // 20 seconds for full infinity loop
@@ -152,33 +154,30 @@
                 mouseTilt = Math.atan2(deltaY, 300) * (180 / Math.PI) * -1;
             }
 
-            // Pointer event handlers for click and drag
+            // Pointer event handlers for click and drag (on overlay)
             let clickStartX = 0;
             let clickStartY = 0;
             let pointerId = null;
 
-            heroModel.addEventListener('pointerdown', (e) => {
+            clickOverlay.addEventListener('pointerdown', (e) => {
                 clickStartX = e.clientX;
                 clickStartY = e.clientY;
                 dragStartX = e.clientX;
                 dragStartY = e.clientY;
                 pointerId = e.pointerId;
-
-                if (isPaused) {
-                    heroModel.setPointerCapture(e.pointerId);
-                }
+                clickOverlay.setPointerCapture(e.pointerId);
             });
 
-            heroModel.addEventListener('pointermove', (e) => {
-                if (!isPaused || pointerId === null) return;
+            clickOverlay.addEventListener('pointermove', (e) => {
+                if (pointerId === null) return;
 
                 const dx = Math.abs(e.clientX - clickStartX);
                 const dy = Math.abs(e.clientY - clickStartY);
 
-                // Start dragging if moved more than 5px
-                if (dx > 5 || dy > 5) {
+                // Start dragging if moved more than 5px and paused
+                if (isPaused && (dx > 5 || dy > 5)) {
                     isDragging = true;
-                    heroModel.style.cursor = 'grabbing';
+                    clickOverlay.style.cursor = 'grabbing';
                 }
 
                 if (isDragging) {
@@ -192,7 +191,7 @@
                 }
             });
 
-            heroModel.addEventListener('pointerup', (e) => {
+            clickOverlay.addEventListener('pointerup', (e) => {
                 const dx = Math.abs(e.clientX - clickStartX);
                 const dy = Math.abs(e.clientY - clickStartY);
 
@@ -207,21 +206,19 @@
                             dragRotation = parseFloat(match[1]);
                             dragTilt = parseFloat(match[2]);
                         }
-                        heroModel.style.cursor = 'grab';
+                        clickOverlay.style.cursor = 'grab';
                     } else {
                         if (pausedTime && startTime) {
                             startTime += performance.now() - pausedTime;
                         }
-                        heroModel.style.cursor = 'pointer';
+                        clickOverlay.style.cursor = 'pointer';
                     }
                 }
 
                 isDragging = false;
                 pointerId = null;
-                if (isPaused) {
-                    heroModel.style.cursor = 'grab';
-                }
-                try { heroModel.releasePointerCapture(e.pointerId); } catch(err) {}
+                clickOverlay.style.cursor = isPaused ? 'grab' : 'pointer';
+                try { clickOverlay.releasePointerCapture(e.pointerId); } catch(err) {}
             });
 
             window.addEventListener('scroll', updateScrollScale, { passive: true });

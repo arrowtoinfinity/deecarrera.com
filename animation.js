@@ -151,10 +151,10 @@
                 const midsRaw = audio.mids || 0;
                 const trebleRaw = audio.treble || 0;
 
-                // Normalize with high sensitivity
+                // Normalize with high sensitivity - treble boosted extra
                 const bassNormalized = Math.min(1, bassRaw / 150);
                 const midsNormalized = Math.min(1, midsRaw / 150);
-                const trebleNormalized = Math.min(1, trebleRaw / 100);
+                const trebleNormalized = Math.min(1, trebleRaw / 50); // Extra sensitive to treble
 
                 // Position in circle: 0 = top, 0.5 = bottom, 1 = top again
                 const nodePhase = circleIndex / numCircleNodes;

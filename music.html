@@ -110,10 +110,10 @@
                     // Frequency bands tuned for piano:
                     // Bass: bins 0-4 (~0-700 Hz) - low notes
                     // Mids: bins 4-15 (~700-2600 Hz) - middle notes
-                    // Treble: bins 15-50 (~2600-8600 Hz) - high notes
+                    // Treble: bins 15+ (~2600+ Hz) - everything above 2600 Hz
                     const bass = dataArray.slice(0, 4).reduce((a, b) => a + b, 0) / 4;
                     const mids = dataArray.slice(4, 15).reduce((a, b) => a + b, 0) / 11;
-                    const treble = dataArray.slice(15, 50).reduce((a, b) => a + b, 0) / 35;
+                    const treble = dataArray.slice(15).reduce((a, b) => a + b, 0) / (dataArray.length - 15);
 
                     window.audioData = {
                         bass: bass,

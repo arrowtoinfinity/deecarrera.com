@@ -134,6 +134,9 @@
             let dragStartY = 0;
             let dragRotation = 0;
             let dragTilt = 90;
+            let pausedMoveX = 0;
+            let pausedMoveY = 0;
+            let pausedScale = 1;
 
             // Update scale based on scroll position
             function updateScrollScale() {
@@ -208,6 +211,10 @@
                         const baseTilt = 80 + tiltOffset * 10;
                         dragRotation = baseRotation + mouseRotation;
                         dragTilt = baseTilt + mouseTilt;
+                        // Capture transform values
+                        pausedMoveX = Math.sin(t) * 10;
+                        pausedMoveY = Math.sin(t * 2) * 4;
+                        pausedScale = (1 + tiltOffset * 0.15) * scrollScale;
                         clickOverlay.style.cursor = 'grab';
                     } else {
                         if (pausedTime && startTime) {
@@ -250,8 +257,8 @@
                     heroModel.setAttribute('camera-orbit', `${rotation}deg ${tilt}deg auto`);
                     heroModel.style.transform = `translate(calc(-50% + ${moveX}px), calc(-50% + ${moveY}px)) scale(${totalScale})`;
                 } else {
-                    // When paused, just maintain scroll scale
-                    heroModel.style.transform = `translate(-50%, -50%) scale(${scrollScale})`;
+                    // When paused, maintain exact position and scale from pause moment
+                    heroModel.style.transform = `translate(calc(-50% + ${pausedMoveX}px), calc(-50% + ${pausedMoveY}px)) scale(${pausedScale})`;
                 }
 
                 requestAnimationFrame(animateRotation);

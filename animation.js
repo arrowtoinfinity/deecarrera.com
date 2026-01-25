@@ -180,6 +180,15 @@
                 // Base scale + growth - shrinkage (minimum 0.4 to keep nodes visible)
                 node.audioScale = Math.max(0.4, 1 + midsContrib + growFactor - shrinkFactor);
 
+                // Debug: log top node values
+                if (circleIndex === 0 && Math.random() < 0.03) {
+                    console.log('TOP NODE - topWeight:', topWeight.toFixed(2),
+                                'treble:', trebleRaw.toFixed(0),
+                                'trebleNorm:', trebleNormalized.toFixed(2),
+                                'growFactor:', growFactor.toFixed(2),
+                                'audioScale:', node.audioScale.toFixed(2));
+                }
+
                 // Smoothly interpolate position
                 if (node.renderX === undefined) {
                     node.renderX = node.baseX;

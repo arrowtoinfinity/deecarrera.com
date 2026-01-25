@@ -88,10 +88,10 @@
                 audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
                 console.log('Audio buffer loaded, duration:', audioBuffer.duration);
 
-                // Setup analyser
+                // Setup analyser - minimal smoothing for instant response
                 analyser = audioContext.createAnalyser();
                 analyser.fftSize = 256;
-                analyser.smoothingTimeConstant = 0.7;
+                analyser.smoothingTimeConstant = 0.3; // Lower = faster response
                 dataArray = new Uint8Array(analyser.frequencyBinCount);
 
                 return audioBuffer;

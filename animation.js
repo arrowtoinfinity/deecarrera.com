@@ -146,7 +146,7 @@
                 const targetX = cardCenterX + Math.cos(angle) * pulseRadius;
                 const targetY = cardCenterY + Math.sin(angle) * pulseRadius;
 
-                // Calculate audio reactivity - each node reacts to different frequencies
+                // Calculate audio reactivity - INSTANT response to waveform
                 const bassRaw = audio.bass || 0;
                 const midsRaw = audio.mids || 0;
                 const trebleRaw = audio.treble || 0;
@@ -156,34 +156,27 @@
                 const midsNormalized = midsRaw / 255;
                 const trebleNormalized = trebleRaw / 255;
 
-                // Each node has a unique frequency preference based on its position in circle
-                // This creates variety - some nodes pulse with bass, others with treble
-                const nodePhase = circleIndex / numCircleNodes; // 0 to 1
+                // Position in circle: 0 = top, 0.5 = bottom
+                const nodePhase = circleIndex / numCircleNodes;
 
-                // Assign frequency weights based on position (creates wave-like patterns)
-                const bassWeight = Math.max(0, Math.sin(nodePhase * Math.PI * 2) * 0.5 + 0.3);
-                const midsWeight = Math.max(0, Math.sin(nodePhase * Math.PI * 2 + Math.PI * 0.66) * 0.5 + 0.5);
-                const trebleWeight = Math.max(0, Math.sin(nodePhase * Math.PI * 2 + Math.PI * 1.33) * 0.5 + 0.4);
+                // Larger reactors at BOTTOM (nodePhase around 0.5)
+                // Using sine wave that peaks at 0.5 (bottom of circle)
+                const bottomWeight = Math.sin(nodePhase * Math.PI); // 0 at top, 1 at bottom
+                const reactivityMultiplier = 0.6 + bottomWeight * 2.0; // 0.6 at top, 2.6 at bottom
 
-                // This node's audio level based on its frequency preference
+                // Each node responds to slightly different frequency mix
+                // Spread frequencies around the circle
+                const freqOffset = nodePhase * Math.PI * 2;
+                const bassWeight = 0.3 + Math.sin(freqOffset) * 0.2;
+                const midsWeight = 0.4 + Math.sin(freqOffset + Math.PI * 0.66) * 0.2;
+                const trebleWeight = 0.3 + Math.sin(freqOffset + Math.PI * 1.33) * 0.2;
+
+                // INSTANT audio level - no smoothing, direct from waveform
                 const nodeLevel = bassNormalized * bassWeight + midsNormalized * midsWeight + trebleNormalized * trebleWeight;
 
-                // Some nodes are "louder" reactors than others
-                const reactivityMultiplier = 0.8 + (Math.sin(circleIndex * 1.7) * 0.5 + 0.5) * 1.2; // 0.8 to 2.0
-
-                // Per-node sustained level for variety
-                if (!node.sustainedLevel) node.sustainedLevel = 0;
-                if (nodeLevel > 0.08) {
-                    node.sustainedLevel = Math.min(1, node.sustainedLevel + nodeLevel * 0.025);
-                } else {
-                    node.sustainedLevel = Math.max(0, node.sustainedLevel - 0.02);
-                }
-
                 node.inCircle = true;
-                // Combine instant + sustained, multiplied by this node's reactivity
-                const instantReactivity = nodeLevel * 1.5 * reactivityMultiplier;
-                const sustainedReactivity = node.sustainedLevel * 0.8 * reactivityMultiplier;
-                node.audioScale = 1 + instantReactivity + sustainedReactivity;
+                // Direct scale from audio - no delays, no sustained level
+                node.audioScale = 1 + nodeLevel * 2.5 * reactivityMultiplier;
 
                 // Smoothly interpolate position
                 if (node.renderX === undefined) {

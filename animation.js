@@ -107,9 +107,15 @@
 
     // Update node positions (drift)
     function updateNodes() {
+        // Audio reactivity for movement speed
+        const audio = window.audioData;
+        const audioActive = audio && audio.active;
+        const midsBoost = audioActive ? (1 + (audio.mids / 255) * 2) : 1;
+
         nodes.forEach(node => {
-            node.baseX += node.vx;
-            node.baseY += node.vy;
+            // Apply mids boost to velocity for audio reactivity
+            node.baseX += node.vx * midsBoost;
+            node.baseY += node.vy * midsBoost;
 
             // Wrap around edges
             if (node.baseX < -50) node.baseX = canvasBg.width + 50;
@@ -255,6 +261,12 @@
 
     // Draw nodes
     function drawNodes() {
+        // Get audio reactivity data if available
+        const audio = window.audioData;
+        const audioActive = audio && audio.active;
+        const bassPulse = audioActive ? (audio.bass / 255) : 0;
+        const trebleGlow = audioActive ? (audio.treble / 255) : 0;
+
         nodes.forEach(node => {
             const pos = getNodePosition(node);
 
@@ -267,14 +279,19 @@
             if (pos.y < -margin || pos.y > canvas.height + margin) return;
             if (pos.x < -margin || pos.x > canvas.width + margin) return;
 
-            // White glow/shadow - always visible
-            const glowSize = node.size * 3;
+            // Audio-reactive size (bass makes nodes pulse)
+            const reactiveSize = node.size * (1 + bassPulse * 0.5);
+
+            // Audio-reactive glow (treble increases glow intensity)
+            const glowSize = reactiveSize * (3 + trebleGlow * 2);
+            const glowOpacity = 0.6 + trebleGlow * 0.4;
+
             const gradient = ctx.createRadialGradient(
                 pos.x, pos.y, 0,
                 pos.x, pos.y, glowSize
             );
-            gradient.addColorStop(0, `rgba(255, 255, 255, 0.6)`);
-            gradient.addColorStop(0.4, `rgba(255, 255, 255, 0.2)`);
+            gradient.addColorStop(0, `rgba(255, 255, 255, ${glowOpacity})`);
+            gradient.addColorStop(0.4, `rgba(255, 255, 255, ${glowOpacity * 0.33})`);
             gradient.addColorStop(1, `rgba(255, 255, 255, 0)`);
 
             ctx.beginPath();
@@ -282,9 +299,9 @@
             ctx.fillStyle = gradient;
             ctx.fill();
 
-            // Core dot
+            // Core dot (also reactive to bass)
             ctx.beginPath();
-            ctx.arc(pos.x, pos.y, node.size, 0, Math.PI * 2);
+            ctx.arc(pos.x, pos.y, reactiveSize, 0, Math.PI * 2);
             ctx.fillStyle = '#fff';
             ctx.fill();
         });

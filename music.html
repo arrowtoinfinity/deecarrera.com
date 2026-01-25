@@ -32,9 +32,9 @@
 
         <section class="music-list">
             <article class="music-card">
-                <h2>E Pluribus Unum</h2>
-                <audio controls>
-                    <source src="E Pluribus Unum.wav" type="audio/wav">
+                <h2>Infinitum</h2>
+                <audio id="music-player" controls>
+                    <source src="Infinitum.wav" type="audio/wav">
                     Your browser does not support the audio element.
                 </audio>
             </article>
@@ -45,6 +45,66 @@
         <p>&copy; 2026 Daniel Carrera</p>
     </footer>
     <script src="animation.js"></script>
+    <script>
+        // Audio Visualizer - makes constellation nodes react to music
+        (function() {
+            const audioElement = document.getElementById('music-player');
+            if (!audioElement) return;
+
+            let audioContext = null;
+            let analyser = null;
+            let dataArray = null;
+
+            // Initialize audio context on first play (browser requirement)
+            audioElement.addEventListener('play', function initAudio() {
+                if (audioContext) return;
+
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const source = audioContext.createMediaElementAudioSource(audioElement);
+                analyser = audioContext.createAnalyser();
+                analyser.fftSize = 256;
+                analyser.smoothingTimeConstant = 0.8;
+
+                source.connect(analyser);
+                analyser.connect(audioContext.destination);
+
+                dataArray = new Uint8Array(analyser.frequencyBinCount);
+
+                // Expose audio data globally for animation.js
+                window.audioData = { bass: 0, mids: 0, treble: 0, active: false };
+
+                // Update audio data each frame
+                function updateAudioData() {
+                    if (!analyser) return;
+
+                    analyser.getByteFrequencyData(dataArray);
+
+                    // Calculate frequency bands
+                    const bass = dataArray.slice(0, 8).reduce((a, b) => a + b, 0) / 8;
+                    const mids = dataArray.slice(8, 64).reduce((a, b) => a + b, 0) / 56;
+                    const treble = dataArray.slice(64, 128).reduce((a, b) => a + b, 0) / 64;
+
+                    window.audioData = {
+                        bass: bass,
+                        mids: mids,
+                        treble: treble,
+                        active: !audioElement.paused
+                    };
+
+                    requestAnimationFrame(updateAudioData);
+                }
+
+                updateAudioData();
+            });
+
+            // Mark audio as inactive when paused
+            audioElement.addEventListener('pause', () => {
+                if (window.audioData) {
+                    window.audioData.active = false;
+                }
+            });
+        })();
+    </script>
     <script>
         document.querySelectorAll('nav a').forEach(link => {
             link.addEventListener('click', function(e) {

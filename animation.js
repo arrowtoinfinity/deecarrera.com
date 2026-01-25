@@ -32,6 +32,7 @@
     let lastHeight = 0;
     let audioCircleMode = false; // When true, nodes are in circle formation
     let circleNodeIndices = []; // Which nodes participate in the circle
+    let sustainedLevel = 0; // Tracks sustained audio for synth-like sounds
 
     // Flash color (blue only)
     const flashColor = { r: 135, g: 206, b: 250 };
@@ -145,13 +146,29 @@
                 const targetX = cardCenterX + Math.cos(angle) * pulseRadius;
                 const targetY = cardCenterY + Math.sin(angle) * pulseRadius;
 
-                // Mark as in circle mode for rendering
-                // React to mids and treble (piano keys) instead of bass
+                // Calculate audio reactivity
+                const bassNormalized = audio.bass / 255;
                 const midsNormalized = audio.mids / 255;
                 const trebleNormalized = audio.treble / 255;
-                const combined = (midsNormalized * 0.4 + trebleNormalized * 0.6);
+
+                // Combined level for all frequencies
+                const currentLevel = (bassNormalized * 0.3 + midsNormalized * 0.4 + trebleNormalized * 0.3);
+
+                // Sustained level grows when audio is present, decays slowly
+                // This creates the "synth growing" effect
+                if (currentLevel > 0.1) {
+                    sustainedLevel = Math.min(1, sustainedLevel + currentLevel * 0.02);
+                } else {
+                    sustainedLevel = Math.max(0, sustainedLevel - 0.01);
+                }
+
                 node.inCircle = true;
-                node.audioScale = 1 + combined * 1.5; // Scale with treble/mids
+                // Combine instant reactivity with sustained growth
+                // Instant: responds to each note/hit
+                // Sustained: grows over time with continuous sound
+                const instantReactivity = currentLevel * 2;
+                const sustainedReactivity = sustainedLevel * 1.5;
+                node.audioScale = 1 + instantReactivity + sustainedReactivity;
 
                 // Smoothly interpolate position
                 if (node.renderX === undefined) {
@@ -170,6 +187,25 @@
                 // Normal drifting behavior
                 node.baseX += node.vx;
                 node.baseY += node.vy;
+
+                // When music is playing, push nodes away from the circle area
+                if (audioCircleMode && musicCard) {
+                    const rect = musicCard.getBoundingClientRect();
+                    const cardCenterX = rect.left + rect.width / 2;
+                    const cardCenterY = rect.top + rect.height / 2 + window.scrollY;
+                    const clearRadius = 280; // Keep nodes outside this radius
+
+                    const dx = node.baseX - cardCenterX;
+                    const dy = (node.baseY - scrollY) - (cardCenterY - window.scrollY);
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < clearRadius && distance > 0) {
+                        // Push node away from center
+                        const pushStrength = (clearRadius - distance) * 0.05;
+                        node.baseX += (dx / distance) * pushStrength;
+                        node.baseY += (dy / distance) * pushStrength;
+                    }
+                }
 
                 // Wrap around edges
                 if (node.baseX < -50) node.baseX = canvasBg.width + 50;

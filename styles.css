@@ -140,21 +140,21 @@ main {
     height: 400px;
     --poster-color: transparent;
     --progress-bar-color: transparent;
-    background: transparent;
+    --progress-bar-height: 0;
+    background: transparent !important;
     pointer-events: none;
     z-index: 14;
 }
 
-.hero-model::part(default-progress-bar) {
-    display: none;
-}
-
-.hero-model::part(default-poster) {
-    display: none;
-}
-
+.hero-model::part(default-progress-bar),
+.hero-model::part(default-poster),
 .hero-model::part(poster) {
-    display: none;
+    display: none !important;
+    background: transparent !important;
+}
+
+.hero-model:not([loaded]) {
+    background: transparent !important;
 }
 
 @media (max-width: 768px) {

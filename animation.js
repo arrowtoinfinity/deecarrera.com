@@ -396,7 +396,7 @@
             // For regular nodes: normal size
             let displaySize;
             if (node.inCircle) {
-                const baseSize = 10; // Base size for circle nodes
+                const baseSize = 15; // Larger base size for circle nodes
                 displaySize = baseSize * (node.audioScale || 1);
             } else {
                 displaySize = node.size;

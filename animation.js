@@ -188,8 +188,11 @@
                 node.audioScale = node.circleScale;
 
                 // RADIAL PULSE: nodes move in/out based on audio level
-                const baseRadius = 200;
-                const radiusOffset = 20 + (node.circleScale - 0.3) * 50; // 20-120px outward movement
+                // Scale radius based on viewport size (smaller on mobile)
+                const viewportMin = Math.min(window.innerWidth, window.innerHeight);
+                const baseRadius = Math.max(80, Math.min(200, viewportMin * 0.25));
+                const breatheRange = Math.max(30, Math.min(100, viewportMin * 0.12));
+                const radiusOffset = breatheRange * 0.2 + (node.circleScale - 0.3) * breatheRange * 0.8;
                 const pulseRadius = baseRadius + radiusOffset;
 
                 const targetX = cardCenterX + Math.cos(angle) * pulseRadius;
@@ -259,8 +262,11 @@
                     // Normalize average audio (0-1)
                     const avgNorm = Math.max(0, Math.min(1, (avgAudio - 100) / 120));
 
-                    // Clear zone: 380px base + up to 200px based on audio (380-580)
-                    const clearRadius = 380 + avgNorm * 200;
+                    // Responsive clear zone based on viewport
+                    const viewportMin = Math.min(window.innerWidth, window.innerHeight);
+                    const baseClear = Math.max(150, Math.min(380, viewportMin * 0.45));
+                    const clearRange = Math.max(50, Math.min(200, viewportMin * 0.25));
+                    const clearRadius = baseClear + avgNorm * clearRange;
 
                     const dx = node.baseX - cardCenterX;
                     const dy = (node.baseY - scrollY) - (cardCenterY - window.scrollY);

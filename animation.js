@@ -150,9 +150,9 @@
                 const lowRaw = audio.low || 0;    // 345 Hz - low piano notes
                 const highRaw = audio.high || 0;  // 517-689 Hz - high piano notes
 
-                // Normalize - boost high more since raw values are lower
+                // Normalize - boost high MORE since raw values are much lower
                 const lowNorm = Math.min(1, lowRaw / 220);
-                const highNorm = Math.min(1, highRaw / 120);
+                const highNorm = Math.min(1, highRaw / 80); // Boosted significantly
 
                 // Alternating pattern: every other node reacts to low vs high
                 const isLowNode = circleIndex % 2 === 0;
@@ -164,17 +164,15 @@
                     node.circleScale = 0.5; // Start small
                 }
 
-                // Dominant frequency determines which nodes are big vs small
-                // When highs up → high nodes big, low nodes small (and vice versa)
+                // Simple: each node reacts to its frequency, same max scale
                 let targetScale;
                 if (isLowNode) {
-                    // Low nodes: big when low dominant, small when high dominant
-                    targetScale = 0.5 + lowNorm * 3.0 - highNorm * 2.5;
+                    // Low nodes react to low frequency
+                    targetScale = 0.3 + lowNorm * 3.5;
                 } else {
-                    // High nodes: big when high dominant, small when low dominant
-                    targetScale = 0.5 + highNorm * 3.5 - lowNorm * 2.5;
+                    // High nodes react to high frequency
+                    targetScale = 0.3 + highNorm * 3.5;
                 }
-                targetScale = Math.max(0.1, Math.min(4.0, targetScale));
 
                 // Smooth interpolation to target
                 node.circleScale += (targetScale - node.circleScale) * 0.2;

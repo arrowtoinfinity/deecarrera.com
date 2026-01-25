@@ -1061,8 +1061,9 @@ footer {
 /* Music page */
 .music-list {
     display: flex;
-    flex-direction: column;
+    flex-wrap: wrap;
     gap: 1.5rem;
+    justify-content: center;
 }
 
 .music-card {
@@ -1074,15 +1075,48 @@ footer {
     padding: 1.5rem;
 }
 
-.music-card h2 {
-    font-size: 1.25rem;
-    font-weight: 600;
-    margin-bottom: 1rem;
+.music-card.vertical {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 2rem;
+    width: 200px;
 }
 
-.music-card audio {
-    width: 100%;
-    border-radius: 8px;
+.music-card h2 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.play-btn {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+    transition: transform 0.2s, background 0.2s;
+}
+
+.play-btn:hover {
+    transform: scale(1.1);
+    background: rgba(0, 0, 0, 0.9);
+}
+
+.play-btn svg {
+    width: 32px;
+    height: 32px;
+}
+
+.play-icon {
+    margin-left: 4px; /* Visual centering for play triangle */
 }
 
 /* Admin Modal */

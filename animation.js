@@ -110,7 +110,7 @@
         // Audio reactivity for movement speed
         const audio = window.audioData;
         const audioActive = audio && audio.active;
-        const midsBoost = audioActive ? (1 + (audio.mids / 255) * 2) : 1;
+        const midsBoost = audioActive ? (1 + (audio.mids / 255) * 4) : 1;
 
         nodes.forEach(node => {
             // Apply mids boost to velocity for audio reactivity
@@ -279,19 +279,27 @@
             if (pos.y < -margin || pos.y > canvas.height + margin) return;
             if (pos.x < -margin || pos.x > canvas.width + margin) return;
 
-            // Audio-reactive size (bass makes nodes pulse)
-            const reactiveSize = node.size * (1 + bassPulse * 0.5);
+            // Audio-reactive size (bass makes nodes pulse dramatically)
+            const reactiveSize = node.size * (1 + bassPulse * 1.5);
 
-            // Audio-reactive glow (treble increases glow intensity)
-            const glowSize = reactiveSize * (3 + trebleGlow * 2);
+            // Audio-reactive glow (treble increases glow intensity and size)
+            const glowSize = reactiveSize * (3 + trebleGlow * 4);
             const glowOpacity = 0.6 + trebleGlow * 0.4;
 
             const gradient = ctx.createRadialGradient(
                 pos.x, pos.y, 0,
                 pos.x, pos.y, glowSize
             );
-            gradient.addColorStop(0, `rgba(255, 255, 255, ${glowOpacity})`);
-            gradient.addColorStop(0.4, `rgba(255, 255, 255, ${glowOpacity * 0.33})`);
+
+            // Add color tint when audio is active
+            if (audioActive && bassPulse > 0.3) {
+                // Blue-white pulse on strong bass
+                gradient.addColorStop(0, `rgba(200, 220, 255, ${glowOpacity})`);
+                gradient.addColorStop(0.4, `rgba(180, 200, 255, ${glowOpacity * 0.4})`);
+            } else {
+                gradient.addColorStop(0, `rgba(255, 255, 255, ${glowOpacity})`);
+                gradient.addColorStop(0.4, `rgba(255, 255, 255, ${glowOpacity * 0.33})`);
+            }
             gradient.addColorStop(1, `rgba(255, 255, 255, 0)`);
 
             ctx.beginPath();

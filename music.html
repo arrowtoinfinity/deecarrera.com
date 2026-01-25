@@ -31,11 +31,18 @@
         </section>
 
         <section class="music-list">
-            <article class="music-card">
+            <article class="music-card vertical">
+                <button class="play-btn" id="play-btn">
+                    <svg class="play-icon" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M8 5v14l11-7z"/>
+                    </svg>
+                    <svg class="pause-icon" viewBox="0 0 24 24" fill="currentColor" style="display:none;">
+                        <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/>
+                    </svg>
+                </button>
                 <h2>Infinitum</h2>
-                <audio id="music-player" controls>
+                <audio id="music-player">
                     <source src="Infinitum.wav" type="audio/wav">
-                    Your browser does not support the audio element.
                 </audio>
             </article>
         </section>
@@ -56,45 +63,48 @@
             let dataArray = null;
 
             // Initialize audio context on first play (browser requirement)
-            audioElement.addEventListener('play', function initAudio() {
-                if (audioContext) return;
+            audioElement.addEventListener('play', async function initAudio() {
+                if (!audioContext) {
+                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    const source = audioContext.createMediaElementAudioSource(audioElement);
+                    analyser = audioContext.createAnalyser();
+                    analyser.fftSize = 256;
+                    analyser.smoothingTimeConstant = 0.7;
 
-                audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                const source = audioContext.createMediaElementAudioSource(audioElement);
-                analyser = audioContext.createAnalyser();
-                analyser.fftSize = 256;
-                analyser.smoothingTimeConstant = 0.8;
+                    source.connect(analyser);
+                    analyser.connect(audioContext.destination);
 
-                source.connect(analyser);
-                analyser.connect(audioContext.destination);
+                    dataArray = new Uint8Array(analyser.frequencyBinCount);
 
-                dataArray = new Uint8Array(analyser.frequencyBinCount);
+                    // Start the update loop
+                    function updateAudioData() {
+                        analyser.getByteFrequencyData(dataArray);
 
-                // Expose audio data globally for animation.js
-                window.audioData = { bass: 0, mids: 0, treble: 0, active: false };
+                        // Calculate frequency bands with wider ranges
+                        const bass = dataArray.slice(0, 10).reduce((a, b) => a + b, 0) / 10;
+                        const mids = dataArray.slice(10, 80).reduce((a, b) => a + b, 0) / 70;
+                        const treble = dataArray.slice(80, 128).reduce((a, b) => a + b, 0) / 48;
 
-                // Update audio data each frame
-                function updateAudioData() {
-                    if (!analyser) return;
+                        window.audioData = {
+                            bass: bass,
+                            mids: mids,
+                            treble: treble,
+                            active: !audioElement.paused
+                        };
 
-                    analyser.getByteFrequencyData(dataArray);
+                        requestAnimationFrame(updateAudioData);
+                    }
 
-                    // Calculate frequency bands
-                    const bass = dataArray.slice(0, 8).reduce((a, b) => a + b, 0) / 8;
-                    const mids = dataArray.slice(8, 64).reduce((a, b) => a + b, 0) / 56;
-                    const treble = dataArray.slice(64, 128).reduce((a, b) => a + b, 0) / 64;
-
-                    window.audioData = {
-                        bass: bass,
-                        mids: mids,
-                        treble: treble,
-                        active: !audioElement.paused
-                    };
-
-                    requestAnimationFrame(updateAudioData);
+                    updateAudioData();
                 }
 
-                updateAudioData();
+                // Resume audio context if suspended (browser autoplay policy)
+                if (audioContext.state === 'suspended') {
+                    await audioContext.resume();
+                }
+
+                window.audioData = window.audioData || { bass: 0, mids: 0, treble: 0, active: true };
+                window.audioData.active = true;
             });
 
             // Mark audio as inactive when paused
@@ -102,6 +112,28 @@
                 if (window.audioData) {
                     window.audioData.active = false;
                 }
+            });
+
+            // Play button toggle
+            const playBtn = document.getElementById('play-btn');
+            const playIcon = playBtn.querySelector('.play-icon');
+            const pauseIcon = playBtn.querySelector('.pause-icon');
+
+            playBtn.addEventListener('click', () => {
+                if (audioElement.paused) {
+                    audioElement.play();
+                    playIcon.style.display = 'none';
+                    pauseIcon.style.display = 'block';
+                } else {
+                    audioElement.pause();
+                    playIcon.style.display = 'block';
+                    pauseIcon.style.display = 'none';
+                }
+            });
+
+            audioElement.addEventListener('ended', () => {
+                playIcon.style.display = 'block';
+                pauseIcon.style.display = 'none';
             });
         })();
     </script>

@@ -159,13 +159,24 @@
 
                 node.inCircle = true;
 
+                // Initialize scale smoothly when entering circle mode
+                if (node.circleScale === undefined) {
+                    node.circleScale = 0.5; // Start small
+                }
+
+                // Target scale based on audio
+                let targetScale;
                 if (isLowNode) {
                     // Even nodes react to LOW frequencies
-                    node.audioScale = Math.max(0.15, 1 + lowNorm * 4.0 - highNorm * 3.0);
+                    targetScale = Math.max(0.15, 1 + lowNorm * 4.0 - highNorm * 3.0);
                 } else {
                     // Odd nodes react to HIGH frequencies
-                    node.audioScale = Math.max(0.15, 1 + highNorm * 4.5 - lowNorm * 3.0);
+                    targetScale = Math.max(0.15, 1 + highNorm * 4.5 - lowNorm * 3.0);
                 }
+
+                // Smooth interpolation to target
+                node.circleScale += (targetScale - node.circleScale) * 0.15;
+                node.audioScale = node.circleScale;
 
                 // Smoothly interpolate position
                 if (node.renderX === undefined) {

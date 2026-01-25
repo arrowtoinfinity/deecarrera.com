@@ -1058,6 +1058,33 @@ footer {
     padding: 3rem;
 }
 
+/* Music page */
+.music-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.music-card {
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    border-radius: 16px;
+    padding: 1.5rem;
+}
+
+.music-card h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.music-card audio {
+    width: 100%;
+    border-radius: 8px;
+}
+
 /* Admin Modal */
 .admin-modal {
     position: fixed;

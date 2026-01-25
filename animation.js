@@ -150,13 +150,9 @@
                 const lowRaw = audio.low || 0;    // 345 Hz - low piano notes
                 const highRaw = audio.high || 0;  // 517-689 Hz - high piano notes
 
-                // Normalize
-                const lowNorm = Math.min(1, lowRaw / 200);
-                const highNorm = Math.min(1, highRaw / 180);
-
-                // Determine which frequency is DOMINANT
-                const lowDominance = lowNorm - highNorm * 0.7; // How much low exceeds high
-                const highDominance = highNorm - lowNorm * 0.5; // How much high exceeds low
+                // Normalize - boost high more since raw values are lower
+                const lowNorm = Math.min(1, lowRaw / 220);
+                const highNorm = Math.min(1, highRaw / 120); // Boost high sensitivity
 
                 // Position in circle: 0 = top, 0.5 = bottom, 1 = top again
                 const nodePhase = circleIndex / numCircleNodes;
@@ -166,28 +162,14 @@
                 const topWeight = (Math.cos(weightAngle) + 1) / 2; // 1 at top, 0 at bottom
                 const bottomWeight = 1 - topWeight; // 0 at top, 1 at bottom
 
-                // Add per-node variation based on position in circle
-                const nodeVariation = 0.7 + Math.sin(circleIndex * 0.8) * 0.3; // 0.4 to 1.0
-
-                // VISUALIZATION with dominance:
-                // Low dominant -> bottom grows BIG, top shrinks small
-                // High dominant -> TOP grows BIG, bottom shrinks small
-                let scale = 1;
-
-                if (lowDominance > 0.1) {
-                    // Low is dominant
-                    scale += bottomWeight * lowDominance * 4.0 * nodeVariation;
-                    scale -= topWeight * lowDominance * 2.0;
-                }
-
-                if (highDominance > 0.05) {
-                    // High is dominant
-                    scale += topWeight * highDominance * 5.0 * nodeVariation;
-                    scale -= bottomWeight * highDominance * 1.5;
-                }
+                // Simple inverse relationship - SAME max scale for both
+                const topGrow = topWeight * highNorm * 3.5;
+                const topShrink = topWeight * lowNorm * 2.0;
+                const bottomGrow = bottomWeight * lowNorm * 3.5;  // Same multiplier as top
+                const bottomShrink = bottomWeight * highNorm * 2.0;
 
                 node.inCircle = true;
-                node.audioScale = Math.max(0.2, scale);
+                node.audioScale = Math.max(0.3, 1 + topGrow - topShrink + bottomGrow - bottomShrink);
 
                 // Smoothly interpolate position
                 if (node.renderX === undefined) {

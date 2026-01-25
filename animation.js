@@ -107,21 +107,40 @@
 
     // Update node positions (drift)
     function updateNodes() {
-        // Audio reactivity for movement speed
         const audio = window.audioData;
         const audioActive = audio && audio.active;
-        const midsBoost = audioActive ? (1 + (audio.mids / 255) * 4) : 1;
+        const musicCard = document.querySelector('.music-card');
 
-        nodes.forEach(node => {
-            // Apply mids boost to velocity for audio reactivity
-            node.baseX += node.vx * midsBoost;
-            node.baseY += node.vy * midsBoost;
+        nodes.forEach((node, index) => {
+            if (audioActive && musicCard) {
+                // Get music card position (center)
+                const rect = musicCard.getBoundingClientRect();
+                const cardCenterX = rect.left + rect.width / 2;
+                const cardCenterY = rect.top + rect.height / 2 + scrollY;
 
-            // Wrap around edges
-            if (node.baseX < -50) node.baseX = canvasBg.width + 50;
-            if (node.baseX > canvasBg.width + 50) node.baseX = -50;
-            if (node.baseY < -50) node.baseY = pageHeight + 50;
-            if (node.baseY > pageHeight + 50) node.baseY = -50;
+                // Calculate target position in a circle around the card
+                const numNodes = nodes.length;
+                const angle = (index / numNodes) * Math.PI * 2;
+                const baseRadius = 180 + node.z * 80; // Vary radius by depth
+                const pulseRadius = baseRadius + (audio.bass / 255) * 50; // Pulse with bass
+
+                const targetX = cardCenterX + Math.cos(angle) * pulseRadius;
+                const targetY = cardCenterY + Math.sin(angle) * pulseRadius;
+
+                // Smoothly move toward target position
+                node.baseX += (targetX - node.baseX) * 0.05;
+                node.baseY += (targetY - node.baseY) * 0.05;
+            } else {
+                // Normal drifting behavior
+                node.baseX += node.vx;
+                node.baseY += node.vy;
+
+                // Wrap around edges
+                if (node.baseX < -50) node.baseX = canvasBg.width + 50;
+                if (node.baseX > canvasBg.width + 50) node.baseX = -50;
+                if (node.baseY < -50) node.baseY = pageHeight + 50;
+                if (node.baseY > pageHeight + 50) node.baseY = -50;
+            }
         });
     }
 
@@ -279,27 +298,20 @@
             if (pos.y < -margin || pos.y > canvas.height + margin) return;
             if (pos.x < -margin || pos.x > canvas.width + margin) return;
 
-            // Audio-reactive size (bass makes nodes pulse dramatically)
-            const reactiveSize = node.size * (1 + bassPulse * 1.5);
+            // Audio-reactive size when music is playing
+            const sizeMultiplier = audioActive ? (1 + bassPulse * 0.8) : 1;
+            const reactiveSize = node.size * sizeMultiplier;
 
-            // Audio-reactive glow (treble increases glow intensity and size)
-            const glowSize = reactiveSize * (3 + trebleGlow * 4);
-            const glowOpacity = 0.6 + trebleGlow * 0.4;
+            // Audio-reactive glow
+            const glowSize = reactiveSize * (3 + (audioActive ? trebleGlow * 2 : 0));
+            const glowOpacity = audioActive ? (0.6 + trebleGlow * 0.4) : 0.6;
 
             const gradient = ctx.createRadialGradient(
                 pos.x, pos.y, 0,
                 pos.x, pos.y, glowSize
             );
-
-            // Add color tint when audio is active
-            if (audioActive && bassPulse > 0.3) {
-                // Blue-white pulse on strong bass
-                gradient.addColorStop(0, `rgba(200, 220, 255, ${glowOpacity})`);
-                gradient.addColorStop(0.4, `rgba(180, 200, 255, ${glowOpacity * 0.4})`);
-            } else {
-                gradient.addColorStop(0, `rgba(255, 255, 255, ${glowOpacity})`);
-                gradient.addColorStop(0.4, `rgba(255, 255, 255, ${glowOpacity * 0.33})`);
-            }
+            gradient.addColorStop(0, `rgba(255, 255, 255, ${glowOpacity})`);
+            gradient.addColorStop(0.4, `rgba(255, 255, 255, ${glowOpacity * 0.33})`);
             gradient.addColorStop(1, `rgba(255, 255, 255, 0)`);
 
             ctx.beginPath();
@@ -307,7 +319,7 @@
             ctx.fillStyle = gradient;
             ctx.fill();
 
-            // Core dot (also reactive to bass)
+            // Core dot
             ctx.beginPath();
             ctx.arc(pos.x, pos.y, reactiveSize, 0, Math.PI * 2);
             ctx.fillStyle = '#fff';

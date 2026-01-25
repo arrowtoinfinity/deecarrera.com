@@ -157,6 +157,17 @@
                 // Alternating pattern: every other node reacts to low vs high
                 const isLowNode = circleIndex % 2 === 0;
 
+                // Track entering state for smooth transition in
+                if (!node.inCircle && !node.enteringCircle) {
+                    node.enteringCircle = true;
+                    // Start from current position
+                    const parallaxStrength = 1 - (node.z * config.scrollDepthMultiplier);
+                    node.renderX = node.baseX;
+                    node.renderY = node.baseY - scrollY * parallaxStrength;
+                    // Start from current size
+                    node.enterSize = node.size;
+                }
+
                 node.inCircle = true;
 
                 // Initialize scale smoothly when entering circle mode
@@ -200,12 +211,29 @@
 
                 // Smoothly interpolate position
                 if (node.renderX === undefined) {
-                    // Start at target position to avoid darting from off-screen
                     node.renderX = targetX;
                     node.renderY = targetY;
                 }
-                node.renderX += (targetX - node.renderX) * 0.1;
-                node.renderY += (targetY - node.renderY) * 0.1;
+
+                // Use slower interpolation when entering for smooth transition
+                const posSpeed = node.enteringCircle ? 0.08 : 0.1;
+                node.renderX += (targetX - node.renderX) * posSpeed;
+                node.renderY += (targetY - node.renderY) * posSpeed;
+
+                // Smooth size transition when entering
+                if (node.enteringCircle && node.enterSize !== undefined) {
+                    const targetSize = 15 * (node.audioScale || 1);
+                    node.enterSize += (targetSize - node.enterSize) * 0.08;
+
+                    // Check if close enough to end entering transition
+                    const dx = targetX - node.renderX;
+                    const dy = targetY - node.renderY;
+                    const sizeDiff = Math.abs(targetSize - node.enterSize);
+                    if (Math.abs(dx) < 5 && Math.abs(dy) < 5 && sizeDiff < 1) {
+                        node.enteringCircle = false;
+                        node.enterSize = undefined;
+                    }
+                }
             } else {
                 // Not in circle - check if transitioning out or normal behavior
 
@@ -463,7 +491,10 @@
             // For circle nodes or transitioning: base size with audio scaling
             // For regular nodes: normal size
             let displaySize;
-            if (node.inCircle) {
+            if (node.inCircle && node.enteringCircle && node.enterSize !== undefined) {
+                // Smoothly transition size during enter
+                displaySize = node.enterSize;
+            } else if (node.inCircle) {
                 const baseSize = 15; // Larger base size for circle nodes
                 displaySize = baseSize * (node.audioScale || 1);
             } else if (node.exitingCircle && node.exitSize !== undefined) {

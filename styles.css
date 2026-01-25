@@ -142,7 +142,8 @@ main {
     --progress-bar-color: transparent;
     --progress-bar-height: 0;
     background: transparent !important;
-    pointer-events: none;
+    pointer-events: auto;
+    cursor: pointer;
     z-index: 14;
 }
 

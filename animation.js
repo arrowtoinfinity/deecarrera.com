@@ -167,17 +167,15 @@
                 // VISUALIZATION:
                 // Low notes (345 Hz) -> bottom grows, top shrinks MORE
                 // High notes (517-689 Hz) -> TOP grows, bottom shrinks
-                // Ultra high (1200+) -> ALL nodes grow uniformly
 
                 const topGrow = topWeight * highNorm * 4.0;      // Top reacts to high notes
                 const topShrink = topWeight * lowNorm * 2.5;     // Top shrinks MORE with low notes
                 const bottomGrow = bottomWeight * lowNorm * 3.0; // Bottom reacts to low notes
                 const bottomShrink = bottomWeight * highNorm * 0.5; // Bottom shrinks less with high
-                const uniformGrow = ultraNorm * 2.5;             // Ultra makes ALL grow
 
                 node.inCircle = true;
-                // Scale with inverse relationship + uniform ultra
-                node.audioScale = Math.max(0.25, 1 + topGrow - topShrink + bottomGrow - bottomShrink + uniformGrow);
+                // Scale with inverse relationship
+                node.audioScale = Math.max(0.25, 1 + topGrow - topShrink + bottomGrow - bottomShrink);
 
                 // Smoothly interpolate position
                 if (node.renderX === undefined) {

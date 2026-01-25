@@ -168,14 +168,16 @@
                 let targetScale;
                 if (isLowNode) {
                     // Low nodes react to low frequency
-                    targetScale = 0.3 + lowNorm * 3.5;
+                    targetScale = 0.15 + lowNorm * 3.5;
                 } else {
                     // High nodes react to high frequency
-                    targetScale = 0.3 + highNorm * 3.5;
+                    targetScale = 0.15 + highNorm * 3.5;
                 }
 
-                // Smooth interpolation to target
-                node.circleScale += (targetScale - node.circleScale) * 0.2;
+                // Asymmetric interpolation - fast dropoff, slower rise
+                const isDropping = targetScale < node.circleScale;
+                const speed = isDropping ? 0.4 : 0.2; // Drop 2x faster
+                node.circleScale += (targetScale - node.circleScale) * speed;
                 node.audioScale = node.circleScale;
 
                 // Smoothly interpolate position

@@ -259,8 +259,10 @@
                     // Normalize average audio (0-1)
                     const avgNorm = Math.max(0, Math.min(1, (avgAudio - 100) / 120));
 
-                    // Clear zone: 280px base + up to 170px based on audio (280-450)
-                    const clearRadius = 280 + avgNorm * 170;
+                    // Match breathing: baseRadius (200) + radiusOffset (20-120)
+                    const breathingRadius = 200 + 20 + avgNorm * 100;
+                    // Clear zone is 1.25x the breathing radius
+                    const clearRadius = breathingRadius * 1.25;
 
                     const dx = node.baseX - cardCenterX;
                     const dy = (node.baseY - scrollY) - (cardCenterY - window.scrollY);

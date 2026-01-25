@@ -119,6 +119,11 @@
                         active: true
                     };
 
+                    // Debug: see which frequencies are active
+                    if (Math.random() < 0.03) {
+                        console.log('LOW:', low.toFixed(0), '| HIGH:', high.toFixed(0));
+                    }
+
                     requestAnimationFrame(updateAudioData);
                 }
                 updateAudioData();

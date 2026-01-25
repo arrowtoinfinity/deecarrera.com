@@ -149,12 +149,14 @@
                 // Calculate audio reactivity - INSTANT response to waveform
                 const lowRaw = audio.low || 0;    // 345 Hz - low piano notes
                 const highRaw = audio.high || 0;  // 517-689 Hz - high piano notes
-                const ultraRaw = audio.ultra || 0; // 1200+ Hz - ultra high
 
                 // Normalize
                 const lowNorm = Math.min(1, lowRaw / 200);
                 const highNorm = Math.min(1, highRaw / 180);
-                const ultraNorm = Math.min(1, ultraRaw / 100);
+
+                // Determine which frequency is DOMINANT
+                const lowDominance = lowNorm - highNorm * 0.7; // How much low exceeds high
+                const highDominance = highNorm - lowNorm * 0.5; // How much high exceeds low
 
                 // Position in circle: 0 = top, 0.5 = bottom, 1 = top again
                 const nodePhase = circleIndex / numCircleNodes;
@@ -164,18 +166,28 @@
                 const topWeight = (Math.cos(weightAngle) + 1) / 2; // 1 at top, 0 at bottom
                 const bottomWeight = 1 - topWeight; // 0 at top, 1 at bottom
 
-                // VISUALIZATION:
-                // Low notes (345 Hz) -> bottom grows, top shrinks MORE
-                // High notes (517-689 Hz) -> TOP grows, bottom shrinks
+                // Add per-node variation based on position in circle
+                const nodeVariation = 0.7 + Math.sin(circleIndex * 0.8) * 0.3; // 0.4 to 1.0
 
-                const topGrow = topWeight * highNorm * 4.0;      // Top reacts to high notes
-                const topShrink = topWeight * lowNorm * 2.5;     // Top shrinks MORE with low notes
-                const bottomGrow = bottomWeight * lowNorm * 3.0; // Bottom reacts to low notes
-                const bottomShrink = bottomWeight * highNorm * 0.5; // Bottom shrinks less with high
+                // VISUALIZATION with dominance:
+                // Low dominant -> bottom grows BIG, top shrinks small
+                // High dominant -> TOP grows BIG, bottom shrinks small
+                let scale = 1;
+
+                if (lowDominance > 0.1) {
+                    // Low is dominant
+                    scale += bottomWeight * lowDominance * 4.0 * nodeVariation;
+                    scale -= topWeight * lowDominance * 2.0;
+                }
+
+                if (highDominance > 0.05) {
+                    // High is dominant
+                    scale += topWeight * highDominance * 5.0 * nodeVariation;
+                    scale -= bottomWeight * highDominance * 1.5;
+                }
 
                 node.inCircle = true;
-                // Scale with inverse relationship
-                node.audioScale = Math.max(0.25, 1 + topGrow - topShrink + bottomGrow - bottomShrink);
+                node.audioScale = Math.max(0.2, scale);
 
                 // Smoothly interpolate position
                 if (node.renderX === undefined) {

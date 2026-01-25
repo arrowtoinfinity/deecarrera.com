@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music - Daniel Carrera</title>
+    <link rel="icon" type="image/png" href="logo.png">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="page-flash"></div>
+    <canvas id="constellation-bg"></canvas>
+    <canvas id="constellation-fg"></canvas>
+    <nav>
+        <a href="/" class="nav-name">
+            <img src="logo.png" alt="Logo" class="nav-logo">
+            Daniel Carrera
+        </a>
+        <div class="nav-links">
+            <a href="/art.html">Art</a>
+            <a href="/literature.html">Literature</a>
+            <a href="/music.html" class="active">Music</a>
+            <a href="/software.html">Software</a>
+            <a href="/textiles.html">Textiles</a>
+        </div>
+    </nav>
+
+    <main>
+        <section class="page-header">
+            <h1>Music</h1>
+        </section>
+
+        <section class="content-placeholder">
+            <p>Coming soon.</p>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Daniel Carrera</p>
+    </footer>
+    <script src="animation.js"></script>
+    <script>
+        document.querySelectorAll('nav a').forEach(link => {
+            link.addEventListener('click', function(e) {
+                if (this.href && !this.href.includes('#')) {
+                    e.preventDefault();
+                    document.querySelector('.page-flash').classList.add('active');
+                    setTimeout(() => { window.location.href = this.href; }, 150);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -244,6 +244,12 @@
                     node.audioScale = 1;
                 }
 
+                // Skip drifting/pushing/wrapping while transitioning out of circle
+                // Otherwise the target position moves while we're trying to reach it
+                if (node.exitingCircle) {
+                    return; // Skip to next node
+                }
+
                 // Normal drifting behavior
                 node.baseX += node.vx;
                 node.baseY += node.vy;

@@ -159,23 +159,25 @@
                 // Position in circle: 0 = top, 0.5 = bottom
                 const nodePhase = circleIndex / numCircleNodes;
 
-                // Larger reactors at BOTTOM (nodePhase around 0.5)
-                // Using sine wave that peaks at 0.5 (bottom of circle)
-                const bottomWeight = Math.sin(nodePhase * Math.PI); // 0 at top, 1 at bottom
-                const reactivityMultiplier = 0.6 + bottomWeight * 2.0; // 0.6 at top, 2.6 at bottom
+                // Bottom weight (peaks at 0.5 = bottom)
+                const bottomWeight = Math.sin(nodePhase * Math.PI);
+                // Top weight (peaks at 0 and 1 = top)
+                const topWeight = Math.cos(nodePhase * Math.PI) * Math.cos(nodePhase * Math.PI); // squared for sharper peak
 
-                // Each node responds to slightly different frequency mix
-                // Spread frequencies around the circle
-                const freqOffset = nodePhase * Math.PI * 2;
-                const bassWeight = 0.3 + Math.sin(freqOffset) * 0.2;
-                const midsWeight = 0.4 + Math.sin(freqOffset + Math.PI * 0.66) * 0.2;
-                const trebleWeight = 0.3 + Math.sin(freqOffset + Math.PI * 1.33) * 0.2;
+                // TOP nodes react to TREBLE (high notes)
+                // BOTTOM nodes react to BASS/MIDS
+                const bassWeight = bottomWeight * 0.8;
+                const midsWeight = 0.3 + bottomWeight * 0.5;
+                const trebleWeight = 0.2 + topWeight * 1.5; // Strong treble reaction at top
 
-                // INSTANT audio level - no smoothing, direct from waveform
+                // Calculate audio level for this node
                 const nodeLevel = bassNormalized * bassWeight + midsNormalized * midsWeight + trebleNormalized * trebleWeight;
 
+                // Both top and bottom can scale large - top for treble, bottom for bass
+                const reactivityMultiplier = 1.5 + bottomWeight * 1.0 + topWeight * 1.5;
+
                 node.inCircle = true;
-                // Direct scale from audio - no delays, no sustained level
+                // Direct scale from audio - no delays
                 node.audioScale = 1 + nodeLevel * 2.5 * reactivityMultiplier;
 
                 // Smoothly interpolate position

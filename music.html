@@ -53,121 +53,141 @@
     </footer>
     <script src="animation.js"></script>
     <script>
-        // Audio Visualizer - makes constellation nodes react to music
+        // Audio Visualizer - uses buffer-based approach to avoid SES/extension conflicts
         (function() {
-            const audioElement = document.getElementById('music-player');
-            if (!audioElement) return;
-
-            let audioContext = null;
-            let analyser = null;
-            let dataArray = null;
-
-            // Pre-initialize audioData so animation.js can check it immediately
-            window.audioData = { bass: 0, mids: 0, treble: 0, active: false };
-
-            // Initialize audio context on first play (browser requirement)
-            audioElement.addEventListener('play', async function initAudio() {
-                if (!audioContext) {
-                    try {
-                        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-                        console.log('1. AudioContextClass:', AudioContextClass);
-                        console.log('2. typeof AudioContextClass:', typeof AudioContextClass);
-
-                        if (!AudioContextClass) {
-                            console.error('Web Audio API not supported');
-                            return;
-                        }
-
-                        audioContext = new AudioContextClass();
-                        console.log('3. audioContext:', audioContext);
-                        console.log('4. audioContext type:', Object.prototype.toString.call(audioContext));
-                        console.log('5. createMediaElementAudioSource exists:', typeof audioContext.createMediaElementAudioSource);
-
-                        if (typeof audioContext.createMediaElementAudioSource !== 'function') {
-                            console.error('createMediaElementAudioSource not available - trying alternative');
-                            // Mark as initialized but skip audio analysis
-                            audioContext = true;
-                            return;
-                        }
-
-                        const source = audioContext.createMediaElementAudioSource(audioElement);
-                        console.log('6. source created:', source);
-                        analyser = audioContext.createAnalyser();
-                        analyser.fftSize = 256;
-                        analyser.smoothingTimeConstant = 0.7;
-
-                        source.connect(analyser);
-                        analyser.connect(audioContext.destination);
-
-                        dataArray = new Uint8Array(analyser.frequencyBinCount);
-                        console.log('Audio analyser initialized, buffer size:', dataArray.length);
-
-                        // Start the update loop
-                        function updateAudioData() {
-                            analyser.getByteFrequencyData(dataArray);
-
-                            // Calculate frequency bands with wider ranges
-                            const bass = dataArray.slice(0, 10).reduce((a, b) => a + b, 0) / 10;
-                            const mids = dataArray.slice(10, 80).reduce((a, b) => a + b, 0) / 70;
-                            const treble = dataArray.slice(80, 128).reduce((a, b) => a + b, 0) / 48;
-
-                            window.audioData = {
-                                bass: bass,
-                                mids: mids,
-                                treble: treble,
-                                active: !audioElement.paused
-                            };
-
-                            // Debug: log occasionally to verify data
-                            if (Math.random() < 0.01) {
-                                console.log('Audio data:', bass.toFixed(1), mids.toFixed(1), treble.toFixed(1));
-                            }
-
-                            requestAnimationFrame(updateAudioData);
-                        }
-
-                        updateAudioData();
-                    } catch (err) {
-                        console.error('Audio context init error:', err);
-                    }
-                }
-
-                // Resume audio context if suspended (browser autoplay policy)
-                if (audioContext.state === 'suspended') {
-                    await audioContext.resume();
-                }
-
-                window.audioData = window.audioData || { bass: 0, mids: 0, treble: 0, active: true };
-                window.audioData.active = true;
-            });
-
-            // Mark audio as inactive when paused
-            audioElement.addEventListener('pause', () => {
-                if (window.audioData) {
-                    window.audioData.active = false;
-                }
-            });
-
-            // Play button toggle
             const playBtn = document.getElementById('play-btn');
             const playIcon = playBtn.querySelector('.play-icon');
             const pauseIcon = playBtn.querySelector('.pause-icon');
+            const audioElement = document.getElementById('music-player');
 
-            playBtn.addEventListener('click', () => {
-                if (audioElement.paused) {
-                    audioElement.play();
+            let audioContext = null;
+            let analyser = null;
+            let bufferSource = null;
+            let audioBuffer = null;
+            let dataArray = null;
+            let isPlaying = false;
+            let startTime = 0;
+            let pauseTime = 0;
+
+            // Pre-initialize audioData
+            window.audioData = { bass: 0, mids: 0, treble: 0, active: false };
+
+            // Load audio file as buffer (bypasses SES restrictions)
+            async function loadAudioBuffer() {
+                if (audioBuffer) return audioBuffer;
+
+                const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                if (!audioContext) {
+                    audioContext = new AudioContextClass();
+                }
+
+                // Fetch the audio file
+                const response = await fetch('Infinitum.wav');
+                const arrayBuffer = await response.arrayBuffer();
+                audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+                console.log('Audio buffer loaded, duration:', audioBuffer.duration);
+
+                // Setup analyser
+                analyser = audioContext.createAnalyser();
+                analyser.fftSize = 256;
+                analyser.smoothingTimeConstant = 0.7;
+                dataArray = new Uint8Array(analyser.frequencyBinCount);
+
+                return audioBuffer;
+            }
+
+            // Start audio analysis loop
+            function startAnalysisLoop() {
+                function updateAudioData() {
+                    if (!isPlaying || !analyser) {
+                        window.audioData.active = false;
+                        return;
+                    }
+
+                    analyser.getByteFrequencyData(dataArray);
+
+                    const bass = dataArray.slice(0, 10).reduce((a, b) => a + b, 0) / 10;
+                    const mids = dataArray.slice(10, 80).reduce((a, b) => a + b, 0) / 70;
+                    const treble = dataArray.slice(80, 128).reduce((a, b) => a + b, 0) / 48;
+
+                    window.audioData = {
+                        bass: bass,
+                        mids: mids,
+                        treble: treble,
+                        active: true
+                    };
+
+                    if (Math.random() < 0.01) {
+                        console.log('Audio data:', bass.toFixed(1), mids.toFixed(1), treble.toFixed(1));
+                    }
+
+                    requestAnimationFrame(updateAudioData);
+                }
+                updateAudioData();
+            }
+
+            // Play audio
+            async function playAudio() {
+                try {
+                    await loadAudioBuffer();
+
+                    if (audioContext.state === 'suspended') {
+                        await audioContext.resume();
+                    }
+
+                    // Create new buffer source (required for each play)
+                    bufferSource = audioContext.createBufferSource();
+                    bufferSource.buffer = audioBuffer;
+                    bufferSource.connect(analyser);
+                    analyser.connect(audioContext.destination);
+
+                    // Handle end of audio
+                    bufferSource.onended = () => {
+                        if (isPlaying) {
+                            isPlaying = false;
+                            pauseTime = 0;
+                            window.audioData.active = false;
+                            playIcon.style.display = 'block';
+                            pauseIcon.style.display = 'none';
+                        }
+                    };
+
+                    // Start from pause position
+                    bufferSource.start(0, pauseTime);
+                    startTime = audioContext.currentTime - pauseTime;
+                    isPlaying = true;
+
                     playIcon.style.display = 'none';
                     pauseIcon.style.display = 'block';
-                } else {
-                    audioElement.pause();
+
+                    startAnalysisLoop();
+                    console.log('Playing from:', pauseTime.toFixed(2));
+                } catch (err) {
+                    console.error('Play error:', err);
+                }
+            }
+
+            // Pause audio
+            function pauseAudio() {
+                if (bufferSource && isPlaying) {
+                    bufferSource.stop();
+                    pauseTime = audioContext.currentTime - startTime;
+                    isPlaying = false;
+                    window.audioData.active = false;
+
                     playIcon.style.display = 'block';
                     pauseIcon.style.display = 'none';
+                    console.log('Paused at:', pauseTime.toFixed(2));
                 }
-            });
+            }
 
-            audioElement.addEventListener('ended', () => {
-                playIcon.style.display = 'block';
-                pauseIcon.style.display = 'none';
+            // Toggle play/pause
+            playBtn.addEventListener('click', () => {
+                if (isPlaying) {
+                    pauseAudio();
+                } else {
+                    playAudio();
+                }
             });
         })();
     </script>

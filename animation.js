@@ -146,7 +146,7 @@
                 const targetX = cardCenterX + Math.cos(angle) * pulseRadius;
                 const targetY = cardCenterY + Math.sin(angle) * pulseRadius;
 
-                // Calculate audio reactivity
+                // Calculate audio reactivity - each node reacts to different frequencies
                 const bassRaw = audio.bass || 0;
                 const midsRaw = audio.mids || 0;
                 const trebleRaw = audio.treble || 0;
@@ -156,20 +156,33 @@
                 const midsNormalized = midsRaw / 255;
                 const trebleNormalized = trebleRaw / 255;
 
-                // Combined level - weighted toward mids/treble for piano
-                const currentLevel = Math.min(1, bassNormalized * 0.2 + midsNormalized * 0.5 + trebleNormalized * 0.3);
+                // Each node has a unique frequency preference based on its position in circle
+                // This creates variety - some nodes pulse with bass, others with treble
+                const nodePhase = circleIndex / numCircleNodes; // 0 to 1
 
-                // Sustained level grows when audio is present, decays slowly
-                if (currentLevel > 0.1) {
-                    sustainedLevel = Math.min(1, sustainedLevel + currentLevel * 0.02);
+                // Assign frequency weights based on position (creates wave-like patterns)
+                const bassWeight = Math.max(0, Math.sin(nodePhase * Math.PI * 2) * 0.5 + 0.3);
+                const midsWeight = Math.max(0, Math.sin(nodePhase * Math.PI * 2 + Math.PI * 0.66) * 0.5 + 0.5);
+                const trebleWeight = Math.max(0, Math.sin(nodePhase * Math.PI * 2 + Math.PI * 1.33) * 0.5 + 0.4);
+
+                // This node's audio level based on its frequency preference
+                const nodeLevel = bassNormalized * bassWeight + midsNormalized * midsWeight + trebleNormalized * trebleWeight;
+
+                // Some nodes are "louder" reactors than others
+                const reactivityMultiplier = 0.8 + (Math.sin(circleIndex * 1.7) * 0.5 + 0.5) * 1.2; // 0.8 to 2.0
+
+                // Per-node sustained level for variety
+                if (!node.sustainedLevel) node.sustainedLevel = 0;
+                if (nodeLevel > 0.08) {
+                    node.sustainedLevel = Math.min(1, node.sustainedLevel + nodeLevel * 0.025);
                 } else {
-                    sustainedLevel = Math.max(0, sustainedLevel - 0.015);
+                    node.sustainedLevel = Math.max(0, node.sustainedLevel - 0.02);
                 }
 
                 node.inCircle = true;
-                // Subtle reactivity - instant response + gentle sustained growth
-                const instantReactivity = currentLevel * 0.8;
-                const sustainedReactivity = sustainedLevel * 0.5;
+                // Combine instant + sustained, multiplied by this node's reactivity
+                const instantReactivity = nodeLevel * 1.5 * reactivityMultiplier;
+                const sustainedReactivity = node.sustainedLevel * 0.8 * reactivityMultiplier;
                 node.audioScale = 1 + instantReactivity + sustainedReactivity;
 
                 // Smoothly interpolate position
@@ -375,12 +388,12 @@
             if (pos.y < -margin || pos.y > canvas.height + margin) return;
             if (pos.x < -margin || pos.x > canvas.width + margin) return;
 
-            // For circle nodes: uniform size with audio scaling
+            // For circle nodes: base size with audio scaling
             // For regular nodes: normal size
             let displaySize;
             if (node.inCircle) {
-                const uniformSize = 12; // Medium uniform size for circle nodes
-                displaySize = uniformSize * (node.audioScale || 1);
+                const baseSize = 10; // Base size for circle nodes
+                displaySize = baseSize * (node.audioScale || 1);
             } else {
                 displaySize = node.size;
             }

@@ -165,20 +165,20 @@
                 const bottomWeight = 1 - topWeight; // 0 at top, 1 at bottom
 
                 // INVERSE VISUALIZATION:
-                // High notes (treble) -> top grows, bottom shrinks
+                // High notes (treble) -> top grows BIG, bottom stays neutral
                 // Low notes (bass) -> bottom grows, top shrinks
                 // Mids affect everyone equally
 
-                const midsContrib = midsNormalized * 0.6;
+                const midsContrib = midsNormalized * 0.5;
 
-                // Top nodes: GROW with treble, SHRINK with bass
-                // Bottom nodes: GROW with bass, SHRINK with treble
-                const growFactor = topWeight * trebleNormalized * 2.5 + bottomWeight * bassNormalized * 2.0;
-                const shrinkFactor = topWeight * bassNormalized * 1.2 + bottomWeight * trebleNormalized * 1.2;
+                // Top nodes: GROW BIG with treble (high range), shrink with bass
+                // Bottom nodes: GROW with bass only, ignore treble
+                const growFactor = topWeight * trebleNormalized * 4.0 + bottomWeight * bassNormalized * 2.0;
+                const shrinkFactor = topWeight * bassNormalized * 1.5; // Only top shrinks with bass, bottom doesn't shrink
 
                 node.inCircle = true;
-                // Base scale + growth - shrinkage (minimum 0.3 to keep nodes visible)
-                node.audioScale = Math.max(0.3, 1 + midsContrib + growFactor - shrinkFactor);
+                // Base scale + growth - shrinkage (minimum 0.4 to keep nodes visible)
+                node.audioScale = Math.max(0.4, 1 + midsContrib + growFactor - shrinkFactor);
 
                 // Smoothly interpolate position
                 if (node.renderX === undefined) {

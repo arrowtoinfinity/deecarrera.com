@@ -204,6 +204,13 @@
                     playAudio();
                 }
             });
+
+            // Preload audio buffer on page load for instant playback
+            loadAudioBuffer().then(() => {
+                console.log('Audio preloaded and ready');
+            }).catch(err => {
+                console.log('Preload skipped (will load on first play):', err.message);
+            });
         })();
     </script>
     <script>

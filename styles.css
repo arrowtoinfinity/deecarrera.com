@@ -72,6 +72,25 @@ nav {
     color: var(--text);
 }
 
+/* Mobile nav - stack logo/name centered with nav below */
+@media (max-width: 600px) {
+    nav {
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1.5rem 2rem;
+    }
+
+    .nav-name {
+        justify-content: center;
+    }
+
+    .nav-links {
+        gap: 1.25rem;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+}
+
 /* Main content */
 main {
     position: relative;

@@ -138,17 +138,20 @@
                 const numCircleNodes = circleNodeIndices.length;
                 const angle = (circleIndex / numCircleNodes) * Math.PI * 2 - Math.PI / 2;
 
-                // Fixed radius, pulses with bass
-                const bassNormalized = audio.bass / 255;
-                const baseRadius = 140;
-                const pulseRadius = baseRadius + bassNormalized * 30;
+                // Wider fixed radius
+                const baseRadius = 200;
+                const pulseRadius = baseRadius;
 
                 const targetX = cardCenterX + Math.cos(angle) * pulseRadius;
                 const targetY = cardCenterY + Math.sin(angle) * pulseRadius;
 
                 // Mark as in circle mode for rendering
+                // React to mids and treble (piano keys) instead of bass
+                const midsNormalized = audio.mids / 255;
+                const trebleNormalized = audio.treble / 255;
+                const combined = (midsNormalized * 0.4 + trebleNormalized * 0.6);
                 node.inCircle = true;
-                node.audioScale = 1 + bassNormalized * 0.8; // Scale with bass
+                node.audioScale = 1 + combined * 1.5; // Scale with treble/mids
 
                 // Smoothly interpolate position
                 if (node.renderX === undefined) {
@@ -334,18 +337,18 @@
             if (pos.y < -margin || pos.y > canvas.height + margin) return;
             if (pos.x < -margin || pos.x > canvas.width + margin) return;
 
-            // For circle nodes: uniform medium size with audio scaling
+            // For circle nodes: uniform large size with audio scaling
             // For regular nodes: normal size
             let displaySize;
             if (node.inCircle) {
-                const uniformSize = 12; // Medium uniform size for circle nodes
+                const uniformSize = 20; // Large uniform size for circle nodes
                 displaySize = uniformSize * (node.audioScale || 1);
             } else {
                 displaySize = node.size;
             }
 
-            // Glow
-            const glowSize = displaySize * 3;
+            // Glow (proportional to node size)
+            const glowSize = displaySize * 2.5;
             const gradient = ctx.createRadialGradient(
                 pos.x, pos.y, 0,
                 pos.x, pos.y, glowSize

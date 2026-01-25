@@ -197,13 +197,15 @@
                 console.log('Paused at:', pauseTime.toFixed(2));
             }
 
-            // Toggle play - always restart from beginning
+            // Toggle play/stop - stop resets to beginning, play always starts fresh
             playBtn.addEventListener('click', () => {
                 if (isPlaying) {
                     pauseAudio();
+                    pauseTime = 0; // Reset to beginning when stopped
+                } else {
+                    pauseTime = 0; // Always start from beginning
+                    playAudio();
                 }
-                pauseTime = 0; // Always restart from beginning
-                playAudio();
             });
 
             // Preload audio buffer on page load for instant playback

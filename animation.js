@@ -312,46 +312,13 @@
     function drawConnections() {
         const newConnections = new Set();
 
-        // During audio mode, connect all adjacent circle nodes
-        if (audioCircleMode && circleNodeIndices.length > 0) {
-            for (let c = 0; c < circleNodeIndices.length; c++) {
-                const nextC = (c + 1) % circleNodeIndices.length;
-                const i = circleNodeIndices[c];
-                const j = circleNodeIndices[nextC];
-
-                const nodeA = nodes[i];
-                const nodeB = nodes[j];
-                const posA = getNodePosition(nodeA);
-                const posB = getNodePosition(nodeB);
-
-                const distance = Math.sqrt(
-                    (posB.x - posA.x) ** 2 + (posB.y - posA.y) ** 2
-                );
-
-                const connectionKey = getConnectionKey(i, j);
-                newConnections.add(connectionKey);
-
-                // Line opacity based on average audio scale - match normal connection style
-                const avgScale = ((nodeA.audioScale || 1) + (nodeB.audioScale || 1)) / 2;
-                const opacity = 0.15 + avgScale * 0.15;
-
-                // Always use background canvas for circle connections
-                ctxBg.beginPath();
-                ctxBg.moveTo(posA.x, posA.y);
-                ctxBg.lineTo(posB.x, posB.y);
-                ctxBg.strokeStyle = `rgba(50, 50, 50, ${opacity})`;
-                ctxBg.lineWidth = 0.8;
-                ctxBg.stroke();
-            }
-        }
-
         for (let i = 0; i < nodes.length; i++) {
             for (let j = i + 1; j < nodes.length; j++) {
                 const nodeA = nodes[i];
                 const nodeB = nodes[j];
 
-                // Skip if both are circle nodes (already connected above)
-                if (audioCircleMode && nodeA.inCircle && nodeB.inCircle) continue;
+                // Skip connections involving circle nodes during audio animation
+                if (nodeA.inCircle || nodeA.exitingCircle || nodeB.inCircle || nodeB.exitingCircle) continue;
 
                 const posA = getNodePosition(nodeA);
                 const posB = getNodePosition(nodeB);

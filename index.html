@@ -21,7 +21,6 @@
         camera-target="0m 0.15m 0m"
         interaction-prompt="none"
         disable-zoom
-        disable-tap
         disable-pan
         shadow-intensity="0"
         style="background: transparent !important;"
@@ -153,52 +152,76 @@
                 mouseTilt = Math.atan2(deltaY, 300) * (180 / Math.PI) * -1;
             }
 
-            // Drag handlers
-            heroModel.addEventListener('mousedown', (e) => {
-                if (!isPaused) return;
-                isDragging = true;
+            // Pointer event handlers for click and drag
+            let clickStartX = 0;
+            let clickStartY = 0;
+            let pointerId = null;
+
+            heroModel.addEventListener('pointerdown', (e) => {
+                clickStartX = e.clientX;
+                clickStartY = e.clientY;
                 dragStartX = e.clientX;
                 dragStartY = e.clientY;
-                heroModel.style.cursor = 'grabbing';
-            });
+                pointerId = e.pointerId;
 
-            window.addEventListener('mousemove', (e) => {
-                if (!isDragging) return;
-                const deltaX = e.clientX - dragStartX;
-                const deltaY = e.clientY - dragStartY;
-                dragRotation += deltaX * 0.5;
-                dragTilt = Math.max(45, Math.min(135, dragTilt - deltaY * 0.5));
-                dragStartX = e.clientX;
-                dragStartY = e.clientY;
-                heroModel.setAttribute('camera-orbit', `${dragRotation}deg ${dragTilt}deg auto`);
-            });
-
-            window.addEventListener('mouseup', () => {
-                if (isDragging) {
-                    isDragging = false;
-                    heroModel.style.cursor = 'pointer';
-                }
-            });
-
-            // Click to toggle pause
-            heroModel.addEventListener('click', (e) => {
-                if (isDragging) return;
-                isPaused = !isPaused;
                 if (isPaused) {
-                    pausedTime = performance.now();
-                    // Store current rotation as drag starting point
-                    const orbit = heroModel.getAttribute('camera-orbit');
-                    const match = orbit.match(/([-\d.]+)deg\s+([-\d.]+)deg/);
-                    if (match) {
-                        dragRotation = parseFloat(match[1]);
-                        dragTilt = parseFloat(match[2]);
-                    }
-                } else {
-                    // Resume animation from where we left off
-                    if (pausedTime && startTime) {
-                        startTime += performance.now() - pausedTime;
+                    heroModel.setPointerCapture(e.pointerId);
+                }
+            });
+
+            heroModel.addEventListener('pointermove', (e) => {
+                if (!isPaused || pointerId === null) return;
+
+                const dx = Math.abs(e.clientX - clickStartX);
+                const dy = Math.abs(e.clientY - clickStartY);
+
+                // Start dragging if moved more than 5px
+                if (dx > 5 || dy > 5) {
+                    isDragging = true;
+                    heroModel.style.cursor = 'grabbing';
+                }
+
+                if (isDragging) {
+                    const deltaX = e.clientX - dragStartX;
+                    const deltaY = e.clientY - dragStartY;
+                    dragRotation += deltaX * 0.5;
+                    dragTilt = Math.max(45, Math.min(135, dragTilt - deltaY * 0.5));
+                    dragStartX = e.clientX;
+                    dragStartY = e.clientY;
+                    heroModel.setAttribute('camera-orbit', `${dragRotation}deg ${dragTilt}deg auto`);
+                }
+            });
+
+            heroModel.addEventListener('pointerup', (e) => {
+                const dx = Math.abs(e.clientX - clickStartX);
+                const dy = Math.abs(e.clientY - clickStartY);
+
+                // If it was a click (not a drag)
+                if (dx < 5 && dy < 5) {
+                    isPaused = !isPaused;
+                    if (isPaused) {
+                        pausedTime = performance.now();
+                        const orbit = heroModel.getAttribute('camera-orbit');
+                        const match = orbit.match(/([-\d.]+)deg\s+([-\d.]+)deg/);
+                        if (match) {
+                            dragRotation = parseFloat(match[1]);
+                            dragTilt = parseFloat(match[2]);
+                        }
+                        heroModel.style.cursor = 'grab';
+                    } else {
+                        if (pausedTime && startTime) {
+                            startTime += performance.now() - pausedTime;
+                        }
+                        heroModel.style.cursor = 'pointer';
                     }
                 }
+
+                isDragging = false;
+                pointerId = null;
+                if (isPaused) {
+                    heroModel.style.cursor = 'grab';
+                }
+                try { heroModel.releasePointerCapture(e.pointerId); } catch(err) {}
             });
 
             window.addEventListener('scroll', updateScrollScale, { passive: true });

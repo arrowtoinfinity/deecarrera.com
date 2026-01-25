@@ -146,29 +146,44 @@
                 const targetX = cardCenterX + Math.cos(angle) * pulseRadius;
                 const targetY = cardCenterY + Math.sin(angle) * pulseRadius;
 
-                // Calculate audio reactivity
-                const bassNormalized = audio.bass / 255;
-                const midsNormalized = audio.mids / 255;
-                const trebleNormalized = audio.treble / 255;
+                // Calculate audio reactivity - use raw values for stronger response
+                const bassRaw = audio.bass || 0;
+                const midsRaw = audio.mids || 0;
+                const trebleRaw = audio.treble || 0;
 
-                // Combined level for all frequencies
-                const currentLevel = (bassNormalized * 0.3 + midsNormalized * 0.4 + trebleNormalized * 0.3);
+                // Normalize with lower divisor for more sensitivity
+                const bassNormalized = bassRaw / 150;
+                const midsNormalized = midsRaw / 150;
+                const trebleNormalized = trebleRaw / 150;
+
+                // Combined level - weighted toward mids/treble for piano
+                const currentLevel = Math.min(1, bassNormalized * 0.2 + midsNormalized * 0.5 + trebleNormalized * 0.3);
 
                 // Sustained level grows when audio is present, decays slowly
                 // This creates the "synth growing" effect
-                if (currentLevel > 0.1) {
-                    sustainedLevel = Math.min(1, sustainedLevel + currentLevel * 0.02);
+                if (currentLevel > 0.05) {
+                    sustainedLevel = Math.min(1, sustainedLevel + currentLevel * 0.03);
                 } else {
-                    sustainedLevel = Math.max(0, sustainedLevel - 0.01);
+                    sustainedLevel = Math.max(0, sustainedLevel - 0.02);
                 }
 
                 node.inCircle = true;
                 // Combine instant reactivity with sustained growth
-                // Instant: responds to each note/hit
+                // Instant: responds to each note/hit (stronger multiplier)
                 // Sustained: grows over time with continuous sound
-                const instantReactivity = currentLevel * 2;
-                const sustainedReactivity = sustainedLevel * 1.5;
+                const instantReactivity = currentLevel * 3;
+                const sustainedReactivity = sustainedLevel * 2;
                 node.audioScale = 1 + instantReactivity + sustainedReactivity;
+
+                // Debug: log scale values occasionally
+                if (circleIndex === 0 && Math.random() < 0.02) {
+                    console.log('Audio scale:', node.audioScale.toFixed(2),
+                                'bass:', bassRaw.toFixed(0),
+                                'mids:', midsRaw.toFixed(0),
+                                'treble:', trebleRaw.toFixed(0),
+                                'level:', currentLevel.toFixed(2),
+                                'sustained:', sustainedLevel.toFixed(2));
+                }
 
                 // Smoothly interpolate position
                 if (node.renderX === undefined) {
@@ -193,7 +208,7 @@
                     const rect = musicCard.getBoundingClientRect();
                     const cardCenterX = rect.left + rect.width / 2;
                     const cardCenterY = rect.top + rect.height / 2 + window.scrollY;
-                    const clearRadius = 280; // Keep nodes outside this radius
+                    const clearRadius = 350; // Keep nodes outside this radius
 
                     const dx = node.baseX - cardCenterX;
                     const dy = (node.baseY - scrollY) - (cardCenterY - window.scrollY);

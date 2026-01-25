@@ -1064,8 +1064,9 @@ footer {
     flex-wrap: wrap;
     gap: 1.5rem;
     justify-content: center;
-    min-height: 60vh;
+    min-height: 70vh;
     align-items: center;
+    margin-top: -2rem;
 }
 
 .music-card {

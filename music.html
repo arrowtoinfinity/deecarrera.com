@@ -95,6 +95,11 @@
                             active: !audioElement.paused
                         };
 
+                        // Debug: log occasionally to verify data
+                        if (Math.random() < 0.01) {
+                            console.log('Audio data:', bass.toFixed(1), mids.toFixed(1), treble.toFixed(1));
+                        }
+
                         requestAnimationFrame(updateAudioData);
                     }
 

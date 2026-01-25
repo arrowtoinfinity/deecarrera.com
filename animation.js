@@ -151,34 +151,39 @@
                 const midsRaw = audio.mids || 0;
                 const trebleRaw = audio.treble || 0;
 
-                // Normalize to 0-1 range
-                const bassNormalized = bassRaw / 255;
-                const midsNormalized = midsRaw / 255;
-                const trebleNormalized = trebleRaw / 255;
+                // Normalize with boosted sensitivity
+                const bassNormalized = Math.min(1, bassRaw / 180);
+                const midsNormalized = Math.min(1, midsRaw / 180);
+                const trebleNormalized = Math.min(1, trebleRaw / 120); // Extra boost for treble
 
                 // Position in circle: 0 = top, 0.5 = bottom
                 const nodePhase = circleIndex / numCircleNodes;
 
                 // Bottom weight (peaks at 0.5 = bottom)
                 const bottomWeight = Math.sin(nodePhase * Math.PI);
-                // Top weight (peaks at 0 and 1 = top)
-                const topWeight = Math.cos(nodePhase * Math.PI) * Math.cos(nodePhase * Math.PI); // squared for sharper peak
+                // Top weight (peaks at 0 and 1 = top) - wider range
+                const topWeight = 1 - bottomWeight; // Simple inverse - top is high when bottom is low
 
-                // TOP nodes react to TREBLE (high notes)
+                // TOP nodes react PRIMARILY to TREBLE
                 // BOTTOM nodes react to BASS/MIDS
-                const bassWeight = bottomWeight * 0.8;
-                const midsWeight = 0.3 + bottomWeight * 0.5;
-                const trebleWeight = 0.2 + topWeight * 1.5; // Strong treble reaction at top
+                let nodeLevel;
+                if (topWeight > 0.7) {
+                    // Top quarter - almost pure treble
+                    nodeLevel = trebleNormalized * 1.2 + midsNormalized * 0.3;
+                } else if (bottomWeight > 0.7) {
+                    // Bottom quarter - bass and mids
+                    nodeLevel = bassNormalized * 0.8 + midsNormalized * 0.6;
+                } else {
+                    // Middle - mix of everything
+                    nodeLevel = bassNormalized * 0.3 + midsNormalized * 0.5 + trebleNormalized * 0.4;
+                }
 
-                // Calculate audio level for this node
-                const nodeLevel = bassNormalized * bassWeight + midsNormalized * midsWeight + trebleNormalized * trebleWeight;
-
-                // Both top and bottom can scale large - top for treble, bottom for bass
-                const reactivityMultiplier = 1.5 + bottomWeight * 1.0 + topWeight * 1.5;
+                // Strong multiplier for both top and bottom
+                const reactivityMultiplier = 1.2 + Math.max(bottomWeight, topWeight) * 2.0;
 
                 node.inCircle = true;
                 // Direct scale from audio - no delays
-                node.audioScale = 1 + nodeLevel * 2.5 * reactivityMultiplier;
+                node.audioScale = 1 + nodeLevel * 3.0 * reactivityMultiplier;
 
                 // Smoothly interpolate position
                 if (node.renderX === undefined) {

@@ -139,13 +139,6 @@
                 const numCircleNodes = circleNodeIndices.length;
                 const angle = (circleIndex / numCircleNodes) * Math.PI * 2 - Math.PI / 2;
 
-                // Wider fixed radius
-                const baseRadius = 200;
-                const pulseRadius = baseRadius;
-
-                const targetX = cardCenterX + Math.cos(angle) * pulseRadius;
-                const targetY = cardCenterY + Math.sin(angle) * pulseRadius;
-
                 // Calculate audio reactivity - INSTANT response to waveform
                 const lowRaw = audio.low || 0;    // 345 Hz - low piano notes
                 const highRaw = audio.high || 0;  // 517-689 Hz - high piano notes
@@ -179,6 +172,14 @@
                 const speed = isDropping ? 0.4 : 0.2; // Drop 2x faster
                 node.circleScale += (targetScale - node.circleScale) * speed;
                 node.audioScale = node.circleScale;
+
+                // RADIAL PULSE: nodes move in/out based on audio level
+                const baseRadius = 200;
+                const radiusOffset = (node.circleScale - 0.3) * 40; // 0-80px outward movement
+                const pulseRadius = baseRadius + radiusOffset;
+
+                const targetX = cardCenterX + Math.cos(angle) * pulseRadius;
+                const targetY = cardCenterY + Math.sin(angle) * pulseRadius;
 
                 // Smoothly interpolate position
                 if (node.renderX === undefined) {

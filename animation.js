@@ -143,9 +143,9 @@
                 const lowRaw = audio.low || 0;    // 345 Hz - low piano notes
                 const highRaw = audio.high || 0;  // 517-689 Hz - high piano notes
 
-                // Normalize - boost high MORE since raw values are much lower
+                // Normalize - both now have similar raw ranges (120-220)
                 const lowNorm = Math.min(1, lowRaw / 220);
-                const highNorm = Math.min(1, highRaw / 80); // Boosted significantly
+                const highNorm = Math.min(1, highRaw / 200); // Balanced with low
 
                 // Alternating pattern: every other node reacts to low vs high
                 const isLowNode = circleIndex % 2 === 0;

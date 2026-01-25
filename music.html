@@ -107,37 +107,20 @@
 
                     analyser.getByteFrequencyData(dataArray);
 
-                    // Frequency bands tuned for piano:
-                    // Bass: bins 0-4 (~0-700 Hz) - low notes
-                    // Mids: bins 4-15 (~700-2600 Hz) - middle notes
-                    // Treble: bins 15+ (~2600+ Hz) - everything above 2600 Hz
-                    const bass = dataArray.slice(0, 4).reduce((a, b) => a + b, 0) / 4;
-                    const mids = dataArray.slice(4, 15).reduce((a, b) => a + b, 0) / 11;
-                    const treble = dataArray.slice(15).reduce((a, b) => a + b, 0) / (dataArray.length - 15);
+                    // Frequency bands tuned for THIS song:
+                    // Low (345 Hz area): bins 1-2 - bottom nodes
+                    // High (517-689 Hz): bins 2-3 - TOP nodes
+                    // Ultra (1200+ Hz): bins 7+ - ALL nodes uniform
+                    const low = (dataArray[1] + dataArray[2]) / 2;
+                    const high = (dataArray[2] + dataArray[3] + dataArray[4]) / 3;
+                    const ultra = dataArray.slice(7, 20).reduce((a, b) => a + b, 0) / 13;
 
                     window.audioData = {
-                        bass: bass,
-                        mids: mids,
-                        treble: treble,
+                        low: low,
+                        high: high,
+                        ultra: ultra,
                         active: true
                     };
-
-                    // Find peak frequencies for analysis
-                    let maxVal = 0, maxBin = 0;
-                    for (let i = 0; i < dataArray.length; i++) {
-                        if (dataArray[i] > maxVal) {
-                            maxVal = dataArray[i];
-                            maxBin = i;
-                        }
-                    }
-                    const peakHz = Math.round(maxBin * (44100 / 256));
-
-                    // Log detailed frequency info
-                    if (Math.random() < 0.05) {
-                        console.log('PEAK:', peakHz, 'Hz | bass:', bass.toFixed(0), 'mids:', mids.toFixed(0),
-                                    '| bins 0-4:', dataArray.slice(0,4).join(','),
-                                    '| bins 4-15:', Math.round(dataArray.slice(4,15).reduce((a,b)=>a+b,0)/11));
-                    }
 
                     requestAnimationFrame(updateAudioData);
                 }

@@ -147,12 +147,14 @@
                 const targetY = cardCenterY + Math.sin(angle) * pulseRadius;
 
                 // Calculate audio reactivity - INSTANT response to waveform
-                const bassRaw = audio.bass || 0;
-                const midsRaw = audio.mids || 0;
+                const lowRaw = audio.low || 0;    // 345 Hz - low piano notes
+                const highRaw = audio.high || 0;  // 517-689 Hz - high piano notes
+                const ultraRaw = audio.ultra || 0; // 1200+ Hz - ultra high
 
-                // Normalize - mids contain the "high notes" for piano
-                const bassNormalized = Math.min(1, bassRaw / 180);
-                const midsNormalized = Math.min(1, midsRaw / 100); // Boost mids sensitivity
+                // Normalize
+                const lowNorm = Math.min(1, lowRaw / 200);
+                const highNorm = Math.min(1, highRaw / 180);
+                const ultraNorm = Math.min(1, ultraRaw / 100);
 
                 // Position in circle: 0 = top, 0.5 = bottom, 1 = top again
                 const nodePhase = circleIndex / numCircleNodes;
@@ -162,20 +164,20 @@
                 const topWeight = (Math.cos(weightAngle) + 1) / 2; // 1 at top, 0 at bottom
                 const bottomWeight = 1 - topWeight; // 0 at top, 1 at bottom
 
-                // INVERSE VISUALIZATION:
-                // Mids (piano high notes) -> top grows BIG, bottom shrinks
-                // Bass (low notes) -> bottom grows BIG, top shrinks
+                // VISUALIZATION:
+                // Low notes (345 Hz) -> bottom grows, top shrinks
+                // High notes (517-689 Hz) -> TOP grows, bottom shrinks
+                // Ultra high (1200+) -> ALL nodes grow uniformly
 
-                // Top nodes: GROW with mids, SHRINK with bass
-                // Bottom nodes: GROW with bass, SHRINK with mids
-                const topGrow = topWeight * midsNormalized * 3.5;
-                const topShrink = topWeight * bassNormalized * 1.0;
-                const bottomGrow = bottomWeight * bassNormalized * 2.5;
-                const bottomShrink = bottomWeight * midsNormalized * 0.8;
+                const topGrow = topWeight * highNorm * 4.0;      // Top reacts to high notes
+                const topShrink = topWeight * lowNorm * 1.2;     // Top shrinks with low notes
+                const bottomGrow = bottomWeight * lowNorm * 3.0; // Bottom reacts to low notes
+                const bottomShrink = bottomWeight * highNorm * 0.8; // Bottom shrinks with high
+                const uniformGrow = ultraNorm * 2.5;             // Ultra makes ALL grow
 
                 node.inCircle = true;
-                // Scale with inverse relationship
-                node.audioScale = Math.max(0.3, 1 + topGrow - topShrink + bottomGrow - bottomShrink);
+                // Scale with inverse relationship + uniform ultra
+                node.audioScale = Math.max(0.3, 1 + topGrow - topShrink + bottomGrow - bottomShrink + uniformGrow);
 
                 // Smoothly interpolate position
                 if (node.renderX === undefined) {

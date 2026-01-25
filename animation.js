@@ -249,7 +249,18 @@
                     const rect = musicCard.getBoundingClientRect();
                     const cardCenterX = rect.left + rect.width / 2;
                     const cardCenterY = rect.top + rect.height / 2 + window.scrollY;
-                    const clearRadius = 350; // Keep nodes outside this radius
+
+                    // Dynamic clear zone that scales with breathing animation
+                    const audio = window.audioData;
+                    const lowRaw = audio?.low || 0;
+                    const highRaw = audio?.high || 0;
+                    const avgAudio = (lowRaw + highRaw) / 2;
+
+                    // Normalize average audio (0-1)
+                    const avgNorm = Math.max(0, Math.min(1, (avgAudio - 100) / 120));
+
+                    // Clear zone: 280px base + up to 170px based on audio (280-450)
+                    const clearRadius = 280 + avgNorm * 170;
 
                     const dx = node.baseX - cardCenterX;
                     const dy = (node.baseY - scrollY) - (cardCenterY - window.scrollY);
@@ -257,7 +268,7 @@
 
                     if (distance < clearRadius && distance > 0) {
                         // Push node away from center
-                        const pushStrength = (clearRadius - distance) * 0.05;
+                        const pushStrength = (clearRadius - distance) * 0.08;
                         node.baseX += (dx / distance) * pushStrength;
                         node.baseY += (dy / distance) * pushStrength;
                     }

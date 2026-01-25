@@ -146,44 +146,31 @@
                 const targetX = cardCenterX + Math.cos(angle) * pulseRadius;
                 const targetY = cardCenterY + Math.sin(angle) * pulseRadius;
 
-                // Calculate audio reactivity - use raw values for stronger response
+                // Calculate audio reactivity
                 const bassRaw = audio.bass || 0;
                 const midsRaw = audio.mids || 0;
                 const trebleRaw = audio.treble || 0;
 
-                // Normalize with lower divisor for more sensitivity
-                const bassNormalized = bassRaw / 150;
-                const midsNormalized = midsRaw / 150;
-                const trebleNormalized = trebleRaw / 150;
+                // Normalize to 0-1 range
+                const bassNormalized = bassRaw / 255;
+                const midsNormalized = midsRaw / 255;
+                const trebleNormalized = trebleRaw / 255;
 
                 // Combined level - weighted toward mids/treble for piano
                 const currentLevel = Math.min(1, bassNormalized * 0.2 + midsNormalized * 0.5 + trebleNormalized * 0.3);
 
                 // Sustained level grows when audio is present, decays slowly
-                // This creates the "synth growing" effect
-                if (currentLevel > 0.05) {
-                    sustainedLevel = Math.min(1, sustainedLevel + currentLevel * 0.03);
+                if (currentLevel > 0.1) {
+                    sustainedLevel = Math.min(1, sustainedLevel + currentLevel * 0.02);
                 } else {
-                    sustainedLevel = Math.max(0, sustainedLevel - 0.02);
+                    sustainedLevel = Math.max(0, sustainedLevel - 0.015);
                 }
 
                 node.inCircle = true;
-                // Combine instant reactivity with sustained growth
-                // Instant: responds to each note/hit (stronger multiplier)
-                // Sustained: grows over time with continuous sound
-                const instantReactivity = currentLevel * 3;
-                const sustainedReactivity = sustainedLevel * 2;
+                // Subtle reactivity - instant response + gentle sustained growth
+                const instantReactivity = currentLevel * 0.8;
+                const sustainedReactivity = sustainedLevel * 0.5;
                 node.audioScale = 1 + instantReactivity + sustainedReactivity;
-
-                // Debug: log scale values occasionally
-                if (circleIndex === 0 && Math.random() < 0.02) {
-                    console.log('Audio scale:', node.audioScale.toFixed(2),
-                                'bass:', bassRaw.toFixed(0),
-                                'mids:', midsRaw.toFixed(0),
-                                'treble:', trebleRaw.toFixed(0),
-                                'level:', currentLevel.toFixed(2),
-                                'sustained:', sustainedLevel.toFixed(2));
-                }
 
                 // Smoothly interpolate position
                 if (node.renderX === undefined) {
@@ -388,11 +375,11 @@
             if (pos.y < -margin || pos.y > canvas.height + margin) return;
             if (pos.x < -margin || pos.x > canvas.width + margin) return;
 
-            // For circle nodes: uniform large size with audio scaling
+            // For circle nodes: uniform size with audio scaling
             // For regular nodes: normal size
             let displaySize;
             if (node.inCircle) {
-                const uniformSize = 20; // Large uniform size for circle nodes
+                const uniformSize = 12; // Medium uniform size for circle nodes
                 displaySize = uniformSize * (node.audioScale || 1);
             } else {
                 displaySize = node.size;

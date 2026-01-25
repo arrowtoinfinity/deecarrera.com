@@ -182,7 +182,7 @@
 
                 // RADIAL PULSE: nodes move in/out based on audio level
                 const baseRadius = 200;
-                const radiusOffset = (node.circleScale - 0.3) * 40; // 0-80px outward movement
+                const radiusOffset = (node.circleScale - 0.3) * 70; // 0-140px outward movement
                 const pulseRadius = baseRadius + radiusOffset;
 
                 const targetX = cardCenterX + Math.cos(angle) * pulseRadius;

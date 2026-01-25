@@ -106,8 +106,11 @@ main {
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 18;
+    z-index: 50;
     pointer-events: none;
+    transform: translateZ(0);
+    will-change: transform;
+    background: rgba(255, 0, 0, 0.1); /* DEBUG: red tint to verify canvas is visible */
 }
 
 .hero h1 {
@@ -140,7 +143,6 @@ main {
     height: 400px;
     --poster-color: transparent;
     pointer-events: none;
-    z-index: 14;
     z-index: 14;
 }
 

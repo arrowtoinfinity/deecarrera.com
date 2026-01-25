@@ -41,7 +41,7 @@
                     </svg>
                 </button>
                 <h2>Infinitum</h2>
-                <audio id="music-player">
+                <audio id="music-player" crossorigin="anonymous">
                     <source src="Infinitum.wav" type="audio/wav">
                 </audio>
             </article>
@@ -68,42 +68,57 @@
             // Initialize audio context on first play (browser requirement)
             audioElement.addEventListener('play', async function initAudio() {
                 if (!audioContext) {
-                    audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                    const source = audioContext.createMediaElementAudioSource(audioElement);
-                    analyser = audioContext.createAnalyser();
-                    analyser.fftSize = 256;
-                    analyser.smoothingTimeConstant = 0.7;
+                    try {
+                        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                        if (!AudioContextClass) {
+                            console.error('Web Audio API not supported');
+                            return;
+                        }
+                        audioContext = new AudioContextClass();
+                        console.log('AudioContext created:', audioContext.state);
 
-                    source.connect(analyser);
-                    analyser.connect(audioContext.destination);
+                        // Set crossOrigin for CORS (needed for some hosting)
+                        audioElement.crossOrigin = 'anonymous';
 
-                    dataArray = new Uint8Array(analyser.frequencyBinCount);
+                        const source = audioContext.createMediaElementAudioSource(audioElement);
+                        analyser = audioContext.createAnalyser();
+                        analyser.fftSize = 256;
+                        analyser.smoothingTimeConstant = 0.7;
 
-                    // Start the update loop
-                    function updateAudioData() {
-                        analyser.getByteFrequencyData(dataArray);
+                        source.connect(analyser);
+                        analyser.connect(audioContext.destination);
 
-                        // Calculate frequency bands with wider ranges
-                        const bass = dataArray.slice(0, 10).reduce((a, b) => a + b, 0) / 10;
-                        const mids = dataArray.slice(10, 80).reduce((a, b) => a + b, 0) / 70;
-                        const treble = dataArray.slice(80, 128).reduce((a, b) => a + b, 0) / 48;
+                        dataArray = new Uint8Array(analyser.frequencyBinCount);
+                        console.log('Audio analyser initialized, buffer size:', dataArray.length);
 
-                        window.audioData = {
-                            bass: bass,
-                            mids: mids,
-                            treble: treble,
-                            active: !audioElement.paused
-                        };
+                        // Start the update loop
+                        function updateAudioData() {
+                            analyser.getByteFrequencyData(dataArray);
 
-                        // Debug: log occasionally to verify data
-                        if (Math.random() < 0.01) {
-                            console.log('Audio data:', bass.toFixed(1), mids.toFixed(1), treble.toFixed(1));
+                            // Calculate frequency bands with wider ranges
+                            const bass = dataArray.slice(0, 10).reduce((a, b) => a + b, 0) / 10;
+                            const mids = dataArray.slice(10, 80).reduce((a, b) => a + b, 0) / 70;
+                            const treble = dataArray.slice(80, 128).reduce((a, b) => a + b, 0) / 48;
+
+                            window.audioData = {
+                                bass: bass,
+                                mids: mids,
+                                treble: treble,
+                                active: !audioElement.paused
+                            };
+
+                            // Debug: log occasionally to verify data
+                            if (Math.random() < 0.01) {
+                                console.log('Audio data:', bass.toFixed(1), mids.toFixed(1), treble.toFixed(1));
+                            }
+
+                            requestAnimationFrame(updateAudioData);
                         }
 
-                        requestAnimationFrame(updateAudioData);
+                        updateAudioData();
+                    } catch (err) {
+                        console.error('Audio context init error:', err);
                     }
-
-                    updateAudioData();
                 }
 
                 // Resume audio context if suspended (browser autoplay policy)

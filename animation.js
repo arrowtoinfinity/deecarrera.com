@@ -161,10 +161,10 @@
 
                 if (isLowNode) {
                     // Even nodes react to LOW frequencies
-                    node.audioScale = Math.max(0.3, 1 + lowNorm * 3.5 - highNorm * 1.5);
+                    node.audioScale = Math.max(0.15, 1 + lowNorm * 4.0 - highNorm * 3.0);
                 } else {
                     // Odd nodes react to HIGH frequencies
-                    node.audioScale = Math.max(0.3, 1 + highNorm * 4.0 - lowNorm * 1.5);
+                    node.audioScale = Math.max(0.15, 1 + highNorm * 4.5 - lowNorm * 3.0);
                 }
 
                 // Smoothly interpolate position

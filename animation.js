@@ -30,6 +30,7 @@
     let resizeTimeout = null;
     let lastWidth = 0;
     let lastHeight = 0;
+    let audioCircleMode = false; // When true, nodes are in circle formation
 
     // Flash color (blue only)
     const flashColor = { r: 135, g: 206, b: 250 };
@@ -111,26 +112,41 @@
         const audioActive = audio && audio.active;
         const musicCard = document.querySelector('.music-card');
 
+        audioCircleMode = audioActive && musicCard;
+
         nodes.forEach((node, index) => {
-            if (audioActive && musicCard) {
-                // Get music card position (center)
+            if (audioCircleMode) {
+                // Get music card position (center) - in viewport coordinates
                 const rect = musicCard.getBoundingClientRect();
                 const cardCenterX = rect.left + rect.width / 2;
-                const cardCenterY = rect.top + rect.height / 2 + scrollY;
+                const cardCenterY = rect.top + rect.height / 2;
 
-                // Calculate target position in a circle around the card
+                // Calculate target position in a circle around the card (viewport coords)
                 const numNodes = nodes.length;
-                const angle = (index / numNodes) * Math.PI * 2;
-                const baseRadius = 180 + node.z * 80; // Vary radius by depth
-                const pulseRadius = baseRadius + (audio.bass / 255) * 50; // Pulse with bass
+                const angle = (index / numNodes) * Math.PI * 2 - Math.PI / 2; // Start from top
+                const baseRadius = 120 + node.z * 50; // Vary radius by depth
+                const bassNormalized = audio.bass / 255;
+                const pulseRadius = baseRadius + bassNormalized * 60; // Pulse with bass
 
                 const targetX = cardCenterX + Math.cos(angle) * pulseRadius;
                 const targetY = cardCenterY + Math.sin(angle) * pulseRadius;
 
-                // Smoothly move toward target position
-                node.baseX += (targetX - node.baseX) * 0.05;
-                node.baseY += (targetY - node.baseY) * 0.05;
+                // Store viewport position directly (we'll skip parallax in render)
+                node.circleX = targetX;
+                node.circleY = targetY;
+
+                // Smoothly interpolate
+                if (node.renderX === undefined) {
+                    node.renderX = node.baseX;
+                    node.renderY = node.baseY - scrollY;
+                }
+                node.renderX += (targetX - node.renderX) * 0.08;
+                node.renderY += (targetY - node.renderY) * 0.08;
             } else {
+                // Clear circle mode render positions
+                node.renderX = undefined;
+                node.renderY = undefined;
+
                 // Normal drifting behavior
                 node.baseX += node.vx;
                 node.baseY += node.vy;
@@ -146,6 +162,15 @@
 
     // Get scroll-adjusted position for 3D parallax
     function getNodePosition(node) {
+        // In circle mode, use pre-calculated viewport positions
+        if (audioCircleMode && node.renderX !== undefined) {
+            return {
+                x: node.renderX,
+                y: node.renderY
+            };
+        }
+
+        // Normal parallax mode
         const parallaxStrength = 1 - (node.z * config.scrollDepthMultiplier);
         const yOffset = scrollY * parallaxStrength;
 

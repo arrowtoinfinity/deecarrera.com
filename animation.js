@@ -327,10 +327,11 @@
                     const currentFlashColor = flash ? flash.color : null;
 
                     // Choose canvas based on node sizes (larger nodes in front of 3D model)
-                    const bothBackground = nodeA.size < SIZE_THRESHOLD && nodeB.size < SIZE_THRESHOLD;
+                    // But during audio visualization, always use background canvas
+                    const eitherInCircle = nodeA.inCircle || nodeA.exitingCircle || nodeB.inCircle || nodeB.exitingCircle;
                     const bothForeground = nodeA.size >= SIZE_THRESHOLD && nodeB.size >= SIZE_THRESHOLD;
                     const eitherForeground = nodeA.size >= SIZE_THRESHOLD || nodeB.size >= SIZE_THRESHOLD;
-                    const ctx = bothForeground ? ctxFg : ctxBg;
+                    const ctx = (eitherInCircle || !bothForeground) ? ctxBg : ctxFg;
 
                     // Draw line - darker gradient for large foreground nodes
                     ctx.beginPath();

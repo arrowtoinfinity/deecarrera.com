@@ -143,9 +143,14 @@
                 const lowRaw = audio.low || 0;    // 345 Hz - low piano notes
                 const highRaw = audio.high || 0;  // 517-689 Hz - high piano notes
 
-                // Normalize - both now have similar raw ranges (120-220)
-                const lowNorm = Math.min(1, lowRaw / 220);
-                const highNorm = Math.min(1, highRaw / 200); // Balanced with low
+                // Normalize with contrast curve - remap from floor-ceiling to 0-1
+                const floor = 80;   // Values below this become 0
+                const ceiling = 200; // Values above this become 1
+                const range = ceiling - floor;
+
+                // Remap and clamp to 0-1
+                const lowNorm = Math.max(0, Math.min(1, (lowRaw - floor) / range));
+                const highNorm = Math.max(0, Math.min(1, (highRaw - floor) / range));
 
                 // Alternating pattern: every other node reacts to low vs high
                 const isLowNode = circleIndex % 2 === 0;

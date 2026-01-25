@@ -197,17 +197,13 @@
                 console.log('Paused at:', pauseTime.toFixed(2));
             }
 
-            // Toggle play/pause
+            // Toggle play - always restart from beginning
             playBtn.addEventListener('click', () => {
                 if (isPlaying) {
                     pauseAudio();
-                } else {
-                    // If song has ended (pauseTime is 0 or past duration), restart from beginning
-                    if (audioBuffer && pauseTime >= audioBuffer.duration) {
-                        pauseTime = 0;
-                    }
-                    playAudio();
                 }
+                pauseTime = 0; // Always restart from beginning
+                playAudio();
             });
 
             // Preload audio buffer on page load for instant playback

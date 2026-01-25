@@ -122,8 +122,21 @@
                         active: true
                     };
 
-                    if (Math.random() < 0.02) {
-                        console.log('Audio: bass:', bass.toFixed(0), 'mids:', mids.toFixed(0), 'treble:', treble.toFixed(0));
+                    // Find peak frequencies for analysis
+                    let maxVal = 0, maxBin = 0;
+                    for (let i = 0; i < dataArray.length; i++) {
+                        if (dataArray[i] > maxVal) {
+                            maxVal = dataArray[i];
+                            maxBin = i;
+                        }
+                    }
+                    const peakHz = Math.round(maxBin * (44100 / 256));
+
+                    // Log detailed frequency info
+                    if (Math.random() < 0.05) {
+                        console.log('PEAK:', peakHz, 'Hz | bass:', bass.toFixed(0), 'mids:', mids.toFixed(0),
+                                    '| bins 0-4:', dataArray.slice(0,4).join(','),
+                                    '| bins 4-15:', Math.round(dataArray.slice(4,15).reduce((a,b)=>a+b,0)/11));
                     }
 
                     requestAnimationFrame(updateAudioData);

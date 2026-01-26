@@ -27,6 +27,8 @@
     let pageHeight = 0;
     let activeConnections = new Set();
     let flashingConnections = new Map(); // connectionKey -> {intensity, color}
+    let currentDriftSpeed = 1; // For smooth slow-down
+    let targetDriftSpeed = 1;
     let resizeTimeout = null;
     let lastWidth = 0;
     let lastHeight = 0;
@@ -121,6 +123,10 @@
 
     // Update node positions (drift)
     function updateNodes() {
+        // Check for nav hover slow motion
+        targetDriftSpeed = window.navSlowMotion ? 0.3 : 1;
+        currentDriftSpeed += (targetDriftSpeed - currentDriftSpeed) * 0.05;
+
         const audio = window.audioData;
         const audioActive = audio && audio.active;
         const musicCard = document.querySelector('.music-card');
@@ -312,9 +318,9 @@
                     return; // Skip to next node
                 }
 
-                // Normal drifting behavior
-                node.baseX += node.vx;
-                node.baseY += node.vy;
+                // Normal drifting behavior (affected by slow motion)
+                node.baseX += node.vx * currentDriftSpeed;
+                node.baseY += node.vy * currentDriftSpeed;
 
                 // When music is playing, push nodes away from the circle area
                 if (audioCircleMode && musicCard) {
@@ -651,4 +657,102 @@
     } else {
         init();
     }
+})();
+
+// Nav Circle Rotation Animation
+(function() {
+    const navLinks = document.querySelector('.nav-links');
+    if (!navLinks) return;
+
+    let navRotation = 0;
+    let normalSpeed = 360 / 60; // degrees per second (60s full rotation)
+    let slowSpeed = 360 / 600;  // slow on hover (10 min per rotation)
+    let currentSpeed = normalSpeed;
+    let targetSpeed = normalSpeed;
+    let lastTime = performance.now();
+    let dragVelocity = 0;
+
+    // Touch drag state
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let lastTouchX = 0;
+    let isDragging = false;
+    let touchActive = false;
+
+    // Detect hover on nav links
+    const links = navLinks.querySelectorAll('a');
+    links.forEach(link => {
+        link.addEventListener('mouseenter', () => {
+            targetSpeed = slowSpeed;
+        });
+        link.addEventListener('mouseleave', () => {
+            targetSpeed = normalSpeed;
+        });
+    });
+
+    // Scroll wheel control (desktop) - adds to rotation
+    document.addEventListener('wheel', (e) => {
+        if (e.clientY < window.innerHeight * 0.7) {
+            navRotation += e.deltaY * 0.15;
+        }
+    }, { passive: true });
+
+    // Touch drag control (mobile) - ignore touches on nav links
+    document.addEventListener('touchstart', (e) => {
+        if (e.target.closest('.nav-links a')) {
+            touchActive = false;
+            return;
+        }
+        if (e.touches[0].clientY < window.innerHeight * 0.7) {
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+            lastTouchX = touchStartX;
+            isDragging = false;
+            touchActive = true;
+        } else {
+            touchActive = false;
+        }
+    }, { passive: true });
+
+    document.addEventListener('touchmove', (e) => {
+        if (!touchActive) return;
+        const deltaX = e.touches[0].clientX - lastTouchX;
+        const totalDeltaX = Math.abs(e.touches[0].clientX - touchStartX);
+        const totalDeltaY = Math.abs(e.touches[0].clientY - touchStartY);
+        if (totalDeltaX > 30 && totalDeltaX > totalDeltaY * 1.5) {
+            isDragging = true;
+            dragVelocity = deltaX * 0.3;
+            navRotation += deltaX * 0.5;
+        }
+        lastTouchX = e.touches[0].clientX;
+    }, { passive: true });
+
+    document.addEventListener('touchend', () => {
+        isDragging = false;
+        touchActive = false;
+    }, { passive: true });
+
+    function animate(currentTime) {
+        const deltaTime = (currentTime - lastTime) / 1000;
+        lastTime = currentTime;
+
+        const speedLerp = 0.05;
+        currentSpeed += (targetSpeed - currentSpeed) * speedLerp;
+
+        // Apply drag momentum decay
+        if (Math.abs(dragVelocity) > 0.1) {
+            navRotation += dragVelocity;
+            dragVelocity *= 0.92;
+        }
+
+        // Always auto-rotate
+        navRotation -= currentSpeed * deltaTime;
+
+        const breathScale = window.breathScale || 1;
+        navLinks.style.transform = `translate(-50%, -50%) rotate(${navRotation}deg) scale(${breathScale})`;
+
+        requestAnimationFrame(animate);
+    }
+
+    requestAnimationFrame(animate);
 })();

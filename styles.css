@@ -15,6 +15,8 @@
 
 html {
     font-size: 16px;
+    background: linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 100%);
+    overscroll-behavior: none;
 }
 
 body {
@@ -25,19 +27,13 @@ body {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    overscroll-behavior: none;
 }
 
-/* Navigation */
+/* Navigation - rotating circle around 3D model */
 nav {
-    position: relative;
-    z-index: 20;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 2rem 4rem;
-    max-width: 1200px;
-    margin: 0 auto;
-    width: 100%;
+    position: static;
+    padding: 0;
 }
 
 .nav-name {
@@ -48,6 +44,12 @@ nav {
     font-size: 1.1rem;
     color: var(--text);
     text-decoration: none;
+    position: fixed;
+    top: 1.5rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 25;
+    justify-content: center;
 }
 
 .nav-logo {
@@ -56,8 +58,14 @@ nav {
 }
 
 .nav-links {
-    display: flex;
-    gap: 2rem;
+    position: fixed;
+    top: calc(50% - 4rem);
+    left: 50%;
+    width: 360px;
+    height: 360px;
+    transform: translate(-50%, -50%);
+    z-index: 12;
+    pointer-events: auto;
 }
 
 .nav-links a {
@@ -65,6 +73,12 @@ nav {
     text-decoration: none;
     font-size: 0.95rem;
     transition: color 0.2s;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    white-space: nowrap;
+    cursor: pointer;
+    padding: 10px;
 }
 
 .nav-links a:hover,
@@ -72,64 +86,72 @@ nav {
     color: var(--text);
 }
 
-/* Mobile nav - rotating circle around 3D model */
-@media (max-width: 600px) {
-    nav {
-        position: static;
-        padding: 0;
-    }
+/* Position each nav item at 60° intervals - text baseline follows circle */
+.nav-links a:nth-child(1) { /* Art - top */
+    transform: translate(-50%, -50%) rotate(-90deg) translateX(180px) rotate(90deg);
+}
+.nav-links a:nth-child(2) { /* Literature */
+    transform: translate(-50%, -50%) rotate(-30deg) translateX(180px) rotate(90deg);
+}
+.nav-links a:nth-child(3) { /* Music */
+    transform: translate(-50%, -50%) rotate(30deg) translateX(180px) rotate(90deg);
+}
+.nav-links a:nth-child(4) { /* Software - bottom */
+    transform: translate(-50%, -50%) rotate(90deg) translateX(180px) rotate(90deg);
+}
+.nav-links a:nth-child(5) { /* Hardware */
+    transform: translate(-50%, -50%) rotate(150deg) translateX(180px) rotate(90deg);
+}
+.nav-links a:nth-child(6) { /* Textiles */
+    transform: translate(-50%, -50%) rotate(210deg) translateX(180px) rotate(90deg);
+}
 
-    .nav-name {
-        position: fixed;
-        top: 1.5rem;
-        left: 50%;
-        transform: translateX(-50%);
-        z-index: 25;
-        justify-content: center;
-    }
-
+/* Larger circle on desktop */
+@media (min-width: 768px) {
     .nav-links {
-        position: fixed;
-        top: 35%;
-        left: 50%;
-        width: 360px;
-        height: 360px;
-        transform: translate(-50%, -50%);
-        animation: orbit 60s linear infinite;
-        z-index: 12;
+        width: 500px;
+        height: 500px;
     }
 
-    .nav-links a {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        font-size: 0.85rem;
-        white-space: nowrap;
+    .nav-links a:nth-child(1) {
+        transform: translate(-50%, -50%) rotate(-90deg) translateX(250px) rotate(90deg);
     }
+    .nav-links a:nth-child(2) {
+        transform: translate(-50%, -50%) rotate(-30deg) translateX(250px) rotate(90deg);
+    }
+    .nav-links a:nth-child(3) {
+        transform: translate(-50%, -50%) rotate(30deg) translateX(250px) rotate(90deg);
+    }
+    .nav-links a:nth-child(4) {
+        transform: translate(-50%, -50%) rotate(90deg) translateX(250px) rotate(90deg);
+    }
+    .nav-links a:nth-child(5) {
+        transform: translate(-50%, -50%) rotate(150deg) translateX(250px) rotate(90deg);
+    }
+    .nav-links a:nth-child(6) {
+        transform: translate(-50%, -50%) rotate(210deg) translateX(250px) rotate(90deg);
+    }
+}
 
-    /* Position each nav item at 60° intervals - text baseline follows circle */
-    .nav-links a:nth-child(1) { /* Art - top */
-        transform: translate(-50%, -50%) rotate(-90deg) translateX(180px) rotate(90deg);
-    }
-    .nav-links a:nth-child(2) { /* Literature */
-        transform: translate(-50%, -50%) rotate(-30deg) translateX(180px) rotate(90deg);
-    }
-    .nav-links a:nth-child(3) { /* Music */
-        transform: translate(-50%, -50%) rotate(30deg) translateX(180px) rotate(90deg);
-    }
-    .nav-links a:nth-child(4) { /* Software - bottom */
-        transform: translate(-50%, -50%) rotate(90deg) translateX(180px) rotate(90deg);
-    }
-    .nav-links a:nth-child(5) { /* Hardware */
-        transform: translate(-50%, -50%) rotate(150deg) translateX(180px) rotate(90deg);
-    }
-    .nav-links a:nth-child(6) { /* Textiles */
-        transform: translate(-50%, -50%) rotate(210deg) translateX(180px) rotate(90deg);
-    }
+#model-click-overlay {
+    position: fixed;
+    top: calc(50% - 4rem);
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 15;
+    pointer-events: auto;
+}
 
-    .hero {
-        padding: 14rem 0 16rem;
-    }
+main {
+    pointer-events: none;
+}
+
+main > *:not(.hero) {
+    pointer-events: auto;
 }
 
 /* Main content */
@@ -145,10 +167,37 @@ main {
 
 /* Hero */
 .hero {
-    padding: 10rem 0 12rem;
+    padding: 20rem 0 22rem;
     text-align: center;
     position: relative;
     pointer-events: none;
+}
+
+/* More hero space on mobile/condensed */
+@media (max-width: 767px) {
+    .hero {
+        padding: 8rem 0 20rem;
+    }
+
+    .hero h1 {
+        top: calc(50% - 8rem);
+    }
+
+    .hero-subtitle {
+        top: calc(50% - 5.5rem);
+    }
+
+    .hero-model {
+        top: calc(50% - 8rem);
+    }
+
+    .nav-links {
+        top: calc(50% - 8rem);
+    }
+
+    #model-click-overlay {
+        top: calc(50% - 8rem);
+    }
 }
 
 #constellation-bg {
@@ -172,21 +221,28 @@ main {
 }
 
 .hero h1 {
-    position: relative;
+    position: fixed;
+    top: calc(50% - 4rem);
+    left: 50%;
+    transform: translate(-50%, -50%);
     z-index: 20;
     font-size: 3.5rem;
     font-weight: 600;
     letter-spacing: -0.02em;
     color: #fff;
     text-shadow: 0 2px 10px rgba(0, 0, 0, 0.04), 0 4px 20px rgba(0, 0, 0, 0.02);
+    margin: 0;
+    white-space: nowrap;
 }
 
 .hero-subtitle {
-    position: relative;
+    position: fixed;
+    top: calc(50% - 1.5rem);
+    left: 50%;
+    transform: translateX(-50%);
     z-index: 20;
     font-size: 1.1rem;
     color: #fff;
-    margin-top: 0.5rem;
     letter-spacing: 0.1em;
     text-transform: lowercase;
     text-shadow: 0 2px 10px rgba(0, 0, 0, 0.04), 0 4px 20px rgba(0, 0, 0, 0.02);
@@ -194,7 +250,7 @@ main {
 
 .hero-model {
     position: fixed;
-    top: 35%;
+    top: calc(50% - 4rem);
     left: 50%;
     transform: translate(-50%, -50%);
     width: 400px;
@@ -205,6 +261,10 @@ main {
     background: transparent !important;
     pointer-events: none;
     z-index: 14;
+}
+
+.hero-model * {
+    pointer-events: none !important;
 }
 
 .hero-model::part(default-progress-bar),
@@ -220,20 +280,20 @@ main {
 
 #model-click-overlay {
     position: fixed;
-    top: 35%;
+    top: calc(50% - 4rem);
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 400px;
-    height: 400px;
-    z-index: 100;
+    width: 200px;
+    height: 200px;
+    z-index: 13;
     cursor: pointer;
     border-radius: 50%;
 }
 
 @media (max-width: 768px) {
     #model-click-overlay {
-        width: 300px;
-        height: 300px;
+        width: 150px;
+        height: 150px;
     }
 }
 
@@ -241,6 +301,11 @@ main {
     .hero-model {
         width: 300px;
         height: 300px;
+        top: calc(50% - 8rem);
+    }
+
+    .hero-subtitle {
+        top: calc(50% - 5.5rem);
     }
 }
 
@@ -896,11 +961,12 @@ footer {
     }
 
     .hero {
-        padding: 6rem 0 8rem;
+        padding: 8rem 0 20rem;
     }
 
     .hero h1 {
         font-size: 2.5rem;
+        top: calc(50% - 8rem);
     }
 
     .app-feature {

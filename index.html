@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Daniel Carrera</title>
     <link rel="icon" type="image/png" href="logo.png">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css?v=39">
     <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 </head>
 <body>
@@ -104,20 +104,22 @@
     <footer>
         <p>&copy; 2026 Daniel Carrera</p>
     </footer>
-    <script src="animation.js"></script>
+    <script src="animation.js?v=20"></script>
     <script>
         // Page transition flash effect
         document.querySelectorAll('nav a').forEach(link => {
-            link.addEventListener('click', function(e) {
-                if (this.href && !this.href.includes('#')) {
-                    e.preventDefault();
+            function navigate(e) {
+                e.preventDefault();
+                if (link.href && !link.href.includes('#')) {
                     const flash = document.querySelector('.page-flash');
                     flash.classList.add('active');
                     setTimeout(() => {
-                        window.location.href = this.href;
+                        window.location.href = link.href;
                     }, 150);
                 }
-            });
+            }
+            link.addEventListener('click', navigate);
+            link.addEventListener('touchend', navigate);
         });
     </script>
     <script>
@@ -125,8 +127,6 @@
         const heroModel = document.getElementById('hero-model');
         const clickOverlay = document.getElementById('model-click-overlay');
         if (heroModel && clickOverlay) {
-            let startTime = null;
-            let pausedTime = null;
             const duration = 20000; // 20 seconds for full infinity loop
             let scrollScale = 1;
             let mouseRotation = 0;
@@ -140,6 +140,17 @@
             let pausedMoveX = 0;
             let pausedMoveY = 0;
             let pausedNodScale = 1;  // Just the nod scale, multiply by scrollScale when rendering
+
+            // Nav hover state - freezes figure-8 rotation but keeps scale
+            let navHovered = false;
+            let frozenRotation = 0;
+            let frozenTilt = 90;
+            let frozenMoveX = 0;
+            let frozenMoveY = 0;
+            let scaleTime = 0; // Separate time for scale animation
+            let currentScaleSpeed = 1;
+            let targetScaleSpeed = 1;
+            let rotationTime = 0; // Time for rotation animation (moved up for click handler access)
 
             // Update scale based on scroll position
             function updateScrollScale() {
@@ -159,6 +170,21 @@
                 mouseRotation = Math.atan2(deltaX, 300) * (180 / Math.PI) * -1;
                 mouseTilt = Math.atan2(deltaY, 300) * (180 / Math.PI) * -1;
             }
+
+            // Listen for nav link hover
+            const navLinks = document.querySelectorAll('.nav-links a');
+            navLinks.forEach(link => {
+                link.addEventListener('mouseenter', () => {
+                    navHovered = true;
+                    window.navSlowMotion = true; // Global flag for constellation
+                    targetScaleSpeed = 0.3; // Slow scale animation
+                });
+                link.addEventListener('mouseleave', () => {
+                    navHovered = false;
+                    window.navSlowMotion = false;
+                    targetScaleSpeed = 1; // Resume normal speed
+                });
+            });
 
             // Pointer event handlers for click and drag (on overlay)
             let clickStartX = 0;
@@ -205,10 +231,8 @@
                 if (dx < 5 && dy < 5) {
                     isPaused = !isPaused;
                     if (isPaused) {
-                        pausedTime = performance.now();
-                        // Capture exact current position from the animation
-                        const elapsed = pausedTime - startTime;
-                        const t = (elapsed / duration) * Math.PI * 2;
+                        // Capture exact current position from rotationTime
+                        const t = (rotationTime / duration) * Math.PI * 2;
                         const baseRotation = Math.sin(t) * 25;
                         const tiltOffset = Math.sin(t * 2);
                         const baseTilt = 80 + tiltOffset * 10;
@@ -217,12 +241,9 @@
                         // Capture transform values
                         pausedMoveX = Math.sin(t) * 10;
                         pausedMoveY = Math.sin(t * 2) * 4;
-                        pausedNodScale = 1 + tiltOffset * 0.15;  // Store nod scale, scroll scale applied on render
+                        pausedNodScale = 1 + tiltOffset * 0.15;
                         clickOverlay.style.cursor = 'grab';
                     } else {
-                        if (pausedTime && startTime) {
-                            startTime += performance.now() - pausedTime;
-                        }
                         clickOverlay.style.cursor = 'pointer';
                     }
                 }
@@ -237,28 +258,62 @@
             window.addEventListener('mousemove', updateMousePosition, { passive: true });
             updateScrollScale();
 
+            let lastTimestamp = null;
+            let wasHovered = false;
+
             function animateRotation(timestamp) {
-                if (!startTime) startTime = timestamp;
+                if (!lastTimestamp) lastTimestamp = timestamp;
+                const deltaTime = timestamp - lastTimestamp;
+                lastTimestamp = timestamp;
+
+                // Smoothly interpolate scale speed
+                currentScaleSpeed += (targetScaleSpeed - currentScaleSpeed) * 0.05;
+
+                // Scale time always advances (at varying speed)
+                scaleTime += deltaTime * currentScaleSpeed;
 
                 if (!isPaused) {
-                    const elapsed = timestamp - startTime;
-                    const t = (elapsed / duration) * Math.PI * 2;
+                    // Rotation time only advances when not hovering nav
+                    if (!navHovered) {
+                        rotationTime += deltaTime;
+                    }
 
-                    const baseRotation = Math.sin(t) * 25;
-                    const tiltOffset = Math.sin(t * 2);
-                    const baseTilt = 80 + tiltOffset * 10;
+                    // Capture frozen position when entering hover
+                    if (navHovered && !wasHovered) {
+                        const t = (rotationTime / duration) * Math.PI * 2;
+                        frozenRotation = Math.sin(t) * 25 + mouseRotation;
+                        frozenTilt = 80 + Math.sin(t * 2) * 10 + mouseTilt;
+                        frozenMoveX = Math.sin(t) * 10;
+                        frozenMoveY = Math.sin(t * 2) * 4;
+                    }
+                    wasHovered = navHovered;
 
-                    const rotation = baseRotation + mouseRotation;
-                    const tilt = baseTilt + mouseTilt;
-
-                    const moveX = Math.sin(t) * 10;
-                    const moveY = Math.sin(t * 2) * 4;
-
+                    // Calculate scale from its own time
+                    const scaleT = (scaleTime / duration) * Math.PI * 2;
+                    const tiltOffset = Math.sin(scaleT * 2);
                     const nodScale = 1 + tiltOffset * 0.15;
                     const totalScale = nodScale * scrollScale;
 
-                    heroModel.setAttribute('camera-orbit', `${rotation}deg ${tilt}deg auto`);
-                    heroModel.style.transform = `translate(calc(-50% + ${moveX}px), calc(-50% + ${moveY}px)) scale(${totalScale})`;
+                    // Share breathing scale with nav circle
+                    window.breathScale = 1 + tiltOffset * 0.08; // Subtler for nav
+
+                    if (navHovered) {
+                        // Rotation frozen, scale animates
+                        heroModel.setAttribute('camera-orbit', `${frozenRotation}deg ${frozenTilt}deg auto`);
+                        heroModel.style.transform = `translate(calc(-50% + ${frozenMoveX}px), calc(-50% + ${frozenMoveY}px)) scale(${totalScale})`;
+                    } else {
+                        // Normal figure-8 animation
+                        const t = (rotationTime / duration) * Math.PI * 2;
+                        const baseRotation = Math.sin(t) * 25;
+                        const baseTilt = 80 + Math.sin(t * 2) * 10;
+                        const rotation = baseRotation + mouseRotation;
+                        const tilt = baseTilt + mouseTilt;
+                        const moveX = Math.sin(t) * 10;
+                        const moveY = Math.sin(t * 2) * 4;
+
+                        heroModel.setAttribute('camera-orbit', `${rotation}deg ${tilt}deg auto`);
+                        heroModel.style.transform = `translate(calc(-50% + ${moveX}px), calc(-50% + ${moveY}px)) scale(${totalScale})`;
+                    }
                 } else {
                     // When paused, maintain position but allow scroll scale to update
                     const totalScale = pausedNodScale * scrollScale;

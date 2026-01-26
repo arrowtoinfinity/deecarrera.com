@@ -96,7 +96,7 @@ nav {
         height: 360px;
         transform: translate(-50%, -50%);
         animation: orbit 60s linear infinite;
-        z-index: 21;
+        z-index: 12;
     }
 
     .nav-links a {
@@ -125,6 +125,10 @@ nav {
     }
     .nav-links a:nth-child(6) { /* Textiles */
         transform: translate(-50%, -50%) rotate(210deg) translateX(180px) rotate(90deg);
+    }
+
+    .hero {
+        padding: 14rem 0 16rem;
     }
 }
 
@@ -199,8 +203,7 @@ main {
     --progress-bar-color: transparent;
     --progress-bar-height: 0;
     background: transparent !important;
-    pointer-events: auto;
-    cursor: pointer;
+    pointer-events: none;
     z-index: 14;
 }
 

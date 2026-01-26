@@ -92,10 +92,10 @@ nav {
         position: fixed;
         top: 35%;
         left: 50%;
-        width: 280px;
-        height: 280px;
+        width: 360px;
+        height: 360px;
         transform: translate(-50%, -50%);
-        animation: orbit 30s linear infinite;
+        animation: orbit 60s linear infinite;
         z-index: 21;
     }
 
@@ -109,22 +109,22 @@ nav {
 
     /* Position each nav item at 60° intervals - text baseline follows circle */
     .nav-links a:nth-child(1) { /* Art - top */
-        transform: translate(-50%, -50%) rotate(-90deg) translateX(140px) rotate(90deg);
+        transform: translate(-50%, -50%) rotate(-90deg) translateX(180px) rotate(90deg);
     }
     .nav-links a:nth-child(2) { /* Literature */
-        transform: translate(-50%, -50%) rotate(-30deg) translateX(140px) rotate(90deg);
+        transform: translate(-50%, -50%) rotate(-30deg) translateX(180px) rotate(90deg);
     }
     .nav-links a:nth-child(3) { /* Music */
-        transform: translate(-50%, -50%) rotate(30deg) translateX(140px) rotate(90deg);
+        transform: translate(-50%, -50%) rotate(30deg) translateX(180px) rotate(90deg);
     }
     .nav-links a:nth-child(4) { /* Software - bottom */
-        transform: translate(-50%, -50%) rotate(90deg) translateX(140px) rotate(90deg);
+        transform: translate(-50%, -50%) rotate(90deg) translateX(180px) rotate(90deg);
     }
     .nav-links a:nth-child(5) { /* Hardware */
-        transform: translate(-50%, -50%) rotate(150deg) translateX(140px) rotate(90deg);
+        transform: translate(-50%, -50%) rotate(150deg) translateX(180px) rotate(90deg);
     }
     .nav-links a:nth-child(6) { /* Textiles */
-        transform: translate(-50%, -50%) rotate(210deg) translateX(140px) rotate(90deg);
+        transform: translate(-50%, -50%) rotate(210deg) translateX(180px) rotate(90deg);
     }
 }
 

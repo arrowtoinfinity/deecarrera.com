@@ -105,27 +105,27 @@ nav {
         left: 50%;
         font-size: 0.85rem;
         white-space: nowrap;
-        animation: counter-rotate 30s linear infinite;
+        transform-origin: center center;
     }
 
-    /* Position each nav item at 60° intervals around circle */
+    /* Position each nav item at 60° intervals - text follows circle path */
     .nav-links a:nth-child(1) { /* Art - top */
-        transform: translateX(-50%) translateY(-190px);
+        transform: translate(-50%, -50%) rotate(-90deg) translateX(140px);
     }
-    .nav-links a:nth-child(2) { /* Literature - top right */
-        transform: translateX(70px) translateY(-120px);
+    .nav-links a:nth-child(2) { /* Literature */
+        transform: translate(-50%, -50%) rotate(-30deg) translateX(140px);
     }
-    .nav-links a:nth-child(3) { /* Music - bottom right */
-        transform: translateX(70px) translateY(70px);
+    .nav-links a:nth-child(3) { /* Music */
+        transform: translate(-50%, -50%) rotate(30deg) translateX(140px);
     }
     .nav-links a:nth-child(4) { /* Software - bottom */
-        transform: translateX(-50%) translateY(140px);
+        transform: translate(-50%, -50%) rotate(90deg) translateX(140px);
     }
-    .nav-links a:nth-child(5) { /* Hardware - bottom left */
-        transform: translateX(-140px) translateY(70px);
+    .nav-links a:nth-child(5) { /* Hardware */
+        transform: translate(-50%, -50%) rotate(150deg) translateX(140px);
     }
-    .nav-links a:nth-child(6) { /* Textiles - top left */
-        transform: translateX(-140px) translateY(-120px);
+    .nav-links a:nth-child(6) { /* Textiles */
+        transform: translate(-50%, -50%) rotate(210deg) translateX(140px);
     }
 }
 
@@ -863,15 +863,10 @@ section h2 {
     100% { opacity: 0; }
 }
 
-/* Rotating navigation */
+/* Rotating navigation - counter-clockwise */
 @keyframes orbit {
     from { transform: translate(-50%, -50%) rotate(0deg); }
-    to { transform: translate(-50%, -50%) rotate(360deg); }
-}
-
-@keyframes counter-rotate {
-    from { rotate: 0deg; }
-    to { rotate: -360deg; }
+    to { transform: translate(-50%, -50%) rotate(-360deg); }
 }
 
 /* Footer */

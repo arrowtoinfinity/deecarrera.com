@@ -201,7 +201,7 @@ main {
     background: transparent !important;
     pointer-events: auto;
     cursor: pointer;
-    z-index: 16;
+    z-index: 14;
 }
 
 .hero-model::part(default-progress-bar),

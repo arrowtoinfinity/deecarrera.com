@@ -6,6 +6,7 @@
     <title>Literature - Daniel Carrera</title>
     <link rel="icon" type="image/png" href="logo.png">
     <link rel="stylesheet" href="styles.css?v=56">
+    <script src="cms-client.js?v=1"></script>
 </head>
 <body class="subpage">
     <div class="page-flash"></div>
@@ -30,19 +31,20 @@
             <a href="/textiles.html" id="nav-textiles">Textiles</a>
         </div>
         <script>
-            (function() {
-                const settings = JSON.parse(localStorage.getItem('site_settings') || '{}');
+            (async function() {
+                const cms = await window.CMS.fetchCms();
+                const settings = cms.settings || {};
                 const navContainer = document.getElementById('nav-links');
                 const navItems = ['art', 'literature', 'music', 'software', 'hardware', 'textiles'];
 
-                navItems.forEach(key => {
+                navItems.forEach((key) => {
                     const el = document.getElementById('nav-' + key);
                     const showKey = 'show' + key.charAt(0).toUpperCase() + key.slice(1) + 'Nav';
                     if (el && settings[showKey] === false) el.style.display = 'none';
                 });
 
                 if (settings.navOrder && navContainer) {
-                    settings.navOrder.forEach(key => {
+                    settings.navOrder.forEach((key) => {
                         const el = document.getElementById('nav-' + key);
                         if (el) navContainer.appendChild(el);
                     });
@@ -64,7 +66,7 @@
         </div>
 
         <section class="lit-list" id="lit-list">
-            <!-- Posts loaded dynamically from localStorage -->
+            <!-- Posts loaded dynamically from CMS data -->
         </section>
     </main>
 
@@ -93,75 +95,9 @@
         });
     </script>
     <script>
-        const STORAGE_KEY = 'literature_posts';
-
-        // Default sample posts (shown when localStorage is empty)
-        const defaultPosts = [
-            {
-                id: 'default_1',
-                type: 'essay',
-                title: 'On the Nature of Creative Work',
-                date: '2026-01-20',
-                content: 'A longer exploration of how creativity intersects with discipline, and why the most meaningful work often emerges from constraint rather than freedom.',
-                link: '#'
-            },
-            {
-                id: 'default_2',
-                type: 'meditation',
-                quote: 'The impediment to action advances action. What stands in the way becomes the way.',
-                citation: '- Marcus Aurelius, Meditations'
-            },
-            {
-                id: 'default_3',
-                type: 'post',
-                title: 'Your First Blog Post',
-                date: '2026-01-23',
-                content: 'This is where your blog post excerpt will appear. Write about anything that interests you.',
-                link: '#'
-            },
-            {
-                id: 'default_4',
-                type: 'meditation',
-                quote: 'Waste no more time arguing about what a good man should be. Be one.',
-                citation: '- Marcus Aurelius, Meditations'
-            },
-            {
-                id: 'default_5',
-                type: 'essay',
-                title: 'The Quiet Architecture of Habit',
-                date: '2026-01-15',
-                content: 'How small, repeated actions compound into the invisible structure of our lives, and why understanding this changes everything about how we approach change.',
-                link: '#'
-            }
-        ];
-
         function formatDate(dateStr) {
             const date = new Date(dateStr);
             return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-        }
-
-        function getPosts() {
-            const data = localStorage.getItem(STORAGE_KEY);
-            const posts = data ? JSON.parse(data) : [];
-            const allPosts = posts.length > 0 ? posts : defaultPosts;
-
-            // Filter based on visibility
-            return allPosts.filter(post => {
-                const visibility = post.visibility || 'visible';
-
-                // Hide hidden posts
-                if (visibility === 'hidden') return false;
-
-                // Hide scheduled posts that haven't reached their publish date
-                if (visibility === 'scheduled') {
-                    if (post.publishDate && new Date(post.publishDate) > new Date()) {
-                        return false;
-                    }
-                }
-
-                // Show visible and coming_soon posts
-                return true;
-            });
         }
 
         function isComingSoon(post) {
@@ -170,10 +106,8 @@
 
         function renderPost(post) {
             const comingSoon = isComingSoon(post);
-            const comingSoonClass = comingSoon ? ' content-coming-soon' : '';
             const typeLabel = post.type === 'essay' ? 'Article' : post.type === 'meditation' ? 'Reflection' : post.type === 'post' ? 'Tangent' : post.type.charAt(0).toUpperCase() + post.type.slice(1);
 
-            // Don't reveal real content for coming soon - show placeholder only
             if (comingSoon) {
                 if (post.type === 'meditation') {
                     return `
@@ -183,15 +117,14 @@
                             <cite>Coming Soon</cite>
                         </article>
                     `;
-                } else {
-                    return `
-                        <article class="lit-item content-coming-soon" data-type="${post.type}">
-                            <span class="lit-type-label">${typeLabel}</span>
-                            <h2>Coming Soon</h2>
-                            <p>This content will be available soon.</p>
-                        </article>
-                    `;
                 }
+                return `
+                    <article class="lit-item content-coming-soon" data-type="${post.type}">
+                        <span class="lit-type-label">${typeLabel}</span>
+                        <h2>Coming Soon</h2>
+                        <p>This content will be available soon.</p>
+                    </article>
+                `;
             }
 
             if (post.type === 'meditation') {
@@ -204,53 +137,46 @@
                         <cite>${post.citation || ''}</cite>
                     </article>
                 `;
-            } else {
-                return `
-                    <article class="lit-item" data-type="${post.type}">
-                        <span class="lit-type-label">${typeLabel}</span>
-                        <time datetime="${post.date}">${formatDate(post.date)}</time>
-                        <h2><a href="${post.link || '#'}">${post.title}</a></h2>
-                        <p>${post.content}</p>
-                    </article>
-                `;
             }
-        }
 
-        function renderPosts() {
-            const container = document.getElementById('lit-list');
-            const posts = getPosts();
-            container.innerHTML = posts.map(renderPost).join('');
+            return `
+                <article class="lit-item" data-type="${post.type}">
+                    <span class="lit-type-label">${typeLabel}</span>
+                    <time datetime="${post.date}">${formatDate(post.date)}</time>
+                    <h2><a href="${post.link || '#'}">${post.title}</a></h2>
+                    <p>${post.content}</p>
+                </article>
+            `;
         }
 
         function setupFilters() {
             const tabs = document.querySelectorAll('.lit-tab');
-
-            tabs.forEach(tab => {
+            tabs.forEach((tab) => {
                 tab.addEventListener('click', () => {
-                    // Update active tab
-                    tabs.forEach(t => t.classList.remove('active'));
+                    tabs.forEach((t) => t.classList.remove('active'));
                     tab.classList.add('active');
-
-                    // Filter items
                     const filter = tab.dataset.filter;
                     const items = document.querySelectorAll('.lit-item');
-                    items.forEach(item => {
-                        if (filter === 'all' || item.dataset.type === filter) {
-                            item.style.display = '';
-                        } else {
-                            item.style.display = 'none';
-                        }
+                    items.forEach((item) => {
+                        item.style.display = filter === 'all' || item.dataset.type === filter ? '' : 'none';
                     });
                 });
             });
         }
 
-        // Initialize
-        document.addEventListener('DOMContentLoaded', () => {
-            renderPosts();
+        document.addEventListener('DOMContentLoaded', async () => {
+            const cms = await window.CMS.fetchCms();
+            const posts = (Array.isArray(cms.posts) ? cms.posts : []).filter((post) => {
+                const visibility = post.visibility || 'visible';
+                if (visibility === 'hidden') return false;
+                if (visibility === 'scheduled' && post.publishDate && new Date(post.publishDate) > new Date()) return false;
+                return true;
+            });
+
+            const container = document.getElementById('lit-list');
+            container.innerHTML = posts.map(renderPost).join('');
             setupFilters();
 
-            // Handle filter from URL query param
             const urlParams = new URLSearchParams(window.location.search);
             const filterParam = urlParams.get('filter');
             if (filterParam) {
@@ -258,7 +184,6 @@
                 if (tab) tab.click();
             }
 
-            // Scroll to hash if present
             if (window.location.hash) {
                 const target = document.querySelector(window.location.hash);
                 if (target) setTimeout(() => target.scrollIntoView({ behavior: 'smooth' }), 100);

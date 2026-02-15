@@ -6,6 +6,7 @@
     <title>Art - Daniel Carrera</title>
     <link rel="icon" type="image/png" href="logo.png">
     <link rel="stylesheet" href="styles.css?v=56">
+    <script src="cms-client.js?v=1"></script>
 </head>
 <body class="subpage">
     <div class="page-flash"></div>
@@ -30,21 +31,20 @@
             <a href="/textiles.html" id="nav-textiles">Textiles</a>
         </div>
         <script>
-            (function() {
-                const settings = JSON.parse(localStorage.getItem('site_settings') || '{}');
+            (async function() {
+                const cms = await window.CMS.fetchCms();
+                const settings = cms.settings || {};
                 const navContainer = document.getElementById('nav-links');
                 const navItems = ['art', 'literature', 'music', 'software', 'hardware', 'textiles'];
 
-                // Apply visibility
-                navItems.forEach(key => {
+                navItems.forEach((key) => {
                     const el = document.getElementById('nav-' + key);
                     const showKey = 'show' + key.charAt(0).toUpperCase() + key.slice(1) + 'Nav';
                     if (el && settings[showKey] === false) el.style.display = 'none';
                 });
 
-                // Apply nav order
                 if (settings.navOrder && navContainer) {
-                    settings.navOrder.forEach(key => {
+                    settings.navOrder.forEach((key) => {
                         const el = document.getElementById('nav-' + key);
                         if (el) navContainer.appendChild(el);
                     });
@@ -71,46 +71,14 @@
         </section>
 
         <script>
-            (function() {
-                const VIDEOS_KEY = 'art_videos';
-                const PHOTOS_KEY = 'art_photos';
+            (async function() {
+                const cms = await window.CMS.fetchCms();
+                const videos = (Array.isArray(cms.videos) ? cms.videos : []).filter((video) => video.visibility !== 'hidden');
+                const photos = (Array.isArray(cms.photos) ? cms.photos : []).filter((photo) => photo.visibility !== 'hidden');
 
-                const defaultVideos = [
-                    { id: 'vid_1', title: 'Video 1', url: '', thumbnail: '', visibility: 'visible' },
-                    { id: 'vid_2', title: 'Video 2', url: '', thumbnail: '', visibility: 'visible' },
-                    { id: 'vid_3', title: 'Video 3', url: '', thumbnail: '', visibility: 'visible' },
-                    { id: 'vid_4', title: 'Video 4', url: '', thumbnail: '', visibility: 'visible' },
-                    { id: 'vid_5', title: 'Video 5', url: '', thumbnail: '', visibility: 'visible' }
-                ];
-
-                const defaultPhotos = [
-                    { id: 'photo_1', title: 'Photo 1', url: '', visibility: 'visible' },
-                    { id: 'photo_2', title: 'Photo 2', url: '', visibility: 'visible' },
-                    { id: 'photo_3', title: 'Photo 3', url: '', visibility: 'visible' },
-                    { id: 'photo_4', title: 'Photo 4', url: '', visibility: 'visible' },
-                    { id: 'photo_5', title: 'Photo 5', url: '', visibility: 'visible' },
-                    { id: 'photo_6', title: 'Photo 6', url: '', visibility: 'visible' }
-                ];
-
-                function getVideos() {
-                    const data = localStorage.getItem(VIDEOS_KEY);
-                    const videos = data ? JSON.parse(data) : defaultVideos;
-                    return videos.filter(v => v.visibility !== 'hidden');
-                }
-
-                function getPhotos() {
-                    const data = localStorage.getItem(PHOTOS_KEY);
-                    const photos = data ? JSON.parse(data) : defaultPhotos;
-                    return photos.filter(p => p.visibility !== 'hidden');
-                }
-
-                function renderVideos() {
-                    const videos = getVideos();
-                    const track = document.getElementById('video-track');
-                    if (!track || videos.length === 0) return;
-
-                    // Render videos (with duplicates for seamless loop)
-                    const videoHTML = videos.map(video => {
+                const track = document.getElementById('video-track');
+                if (track && videos.length > 0) {
+                    const videoHTML = videos.map((video) => {
                         const isComingSoon = video.visibility === 'coming_soon';
                         const comingSoonClass = isComingSoon ? ' content-coming-soon' : '';
 
@@ -125,21 +93,18 @@
                                 <img src="${video.thumbnail}" alt="${video.title}">
                             </div>`;
                         }
+
                         return `<div class="video-item">
                             <div class="video-placeholder"><span>${video.title}</span></div>
                         </div>`;
                     }).join('');
 
-                    // Duplicate for seamless carousel loop
                     track.innerHTML = videoHTML + videoHTML;
                 }
 
-                function renderPhotos() {
-                    const photos = getPhotos();
-                    const grid = document.getElementById('photo-grid');
-                    if (!grid) return;
-
-                    grid.innerHTML = photos.map(photo => {
+                const grid = document.getElementById('photo-grid');
+                if (grid) {
+                    grid.innerHTML = photos.map((photo) => {
                         const isComingSoon = photo.visibility === 'coming_soon';
                         const comingSoonClass = isComingSoon ? ' content-coming-soon' : '';
 
@@ -154,16 +119,13 @@
                                 <img src="${photo.url}" alt="${photo.title}">
                             </div>`;
                         }
+
                         return `<div class="photo-item">
                             <div class="photo-placeholder"><span>${photo.title}</span></div>
                         </div>`;
                     }).join('');
                 }
 
-                renderVideos();
-                renderPhotos();
-
-                // Scroll to hash if present
                 if (window.location.hash) {
                     const target = document.querySelector(window.location.hash);
                     if (target) setTimeout(() => target.scrollIntoView({ behavior: 'smooth' }), 100);

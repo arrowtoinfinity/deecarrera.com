@@ -6,6 +6,7 @@
     <title>Admin - Daniel Carrera</title>
     <link rel="icon" type="image/png" href="logo.png">
     <link rel="stylesheet" href="styles.css?v=56">
+    <script src="cms-client.js?v=1"></script>
 </head>
 <body class="subpage">
     <canvas id="constellation-bg"></canvas>
@@ -38,6 +39,11 @@
                 <button class="admin-capsule" data-panel="music">Music</button>
                 <button class="admin-capsule" data-panel="software">Software</button>
                 <button class="admin-capsule" data-panel="textiles">Textiles</button>
+            </div>
+
+            <div class="admin-actions" id="cms-sync-controls">
+                <button id="cms-config-btn" class="admin-btn">Configure Sync</button>
+                <span id="cms-sync-status" class="admin-empty">Sync idle</span>
             </div>
 
             <section class="admin-panel" id="panel-homepage">
@@ -511,6 +517,160 @@
         const TRACKS_KEY = 'music_tracks';
         const HARDWARE_KEY = 'hardware_projects';
         const TEXTILES_KEY = 'textiles_items';
+        const CMS_MIGRATION_FLAG = 'cms_migrated_v1';
+        const CMS_WORKER_URL_KEY = 'cms_worker_url';
+        const DEFAULT_CMS_WORKER_URL = 'https://REPLACE_WITH_YOUR_WORKER_URL';
+        const CMS_KEYS = [STORAGE_KEY, SETTINGS_KEY, APPS_KEY, VIDEOS_KEY, PHOTOS_KEY, TRACKS_KEY, HARDWARE_KEY, TEXTILES_KEY];
+
+        let cmsHydrating = false;
+        let cmsSyncTimer = null;
+        let cmsSyncReason = '';
+        let cmsSyncInFlight = false;
+
+        function setSyncStatus(message) {
+            const statusEl = document.getElementById('cms-sync-status');
+            if (statusEl) statusEl.textContent = message;
+        }
+
+        function hasLocalCmsData() {
+            return CMS_KEYS.some((key) => localStorage.getItem(key) !== null);
+        }
+
+        function parseStorageArray(key, fallback) {
+            const raw = localStorage.getItem(key);
+            if (!raw) return fallback;
+            try {
+                const parsed = JSON.parse(raw);
+                return Array.isArray(parsed) ? parsed : fallback;
+            } catch {
+                return fallback;
+            }
+        }
+
+        function parseStorageObject(key, fallback) {
+            const raw = localStorage.getItem(key);
+            if (!raw) return fallback;
+            try {
+                const parsed = JSON.parse(raw);
+                return parsed && typeof parsed === 'object' ? parsed : fallback;
+            } catch {
+                return fallback;
+            }
+        }
+
+        function buildCmsFromLocalStorage() {
+            return window.CMS.mergeCms({
+                version: 1,
+                updatedAt: new Date().toISOString(),
+                settings: parseStorageObject(SETTINGS_KEY, {}),
+                posts: parseStorageArray(STORAGE_KEY, []),
+                apps: parseStorageArray(APPS_KEY, []),
+                videos: parseStorageArray(VIDEOS_KEY, []),
+                photos: parseStorageArray(PHOTOS_KEY, []),
+                tracks: parseStorageArray(TRACKS_KEY, []),
+                hardware: parseStorageArray(HARDWARE_KEY, []),
+                textiles: parseStorageArray(TEXTILES_KEY, [])
+            });
+        }
+
+        function applyCmsToLocalStorage(cms) {
+            cmsHydrating = true;
+            try {
+                localStorage.setItem(SETTINGS_KEY, JSON.stringify(cms.settings || {}));
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(cms.posts || []));
+                localStorage.setItem(APPS_KEY, JSON.stringify(cms.apps || []));
+                localStorage.setItem(VIDEOS_KEY, JSON.stringify(cms.videos || []));
+                localStorage.setItem(PHOTOS_KEY, JSON.stringify(cms.photos || []));
+                localStorage.setItem(TRACKS_KEY, JSON.stringify(cms.tracks || []));
+                localStorage.setItem(HARDWARE_KEY, JSON.stringify(cms.hardware || []));
+                localStorage.setItem(TEXTILES_KEY, JSON.stringify(cms.textiles || []));
+            } finally {
+                cmsHydrating = false;
+            }
+        }
+
+        async function initializeCmsStorage() {
+            const migrated = localStorage.getItem(CMS_MIGRATION_FLAG) === '1';
+            const hasLocal = hasLocalCmsData();
+            const remoteCms = await window.CMS.fetchCms();
+
+            if (hasLocal && !migrated) {
+                setSyncStatus('Using local data. First save will sync to GitHub.');
+                return;
+            }
+
+            applyCmsToLocalStorage(remoteCms);
+            setSyncStatus('Loaded from GitHub JSON.');
+        }
+
+        async function getSyncConfig() {
+            let workerUrl = (localStorage.getItem(CMS_WORKER_URL_KEY) || '').trim();
+            if (!workerUrl) workerUrl = DEFAULT_CMS_WORKER_URL;
+
+            if (!workerUrl || workerUrl.includes('REPLACE_WITH_YOUR_WORKER_URL')) {
+                const entered = prompt('Enter your Cloudflare Worker base URL (example: https://deecarrera-cms.your-subdomain.workers.dev)', workerUrl.includes('http') ? workerUrl : '');
+                if (!entered) throw new Error('CMS sync canceled: missing Worker URL.');
+                workerUrl = entered.trim();
+            }
+            workerUrl = workerUrl.replace(/\/$/, '');
+            localStorage.setItem(CMS_WORKER_URL_KEY, workerUrl);
+
+            let adminKey = window.CMS.getAdminKey();
+            if (!adminKey) {
+                const enteredKey = prompt('Enter CMS admin key');
+                if (!enteredKey) throw new Error('CMS sync canceled: missing admin key.');
+                adminKey = enteredKey.trim();
+                window.CMS.setAdminKey(adminKey);
+            }
+
+            return { workerUrl, adminKey };
+        }
+
+        async function flushCmsSync() {
+            if (cmsSyncInFlight || !cmsSyncReason) return;
+            cmsSyncInFlight = true;
+
+            while (cmsSyncReason) {
+                const reason = cmsSyncReason;
+                cmsSyncReason = '';
+                try {
+                    setSyncStatus(`Syncing... (${reason})`);
+                    const { workerUrl, adminKey } = await getSyncConfig();
+                    const cmsPayload = buildCmsFromLocalStorage();
+                    await window.CMS.saveCmsViaWorker(cmsPayload, {
+                        workerUrl,
+                        adminKey,
+                        commitMessage: `cms: ${reason} ${new Date().toISOString()}`
+                    });
+                    localStorage.setItem(CMS_MIGRATION_FLAG, '1');
+                    setSyncStatus(`Synced to GitHub at ${new Date().toLocaleTimeString()}`);
+                } catch (error) {
+                    setSyncStatus(`Sync failed: ${error.message}`);
+                }
+            }
+
+            cmsSyncInFlight = false;
+        }
+
+        function queueCmsSync(reason) {
+            if (cmsHydrating) return;
+            cmsSyncReason = reason || 'save';
+            clearTimeout(cmsSyncTimer);
+            cmsSyncTimer = setTimeout(() => {
+                flushCmsSync();
+            }, 400);
+        }
+
+        function configureCmsSync() {
+            window.CMS.clearAdminKey();
+            getSyncConfig()
+                .then(() => {
+                    setSyncStatus('Sync configured. Next save will push to GitHub.');
+                })
+                .catch((error) => {
+                    setSyncStatus(error.message);
+                });
+        }
 
         // Site settings functions
         function getSettings() {
@@ -541,6 +701,7 @@
 
         function saveSettings(settings) {
             localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+            queueCmsSync('settings-update');
         }
 
         function loadSettingsUI() {
@@ -824,6 +985,7 @@
 
         function savePosts(posts) {
             localStorage.setItem(STORAGE_KEY, JSON.stringify(posts));
+            queueCmsSync('posts-update');
         }
 
         function addPost(post) {
@@ -967,12 +1129,14 @@
                 },
                 save: (items) => {
                     localStorage.setItem(storageKey, JSON.stringify(items));
+                    queueCmsSync(`${storageKey}-save`);
                 },
                 add: (item) => {
                     const items = JSON.parse(localStorage.getItem(storageKey) || '[]');
                     item.id = 'item_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
                     items.unshift(item);
                     localStorage.setItem(storageKey, JSON.stringify(items));
+                    queueCmsSync(`${storageKey}-add`);
                     return item;
                 },
                 update: (id, updates) => {
@@ -981,12 +1145,14 @@
                     if (index !== -1) {
                         items[index] = { ...items[index], ...updates };
                         localStorage.setItem(storageKey, JSON.stringify(items));
+                        queueCmsSync(`${storageKey}-update`);
                     }
                 },
                 delete: (id) => {
                     const items = JSON.parse(localStorage.getItem(storageKey) || '[]');
                     const filtered = items.filter(i => i.id !== id);
                     localStorage.setItem(storageKey, JSON.stringify(filtered));
+                    queueCmsSync(`${storageKey}-delete`);
                 },
                 get: (id) => {
                     const items = JSON.parse(localStorage.getItem(storageKey) || '[]');
@@ -1272,7 +1438,13 @@
         }
 
         // ===== Event Listeners =====
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                await initializeCmsStorage();
+            } catch (error) {
+                setSyncStatus(`Using local fallback: ${error.message}`);
+            }
+
             // Setup panel toggles
             setupPanelToggles();
             // Load site settings
@@ -1297,6 +1469,7 @@
 
             // Setup content forms
             setupContentForms();
+            document.getElementById('cms-config-btn')?.addEventListener('click', configureCmsSync);
 
             // New post button
             document.getElementById('new-post-btn').addEventListener('click', () => openEditor());

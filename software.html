@@ -6,6 +6,7 @@
     <title>Software - Daniel Carrera</title>
     <link rel="icon" type="image/png" href="logo.png">
     <link rel="stylesheet" href="styles.css?v=56">
+    <script src="cms-client.js?v=1"></script>
 </head>
 <body class="subpage">
     <div class="page-flash"></div>
@@ -30,19 +31,20 @@
             <a href="/textiles.html" id="nav-textiles">Textiles</a>
         </div>
         <script>
-            (function() {
-                const settings = JSON.parse(localStorage.getItem('site_settings') || '{}');
+            (async function() {
+                const cms = await window.CMS.fetchCms();
+                const settings = cms.settings || {};
                 const navContainer = document.getElementById('nav-links');
                 const navItems = ['art', 'literature', 'music', 'software', 'hardware', 'textiles'];
 
-                navItems.forEach(key => {
+                navItems.forEach((key) => {
                     const el = document.getElementById('nav-' + key);
                     const showKey = 'show' + key.charAt(0).toUpperCase() + key.slice(1) + 'Nav';
                     if (el && settings[showKey] === false) el.style.display = 'none';
                 });
 
                 if (settings.navOrder && navContainer) {
-                    settings.navOrder.forEach(key => {
+                    settings.navOrder.forEach((key) => {
                         const el = document.getElementById('nav-' + key);
                         if (el) navContainer.appendChild(el);
                     });
@@ -58,23 +60,12 @@
 
         <section class="apps-list" id="apps-list"></section>
         <script>
-            (function() {
-                const APPS_KEY = 'software_apps';
-                const defaultApps = [
-                    { id: 'app_1', name: 'Tiempo', subtitle: 'AI-Daily Planner for iOS and macOS', description: 'Tiempo reimagines how you interact with your calendar. With a focus on simplicity and elegance, it helps you manage your time without the clutter.', icon: 'icon-tiempo.png', link: '#', status: 'available' },
-                    { id: 'app_2', name: 'Synesthesia', subtitle: 'VisionOS app for experiencing music visually', icon: 'icon-synesthesia.png', status: 'coming_soon' },
-                    { id: 'app_3', name: 'Arrow', subtitle: 'VisionOS app for Spatial Messaging', icon: 'icon-arrow.png', status: 'coming_soon' }
-                ];
-
-                function getApps() {
-                    const data = localStorage.getItem(APPS_KEY);
-                    return data ? JSON.parse(data) : defaultApps;
-                }
-
-                const apps = getApps().filter(app => app.status !== 'hidden');
+            (async function() {
+                const cms = await window.CMS.fetchCms();
+                const apps = (Array.isArray(cms.apps) ? cms.apps : []).filter((app) => app.status !== 'hidden');
                 const container = document.getElementById('apps-list');
 
-                container.innerHTML = apps.map(app => {
+                container.innerHTML = apps.map((app) => {
                     const isComingSoon = app.status === 'coming_soon';
                     const appId = app.name ? app.name.toLowerCase() : app.id;
                     const isVisionOS = app.subtitle && app.subtitle.toLowerCase().includes('visionos');
@@ -119,7 +110,6 @@
                     `;
                 }).join('');
 
-                // Scroll to hash if present
                 if (window.location.hash) {
                     const target = document.querySelector(window.location.hash);
                     if (target) setTimeout(() => target.scrollIntoView({ behavior: 'smooth' }), 100);

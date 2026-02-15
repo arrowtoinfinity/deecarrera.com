@@ -6,6 +6,7 @@
     <title>Music - Daniel Carrera</title>
     <link rel="icon" type="image/png" href="logo.png">
     <link rel="stylesheet" href="styles.css?v=56">
+    <script src="cms-client.js?v=1"></script>
 </head>
 <body class="subpage">
     <div class="page-flash"></div>
@@ -30,19 +31,20 @@
             <a href="/textiles.html" id="nav-textiles">Textiles</a>
         </div>
         <script>
-            (function() {
-                const settings = JSON.parse(localStorage.getItem('site_settings') || '{}');
+            (async function() {
+                const cms = await window.CMS.fetchCms();
+                const settings = cms.settings || {};
                 const navContainer = document.getElementById('nav-links');
                 const navItems = ['art', 'literature', 'music', 'software', 'hardware', 'textiles'];
 
-                navItems.forEach(key => {
+                navItems.forEach((key) => {
                     const el = document.getElementById('nav-' + key);
                     const showKey = 'show' + key.charAt(0).toUpperCase() + key.slice(1) + 'Nav';
                     if (el && settings[showKey] === false) el.style.display = 'none';
                 });
 
                 if (settings.navOrder && navContainer) {
-                    settings.navOrder.forEach(key => {
+                    settings.navOrder.forEach((key) => {
                         const el = document.getElementById('nav-' + key);
                         if (el) navContainer.appendChild(el);
                     });
@@ -58,19 +60,9 @@
 
         <section class="music-list" id="music-list"></section>
         <script>
-            (function() {
-                const TRACKS_KEY = 'music_tracks';
-                const defaultTracks = [
-                    { id: 'paradox', title: 'Paradox', file: 'Paradox.mp3', visibility: 'visible' }
-                ];
-
-                function getTracks() {
-                    const data = localStorage.getItem(TRACKS_KEY);
-                    const tracks = data ? JSON.parse(data) : defaultTracks;
-                    return tracks.filter(t => t.visibility !== 'hidden');
-                }
-
-                const tracks = getTracks();
+            (async function() {
+                const cms = await window.CMS.fetchCms();
+                const tracks = (Array.isArray(cms.tracks) ? cms.tracks : []).filter((track) => track.visibility !== 'hidden');
                 const container = document.getElementById('music-list');
 
                 if (tracks.length === 0) {
@@ -78,7 +70,6 @@
                     return;
                 }
 
-                // For now, render only the first visible track with the player
                 const track = tracks[0];
                 const isComingSoon = track.visibility === 'coming_soon';
 
@@ -112,7 +103,6 @@
                     `;
                 }
 
-                // Scroll to hash if present
                 if (window.location.hash) {
                     const target = document.querySelector(window.location.hash);
                     if (target) target.scrollIntoView({ behavior: 'smooth' });

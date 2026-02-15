@@ -1,0 +1,112 @@
+{
+  "version": 1,
+  "updatedAt": "2026-02-15T00:00:00.000Z",
+  "settings": {
+    "sectionOrder": ["latest", "art", "hardware", "literature", "music", "software", "textiles"],
+    "latestSource": "literature",
+    "latestSectionTitle": "Latest",
+    "latestSectionTarget": "",
+    "showLatestSection": true,
+    "showArtSection": true,
+    "showHardwareSection": true,
+    "showLiteratureSection": true,
+    "showMusicSection": true,
+    "showSoftwareSection": true,
+    "showTextilesSection": true,
+    "navOrder": ["art", "literature", "music", "software", "hardware", "textiles"],
+    "showArtNav": true,
+    "showLiteratureNav": true,
+    "showMusicNav": true,
+    "showSoftwareNav": true,
+    "showHardwareNav": true,
+    "showTextilesNav": true
+  },
+  "posts": [
+    {
+      "id": "default_1",
+      "type": "essay",
+      "title": "On the Nature of Creative Work",
+      "date": "2026-01-20",
+      "content": "A longer exploration of how creativity intersects with discipline, and why the most meaningful work often emerges from constraint rather than freedom.",
+      "link": "#",
+      "visibility": "visible"
+    },
+    {
+      "id": "default_2",
+      "type": "meditation",
+      "quote": "The impediment to action advances action. What stands in the way becomes the way.",
+      "citation": "- Marcus Aurelius, Meditations",
+      "visibility": "visible"
+    },
+    {
+      "id": "default_3",
+      "type": "post",
+      "title": "Your First Blog Post",
+      "date": "2026-01-23",
+      "content": "This is where your blog post excerpt will appear. Write about anything that interests you.",
+      "link": "#",
+      "visibility": "visible"
+    },
+    {
+      "id": "default_4",
+      "type": "meditation",
+      "quote": "Waste no more time arguing about what a good man should be. Be one.",
+      "citation": "- Marcus Aurelius, Meditations",
+      "visibility": "visible"
+    },
+    {
+      "id": "default_5",
+      "type": "essay",
+      "title": "The Quiet Architecture of Habit",
+      "date": "2026-01-15",
+      "content": "How small, repeated actions compound into the invisible structure of our lives, and why understanding this changes everything about how we approach change.",
+      "link": "#",
+      "visibility": "visible"
+    }
+  ],
+  "apps": [
+    {
+      "id": "app_1",
+      "name": "Tiempo",
+      "subtitle": "AI-Daily Planner for iOS and macOS",
+      "description": "Tiempo reimagines how you interact with your calendar.",
+      "icon": "icon-tiempo.png",
+      "link": "/software.html#tiempo",
+      "status": "available"
+    },
+    {
+      "id": "app_2",
+      "name": "Synesthesia",
+      "subtitle": "VisionOS app for experiencing music visually",
+      "icon": "icon-synesthesia.png",
+      "status": "coming_soon"
+    },
+    {
+      "id": "app_3",
+      "name": "Arrow",
+      "subtitle": "VisionOS app for Spatial Messaging",
+      "icon": "icon-arrow.png",
+      "status": "coming_soon"
+    }
+  ],
+  "videos": [
+    { "id": "vid_1", "title": "Video 1", "url": "", "thumbnail": "", "visibility": "visible" },
+    { "id": "vid_2", "title": "Video 2", "url": "", "thumbnail": "", "visibility": "visible" },
+    { "id": "vid_3", "title": "Video 3", "url": "", "thumbnail": "", "visibility": "visible" },
+    { "id": "vid_4", "title": "Video 4", "url": "", "thumbnail": "", "visibility": "visible" },
+    { "id": "vid_5", "title": "Video 5", "url": "", "thumbnail": "", "visibility": "visible" }
+  ],
+  "photos": [
+    { "id": "photo_1", "title": "Photo 1", "url": "", "visibility": "visible" },
+    { "id": "photo_2", "title": "Photo 2", "url": "", "visibility": "visible" },
+    { "id": "photo_3", "title": "Photo 3", "url": "", "visibility": "visible" },
+    { "id": "photo_4", "title": "Photo 4", "url": "", "visibility": "visible" },
+    { "id": "photo_5", "title": "Photo 5", "url": "", "visibility": "visible" },
+    { "id": "photo_6", "title": "Photo 6", "url": "", "visibility": "visible" }
+  ],
+  "tracks": [
+    { "id": "track_1", "title": "Paradox", "file": "Paradox.mp3", "visibility": "visible" }
+  ],
+  "hardware": [],
+  "textiles": []
+}

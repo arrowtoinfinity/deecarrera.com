@@ -6,6 +6,7 @@
     <title>Daniel Carrera</title>
     <link rel="icon" type="image/png" href="logo.png">
     <link rel="stylesheet" href="styles.css?v=56">
+    <script src="cms-client.js?v=1"></script>
     <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 </head>
 <body>
@@ -42,9 +43,9 @@
             <a href="/textiles.html" id="nav-textiles">Textiles</a>
         </div>
         <script>
-            (function() {
-                const SETTINGS_KEY = 'site_settings';
-                const settings = JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{}');
+            (async function() {
+                const cms = await window.CMS.fetchCms();
+                const settings = cms.settings || {};
                 const navContainer = document.getElementById('nav-links');
 
                 const navItems = [
@@ -56,40 +57,33 @@
                     { id: 'nav-textiles', key: 'textiles', showKey: 'showTextilesNav' }
                 ];
 
-                // Apply visibility
                 navItems.forEach(({ id, showKey }) => {
                     const el = document.getElementById(id);
-                    if (settings[showKey] === false) {
+                    if (el && settings[showKey] === false) {
                         el.style.display = 'none';
                     }
                 });
 
-                // Apply nav order
                 if (settings.navOrder && navContainer) {
-                    settings.navOrder.forEach(key => {
-                        const el = document.getElementById('nav-' + key);
+                    settings.navOrder.forEach((key) => {
+                        const el = document.getElementById(`nav-${key}`);
                         if (el) navContainer.appendChild(el);
                     });
                 }
 
-                // Reposition visible items evenly around circle
-                const visibleItems = Array.from(navContainer.querySelectorAll('a')).filter(el => el.style.display !== 'none');
-                const radius = window.innerWidth >= 768 ? 250 : 180;
-                const count = visibleItems.length;
+                const visibleItems = Array.from(navContainer.querySelectorAll('a')).filter((el) => el.style.display !== 'none');
+                const count = visibleItems.length || 1;
 
-                visibleItems.forEach((el, i) => {
-                    const angle = -90 + (i * (360 / count)); // Start from top, distribute evenly
-                    el.style.transform = `translate(-50%, -50%) rotate(${angle}deg) translateX(${radius}px) rotate(90deg)`;
-                });
-
-                // Store for resize handling
-                window.repositionNav = function() {
-                    const r = window.innerWidth >= 768 ? 250 : 180;
+                function repositionNavItems() {
+                    const radius = window.innerWidth >= 768 ? 250 : 180;
                     visibleItems.forEach((el, i) => {
-                        const angle = -90 + (i * (360 / count));
-                        el.style.transform = `translate(-50%, -50%) rotate(${angle}deg) translateX(${r}px) rotate(90deg)`;
+                        const angle = -90 + i * (360 / count);
+                        el.style.transform = `translate(-50%, -50%) rotate(${angle}deg) translateX(${radius}px) rotate(90deg)`;
                     });
-                };
+                }
+
+                repositionNavItems();
+                window.repositionNav = repositionNavItems;
                 window.addEventListener('resize', window.repositionNav);
             })();
         </script>
@@ -106,16 +100,13 @@
             <div id="latest-post-container"></div>
         </section>
         <script>
-            (function() {
-                const STORAGE_KEY = 'literature_posts';
-                const SETTINGS_KEY = 'site_settings';
-                const defaultPosts = [
-                    { id: 'default_3', type: 'post', title: 'Your First Blog Post', date: '2026-01-23', content: 'This is where your blog post excerpt will appear. Write about anything that interests you.', link: '#' }
-                ];
+            (async function() {
+                const cms = await window.CMS.fetchCms();
+                const settings = cms.settings || {};
+                const posts = Array.isArray(cms.posts) ? cms.posts : [];
 
-                // Placeholder content for each page source
                 const pageContent = {
-                    literature: { getContent: getLatestPost, link: '/literature.html' },
+                    literature: { link: '/literature.html' },
                     art: { title: 'Featured Artwork', description: 'Explore the latest visual creations.', link: '/art.html' },
                     music: { title: 'Latest Track', description: 'Listen to the newest musical composition.', link: '/music.html' },
                     software: { title: 'New Release', description: 'Check out the latest software project.', link: '/software.html' },
@@ -123,20 +114,12 @@
                     textiles: { title: 'Textile Design', description: 'View the newest textile work.', link: '/textiles.html' }
                 };
 
-                // Build link with section target
                 function buildLink(baseLink, target, source) {
                     if (!target) return baseLink;
-                    // For literature filter tabs
                     if (source === 'literature' && ['essay', 'meditation', 'post'].includes(target)) {
-                        return baseLink + '?filter=' + target;
+                        return `${baseLink}?filter=${target}`;
                     }
-                    // For section IDs or 'latest' marker
-                    return baseLink + '#' + target;
-                }
-
-                function getSettings() {
-                    const data = localStorage.getItem(SETTINGS_KEY);
-                    return data ? JSON.parse(data) : { showLatestSection: true, latestSectionTitle: 'Latest', latestSource: 'literature' };
+                    return `${baseLink}#${target}`;
                 }
 
                 function formatDate(dateStr) {
@@ -145,9 +128,6 @@
                 }
 
                 function getLatestPost() {
-                    const data = localStorage.getItem(STORAGE_KEY);
-                    const posts = data ? JSON.parse(data) : defaultPosts;
-
                     for (const post of posts) {
                         const visibility = post.visibility || 'visible';
                         if (visibility === 'hidden') continue;
@@ -157,7 +137,6 @@
                     return null;
                 }
 
-                const settings = getSettings();
                 const section = document.getElementById('latest-blog-section');
                 const heading = document.getElementById('latest-section-heading');
                 const container = document.getElementById('latest-post-container');
@@ -171,33 +150,34 @@
 
                 heading.textContent = settings.latestSectionTitle || 'Latest';
 
-                // Get content based on source
                 if (source === 'literature') {
                     const post = getLatestPost();
-                    if (post) {
-                        const isComingSoon = post.visibility === 'coming_soon';
-                        const link = buildLink('/literature.html', sectionTarget, source);
-                        container.innerHTML = `
-                            <a href="${link}" class="blog-preview-card${isComingSoon ? ' content-coming-soon' : ''}">
-                                <time datetime="${post.date}">${formatDate(post.date)}</time>
-                                <h3>${post.title}</h3>
-                                <p>${post.content}</p>
-                            </a>
-                        `;
-                    } else {
+                    if (!post) {
                         section.style.display = 'none';
+                        return;
                     }
-                } else {
-                    const content = pageContent[source];
-                    if (content) {
-                        const link = buildLink(content.link, sectionTarget, source);
-                        container.innerHTML = `
-                            <a href="${link}" class="blog-preview-card">
-                                <h3>${content.title}</h3>
-                                <p>${content.description}</p>
-                            </a>
-                        `;
-                    }
+
+                    const isComingSoon = post.visibility === 'coming_soon';
+                    const link = buildLink('/literature.html', sectionTarget, source);
+                    container.innerHTML = `
+                        <a href="${link}" class="blog-preview-card${isComingSoon ? ' content-coming-soon' : ''}">
+                            <time datetime="${post.date}">${formatDate(post.date)}</time>
+                            <h3>${post.title}</h3>
+                            <p>${post.content}</p>
+                        </a>
+                    `;
+                    return;
+                }
+
+                const content = pageContent[source];
+                if (content) {
+                    const link = buildLink(content.link, sectionTarget, source);
+                    container.innerHTML = `
+                        <a href="${link}" class="blog-preview-card">
+                            <h3>${content.title}</h3>
+                            <p>${content.description}</p>
+                        </a>
+                    `;
                 }
             })();
         </script>
@@ -249,28 +229,16 @@
             <div class="project-grid" id="software-grid"></div>
         </section>
         <script>
-            (function() {
-                const APPS_KEY = 'software_apps';
-                const defaultApps = [
-                    { id: 'app_1', name: 'Tiempo', subtitle: 'AI-Daily Planner for iOS and macOS', icon: 'icon-tiempo.png', link: '/software.html#tiempo', status: 'available' },
-                    { id: 'app_2', name: 'Synesthesia', subtitle: 'VisionOS app for experiencing music visually', icon: 'icon-synesthesia.png', link: '/software.html#synesthesia', status: 'coming_soon' },
-                    { id: 'app_3', name: 'Arrow', subtitle: 'VisionOS app for Spatial Messaging', icon: 'icon-arrow.png', link: '/software.html#arrow', status: 'coming_soon' }
-                ];
-
-                function getApps() {
-                    const data = localStorage.getItem(APPS_KEY);
-                    return data ? JSON.parse(data) : defaultApps;
-                }
-
-                const apps = getApps().filter(app => app.status !== 'hidden');
+            (async function() {
+                const cms = await window.CMS.fetchCms();
+                const apps = (Array.isArray(cms.apps) ? cms.apps : []).filter((app) => app.status !== 'hidden');
                 const grid = document.getElementById('software-grid');
 
-                // Add class for full-width when 1-2 cards
                 if (apps.length <= 2) {
                     grid.classList.add('few-cards');
                 }
 
-                grid.innerHTML = apps.map(app => {
+                grid.innerHTML = apps.map((app) => {
                     const isComingSoon = app.status === 'coming_soon';
                     const cardClass = app.name ? `card-${app.name.toLowerCase()}` : '';
                     const appLink = app.name ? `/software.html#${app.name.toLowerCase()}` : '/software.html';
@@ -305,19 +273,12 @@
         </section>
 
         <script>
-            (function() {
-                const SETTINGS_KEY = 'site_settings';
-                function getSettings() {
-                    const data = localStorage.getItem(SETTINGS_KEY);
-                    return data ? JSON.parse(data) : {};
-                }
-                const settings = getSettings();
-
-                // All homepage sections
+            (async function() {
+                const cms = await window.CMS.fetchCms();
+                const settings = cms.settings || {};
                 const sections = ['latest', 'art', 'hardware', 'literature', 'music', 'software', 'textiles'];
 
-                // Apply visibility
-                sections.forEach(key => {
+                sections.forEach((key) => {
                     const section = document.getElementById(key === 'latest' ? 'latest-blog-section' : `${key}-section`);
                     const showKey = `show${key.charAt(0).toUpperCase() + key.slice(1)}Section`;
                     if (section && settings[showKey] === false) {
@@ -325,20 +286,16 @@
                     }
                 });
 
-                // Apply section order
                 if (settings.sectionOrder) {
                     const main = document.querySelector('main');
                     const sectionMap = {};
-                    sections.forEach(key => {
+                    sections.forEach((key) => {
                         sectionMap[key] = document.getElementById(key === 'latest' ? 'latest-blog-section' : `${key}-section`);
                     });
 
-                    // Reorder sections after hero
-                    settings.sectionOrder.forEach(key => {
+                    settings.sectionOrder.forEach((key) => {
                         const section = sectionMap[key];
-                        if (section) {
-                            main.appendChild(section);
-                        }
+                        if (section) main.appendChild(section);
                     });
                 }
             })();

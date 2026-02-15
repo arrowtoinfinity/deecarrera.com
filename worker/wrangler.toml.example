@@ -1,0 +1,14 @@
+name = "deecarrera-cms"
+main = "cms-worker.js"
+compatibility_date = "2025-12-01"
+
+[vars]
+REPO_OWNER = "arrowtoinfinity"
+REPO_NAME = "deecarrera.com"
+REPO_BRANCH = "main"
+CMS_PATH = "data/cms.json"
+ALLOWED_ORIGIN = "https://deecarrera.com"
+
+# Set secrets with:
+# wrangler secret put GITHUB_TOKEN
+# wrangler secret put ADMIN_KEY

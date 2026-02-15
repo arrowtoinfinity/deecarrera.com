@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Daniel Carrera</title>
     <link rel="icon" type="image/png" href="logo.png">
-    <link rel="stylesheet" href="styles.css?v=39">
+    <link rel="stylesheet" href="styles.css?v=56">
     <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 </head>
 <body>
@@ -33,14 +33,66 @@
             <img src="logo.png" alt="Logo" class="nav-logo">
             Daniel Carrera
         </a>
-        <div class="nav-links">
-            <a href="/art.html">Art</a>
-            <a href="/literature.html">Literature</a>
-            <a href="/music.html">Music</a>
-            <a href="/software.html">Software</a>
-            <a href="/hardware.html">Hardware</a>
-            <a href="/textiles.html">Textiles</a>
+        <div class="nav-links" id="nav-links">
+            <a href="/art.html" id="nav-art">Art</a>
+            <a href="/literature.html" id="nav-literature">Literature</a>
+            <a href="/music.html" id="nav-music">Music</a>
+            <a href="/software.html" id="nav-software">Software</a>
+            <a href="/hardware.html" id="nav-hardware">Hardware</a>
+            <a href="/textiles.html" id="nav-textiles">Textiles</a>
         </div>
+        <script>
+            (function() {
+                const SETTINGS_KEY = 'site_settings';
+                const settings = JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{}');
+                const navContainer = document.getElementById('nav-links');
+
+                const navItems = [
+                    { id: 'nav-art', key: 'art', showKey: 'showArtNav' },
+                    { id: 'nav-literature', key: 'literature', showKey: 'showLiteratureNav' },
+                    { id: 'nav-music', key: 'music', showKey: 'showMusicNav' },
+                    { id: 'nav-software', key: 'software', showKey: 'showSoftwareNav' },
+                    { id: 'nav-hardware', key: 'hardware', showKey: 'showHardwareNav' },
+                    { id: 'nav-textiles', key: 'textiles', showKey: 'showTextilesNav' }
+                ];
+
+                // Apply visibility
+                navItems.forEach(({ id, showKey }) => {
+                    const el = document.getElementById(id);
+                    if (settings[showKey] === false) {
+                        el.style.display = 'none';
+                    }
+                });
+
+                // Apply nav order
+                if (settings.navOrder && navContainer) {
+                    settings.navOrder.forEach(key => {
+                        const el = document.getElementById('nav-' + key);
+                        if (el) navContainer.appendChild(el);
+                    });
+                }
+
+                // Reposition visible items evenly around circle
+                const visibleItems = Array.from(navContainer.querySelectorAll('a')).filter(el => el.style.display !== 'none');
+                const radius = window.innerWidth >= 768 ? 250 : 180;
+                const count = visibleItems.length;
+
+                visibleItems.forEach((el, i) => {
+                    const angle = -90 + (i * (360 / count)); // Start from top, distribute evenly
+                    el.style.transform = `translate(-50%, -50%) rotate(${angle}deg) translateX(${radius}px) rotate(90deg)`;
+                });
+
+                // Store for resize handling
+                window.repositionNav = function() {
+                    const r = window.innerWidth >= 768 ? 250 : 180;
+                    visibleItems.forEach((el, i) => {
+                        const angle = -90 + (i * (360 / count));
+                        el.style.transform = `translate(-50%, -50%) rotate(${angle}deg) translateX(${r}px) rotate(90deg)`;
+                    });
+                };
+                window.addEventListener('resize', window.repositionNav);
+            })();
+        </script>
     </nav>
 
     <main>
@@ -49,40 +101,108 @@
             <p class="hero-subtitle">polymath</p>
         </section>
 
-        <section class="latest-blog">
-            <h2>Latest</h2>
-            <a href="/literature.html" class="blog-preview-card">
-                <time datetime="2026-01-23">January 23, 2026</time>
-                <h3>Your First Blog Post</h3>
-                <p>This is where your blog post excerpt will appear. Write about anything that interests you.</p>
-            </a>
+        <section class="latest-blog" id="latest-blog-section">
+            <h2 id="latest-section-heading">Latest</h2>
+            <div id="latest-post-container"></div>
         </section>
+        <script>
+            (function() {
+                const STORAGE_KEY = 'literature_posts';
+                const SETTINGS_KEY = 'site_settings';
+                const defaultPosts = [
+                    { id: 'default_3', type: 'post', title: 'Your First Blog Post', date: '2026-01-23', content: 'This is where your blog post excerpt will appear. Write about anything that interests you.', link: '#' }
+                ];
 
-        <section class="projects">
-            <h2>Software</h2>
+                // Placeholder content for each page source
+                const pageContent = {
+                    literature: { getContent: getLatestPost, link: '/literature.html' },
+                    art: { title: 'Featured Artwork', description: 'Explore the latest visual creations.', link: '/art.html' },
+                    music: { title: 'Latest Track', description: 'Listen to the newest musical composition.', link: '/music.html' },
+                    software: { title: 'New Release', description: 'Check out the latest software project.', link: '/software.html' },
+                    hardware: { title: 'Hardware Project', description: 'See the latest hardware creation.', link: '/hardware.html' },
+                    textiles: { title: 'Textile Design', description: 'View the newest textile work.', link: '/textiles.html' }
+                };
 
-            <div class="project-grid">
-                <a href="/software.html#tiempo" class="project-card card-tiempo">
-                    <img src="icon-tiempo.png" alt="Tiempo" class="project-icon-img">
-                    <h3>Tiempo</h3>
-                    <p>AI-Daily Planner for iOS and macOS</p>
-                </a>
+                // Build link with section target
+                function buildLink(baseLink, target, source) {
+                    if (!target) return baseLink;
+                    // For literature filter tabs
+                    if (source === 'literature' && ['essay', 'meditation', 'post'].includes(target)) {
+                        return baseLink + '?filter=' + target;
+                    }
+                    // For section IDs or 'latest' marker
+                    return baseLink + '#' + target;
+                }
 
-                <a href="/software.html#synesthesia" class="project-card card-synesthesia">
-                    <img src="icon-synesthesia.png" alt="Synesthesia" class="project-icon-img">
-                    <h3>Synesthesia</h3>
-                    <p>VisionOS app for experiencing music visually</p>
-                </a>
+                function getSettings() {
+                    const data = localStorage.getItem(SETTINGS_KEY);
+                    return data ? JSON.parse(data) : { showLatestSection: true, latestSectionTitle: 'Latest', latestSource: 'literature' };
+                }
 
-                <a href="/software.html#arrow" class="project-card card-arrow">
-                    <img src="icon-arrow.png" alt="Arrow" class="project-icon-img">
-                    <h3>Arrow</h3>
-                    <p>VisionOS app for Spatial Messaging</p>
-                </a>
-            </div>
-        </section>
+                function formatDate(dateStr) {
+                    const date = new Date(dateStr);
+                    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+                }
 
-        <section class="featured-media">
+                function getLatestPost() {
+                    const data = localStorage.getItem(STORAGE_KEY);
+                    const posts = data ? JSON.parse(data) : defaultPosts;
+
+                    for (const post of posts) {
+                        const visibility = post.visibility || 'visible';
+                        if (visibility === 'hidden') continue;
+                        if (visibility === 'scheduled' && post.publishDate && new Date(post.publishDate) > new Date()) continue;
+                        if (post.type !== 'meditation') return post;
+                    }
+                    return null;
+                }
+
+                const settings = getSettings();
+                const section = document.getElementById('latest-blog-section');
+                const heading = document.getElementById('latest-section-heading');
+                const container = document.getElementById('latest-post-container');
+                const source = settings.latestSource || 'literature';
+                const sectionTarget = settings.latestSectionTarget || '';
+
+                if (settings.showLatestSection === false) {
+                    section.style.display = 'none';
+                    return;
+                }
+
+                heading.textContent = settings.latestSectionTitle || 'Latest';
+
+                // Get content based on source
+                if (source === 'literature') {
+                    const post = getLatestPost();
+                    if (post) {
+                        const isComingSoon = post.visibility === 'coming_soon';
+                        const link = buildLink('/literature.html', sectionTarget, source);
+                        container.innerHTML = `
+                            <a href="${link}" class="blog-preview-card${isComingSoon ? ' content-coming-soon' : ''}">
+                                <time datetime="${post.date}">${formatDate(post.date)}</time>
+                                <h3>${post.title}</h3>
+                                <p>${post.content}</p>
+                            </a>
+                        `;
+                    } else {
+                        section.style.display = 'none';
+                    }
+                } else {
+                    const content = pageContent[source];
+                    if (content) {
+                        const link = buildLink(content.link, sectionTarget, source);
+                        container.innerHTML = `
+                            <a href="${link}" class="blog-preview-card">
+                                <h3>${content.title}</h3>
+                                <p>${content.description}</p>
+                            </a>
+                        `;
+                    }
+                }
+            })();
+        </script>
+
+        <section class="featured-media" id="art-section">
             <h2>Art</h2>
             <a href="/art.html" class="art-grid">
                 <div class="art-col art-col-video">
@@ -99,6 +219,130 @@
                 </div>
             </a>
         </section>
+
+        <section class="homepage-section" id="hardware-section">
+            <h2>Hardware</h2>
+            <a href="/hardware.html" class="blog-preview-card">
+                <h3>Hardware Projects</h3>
+                <p>Explore physical creations and builds.</p>
+            </a>
+        </section>
+
+        <section class="homepage-section" id="literature-section">
+            <h2>Literature</h2>
+            <a href="/literature.html" class="blog-preview-card">
+                <h3>Writing & Essays</h3>
+                <p>Articles, reflections, and tangents.</p>
+            </a>
+        </section>
+
+        <section class="homepage-section" id="music-section">
+            <h2>Music</h2>
+            <a href="/music.html" class="blog-preview-card">
+                <h3>Original Compositions</h3>
+                <p>Listen to original music tracks.</p>
+            </a>
+        </section>
+
+        <section class="projects" id="software-section">
+            <h2>Software</h2>
+            <div class="project-grid" id="software-grid"></div>
+        </section>
+        <script>
+            (function() {
+                const APPS_KEY = 'software_apps';
+                const defaultApps = [
+                    { id: 'app_1', name: 'Tiempo', subtitle: 'AI-Daily Planner for iOS and macOS', icon: 'icon-tiempo.png', link: '/software.html#tiempo', status: 'available' },
+                    { id: 'app_2', name: 'Synesthesia', subtitle: 'VisionOS app for experiencing music visually', icon: 'icon-synesthesia.png', link: '/software.html#synesthesia', status: 'coming_soon' },
+                    { id: 'app_3', name: 'Arrow', subtitle: 'VisionOS app for Spatial Messaging', icon: 'icon-arrow.png', link: '/software.html#arrow', status: 'coming_soon' }
+                ];
+
+                function getApps() {
+                    const data = localStorage.getItem(APPS_KEY);
+                    return data ? JSON.parse(data) : defaultApps;
+                }
+
+                const apps = getApps().filter(app => app.status !== 'hidden');
+                const grid = document.getElementById('software-grid');
+
+                // Add class for full-width when 1-2 cards
+                if (apps.length <= 2) {
+                    grid.classList.add('few-cards');
+                }
+
+                grid.innerHTML = apps.map(app => {
+                    const isComingSoon = app.status === 'coming_soon';
+                    const cardClass = app.name ? `card-${app.name.toLowerCase()}` : '';
+                    const appLink = app.name ? `/software.html#${app.name.toLowerCase()}` : '/software.html';
+
+                    if (isComingSoon) {
+                        return `
+                            <div class="project-card ${cardClass} content-coming-soon">
+                                <img src="${app.icon || 'icon-default.png'}" alt="${app.name}" class="project-icon-img">
+                                <h3>${app.name}</h3>
+                                <p>Coming Soon</p>
+                            </div>
+                        `;
+                    }
+
+                    return `
+                        <a href="${appLink}" class="project-card ${cardClass}">
+                            <img src="${app.icon || 'icon-default.png'}" alt="${app.name}" class="project-icon-img">
+                            <h3>${app.name}</h3>
+                            <p>${app.subtitle || ''}</p>
+                        </a>
+                    `;
+                }).join('');
+            })();
+        </script>
+
+        <section class="homepage-section" id="textiles-section">
+            <h2>Textiles</h2>
+            <a href="/textiles.html" class="blog-preview-card">
+                <h3>Textile Work</h3>
+                <p>Fabric designs and creations.</p>
+            </a>
+        </section>
+
+        <script>
+            (function() {
+                const SETTINGS_KEY = 'site_settings';
+                function getSettings() {
+                    const data = localStorage.getItem(SETTINGS_KEY);
+                    return data ? JSON.parse(data) : {};
+                }
+                const settings = getSettings();
+
+                // All homepage sections
+                const sections = ['latest', 'art', 'hardware', 'literature', 'music', 'software', 'textiles'];
+
+                // Apply visibility
+                sections.forEach(key => {
+                    const section = document.getElementById(key === 'latest' ? 'latest-blog-section' : `${key}-section`);
+                    const showKey = `show${key.charAt(0).toUpperCase() + key.slice(1)}Section`;
+                    if (section && settings[showKey] === false) {
+                        section.style.display = 'none';
+                    }
+                });
+
+                // Apply section order
+                if (settings.sectionOrder) {
+                    const main = document.querySelector('main');
+                    const sectionMap = {};
+                    sections.forEach(key => {
+                        sectionMap[key] = document.getElementById(key === 'latest' ? 'latest-blog-section' : `${key}-section`);
+                    });
+
+                    // Reorder sections after hero
+                    settings.sectionOrder.forEach(key => {
+                        const section = sectionMap[key];
+                        if (section) {
+                            main.appendChild(section);
+                        }
+                    });
+                }
+            })();
+        </script>
     </main>
 
     <footer>

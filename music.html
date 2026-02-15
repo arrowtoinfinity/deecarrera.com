@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Music - Daniel Carrera</title>
     <link rel="icon" type="image/png" href="logo.png">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css?v=56">
 </head>
-<body>
+<body class="subpage">
     <div class="page-flash"></div>
     <canvas id="constellation-bg"></canvas>
     <canvas id="constellation-fg"></canvas>
@@ -16,14 +16,39 @@
             <img src="logo.png" alt="Logo" class="nav-logo">
             Daniel Carrera
         </a>
-        <div class="nav-links">
-            <a href="/art.html">Art</a>
-            <a href="/literature.html">Literature</a>
-            <a href="/music.html" class="active">Music</a>
-            <a href="/software.html">Software</a>
-            <a href="/hardware.html">Hardware</a>
-            <a href="/textiles.html">Textiles</a>
+        <div class="hamburger" id="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
         </div>
+        <div class="nav-links" id="nav-links">
+            <a href="/art.html" id="nav-art">Art</a>
+            <a href="/literature.html" id="nav-literature">Literature</a>
+            <a href="/music.html" id="nav-music" class="active">Music</a>
+            <a href="/software.html" id="nav-software">Software</a>
+            <a href="/hardware.html" id="nav-hardware">Hardware</a>
+            <a href="/textiles.html" id="nav-textiles">Textiles</a>
+        </div>
+        <script>
+            (function() {
+                const settings = JSON.parse(localStorage.getItem('site_settings') || '{}');
+                const navContainer = document.getElementById('nav-links');
+                const navItems = ['art', 'literature', 'music', 'software', 'hardware', 'textiles'];
+
+                navItems.forEach(key => {
+                    const el = document.getElementById('nav-' + key);
+                    const showKey = 'show' + key.charAt(0).toUpperCase() + key.slice(1) + 'Nav';
+                    if (el && settings[showKey] === false) el.style.display = 'none';
+                });
+
+                if (settings.navOrder && navContainer) {
+                    settings.navOrder.forEach(key => {
+                        const el = document.getElementById('nav-' + key);
+                        if (el) navContainer.appendChild(el);
+                    });
+                }
+            })();
+        </script>
     </nav>
 
     <main>
@@ -31,22 +56,69 @@
             <h1>Music</h1>
         </section>
 
-        <section class="music-list">
-            <article class="music-card vertical">
-                <button class="play-btn" id="play-btn">
-                    <svg class="play-icon" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M8 5v14l11-7z"/>
-                    </svg>
-                    <svg class="pause-icon" viewBox="0 0 24 24" fill="currentColor" style="display:none;">
-                        <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/>
-                    </svg>
-                </button>
-                <h2>Paradox</h2>
-                <audio id="music-player" crossorigin="anonymous">
-                    <source src="Paradox.mp3" type="audio/mpeg">
-                </audio>
-            </article>
-        </section>
+        <section class="music-list" id="music-list"></section>
+        <script>
+            (function() {
+                const TRACKS_KEY = 'music_tracks';
+                const defaultTracks = [
+                    { id: 'paradox', title: 'Paradox', file: 'Paradox.mp3', visibility: 'visible' }
+                ];
+
+                function getTracks() {
+                    const data = localStorage.getItem(TRACKS_KEY);
+                    const tracks = data ? JSON.parse(data) : defaultTracks;
+                    return tracks.filter(t => t.visibility !== 'hidden');
+                }
+
+                const tracks = getTracks();
+                const container = document.getElementById('music-list');
+
+                if (tracks.length === 0) {
+                    container.innerHTML = '<p class="content-placeholder">No tracks yet.</p>';
+                    return;
+                }
+
+                // For now, render only the first visible track with the player
+                const track = tracks[0];
+                const isComingSoon = track.visibility === 'coming_soon';
+
+                if (isComingSoon) {
+                    container.innerHTML = `
+                        <article class="music-card vertical content-coming-soon" id="${track.id}">
+                            <div class="play-btn" style="opacity: 0.5; cursor: default;">
+                                <svg class="play-icon" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M8 5v14l11-7z"/>
+                                </svg>
+                            </div>
+                            <h2>Coming Soon</h2>
+                        </article>
+                    `;
+                } else {
+                    container.innerHTML = `
+                        <article class="music-card vertical" id="${track.id}">
+                            <button class="play-btn" id="play-btn">
+                                <svg class="play-icon" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M8 5v14l11-7z"/>
+                                </svg>
+                                <svg class="pause-icon" viewBox="0 0 24 24" fill="currentColor" style="display:none;">
+                                    <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/>
+                                </svg>
+                            </button>
+                            <h2>${track.title}</h2>
+                            <audio id="music-player" crossorigin="anonymous">
+                                <source src="${track.file}" type="audio/mpeg">
+                            </audio>
+                        </article>
+                    `;
+                }
+
+                // Scroll to hash if present
+                if (window.location.hash) {
+                    const target = document.querySelector(window.location.hash);
+                    if (target) target.scrollIntoView({ behavior: 'smooth' });
+                }
+            })();
+        </script>
     </main>
 
     <footer>
@@ -217,6 +289,15 @@
         })();
     </script>
     <script>
+        // Hamburger menu toggle
+        const hamburger = document.getElementById('hamburger');
+        const navLinksEl = document.getElementById('nav-links');
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            navLinksEl.classList.toggle('active');
+        });
+
+        // Page transition
         document.querySelectorAll('nav a').forEach(link => {
             link.addEventListener('click', function(e) {
                 if (this.href && !this.href.includes('#')) {

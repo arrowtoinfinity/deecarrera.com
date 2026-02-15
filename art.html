@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Art - Daniel Carrera</title>
     <link rel="icon" type="image/png" href="logo.png">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css?v=56">
 </head>
-<body>
+<body class="subpage">
     <div class="page-flash"></div>
     <canvas id="constellation-bg"></canvas>
     <canvas id="constellation-fg"></canvas>
@@ -16,14 +16,41 @@
             <img src="logo.png" alt="Logo" class="nav-logo">
             Daniel Carrera
         </a>
-        <div class="nav-links">
-            <a href="/art.html" class="active">Art</a>
-            <a href="/literature.html">Literature</a>
-            <a href="/music.html">Music</a>
-            <a href="/software.html">Software</a>
-            <a href="/hardware.html">Hardware</a>
-            <a href="/textiles.html">Textiles</a>
+        <div class="hamburger" id="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
         </div>
+        <div class="nav-links" id="nav-links">
+            <a href="/art.html" id="nav-art" class="active">Art</a>
+            <a href="/literature.html" id="nav-literature">Literature</a>
+            <a href="/music.html" id="nav-music">Music</a>
+            <a href="/software.html" id="nav-software">Software</a>
+            <a href="/hardware.html" id="nav-hardware">Hardware</a>
+            <a href="/textiles.html" id="nav-textiles">Textiles</a>
+        </div>
+        <script>
+            (function() {
+                const settings = JSON.parse(localStorage.getItem('site_settings') || '{}');
+                const navContainer = document.getElementById('nav-links');
+                const navItems = ['art', 'literature', 'music', 'software', 'hardware', 'textiles'];
+
+                // Apply visibility
+                navItems.forEach(key => {
+                    const el = document.getElementById('nav-' + key);
+                    const showKey = 'show' + key.charAt(0).toUpperCase() + key.slice(1) + 'Nav';
+                    if (el && settings[showKey] === false) el.style.display = 'none';
+                });
+
+                // Apply nav order
+                if (settings.navOrder && navContainer) {
+                    settings.navOrder.forEach(key => {
+                        const el = document.getElementById('nav-' + key);
+                        if (el) navContainer.appendChild(el);
+                    });
+                }
+            })();
+        </script>
     </nav>
 
     <main>
@@ -31,69 +58,118 @@
             <h1>Art</h1>
         </section>
 
-        <section class="video-carousel-section">
+        <section class="video-carousel-section" id="video-section">
             <h2>Motion Picture</h2>
             <div class="video-carousel">
-                <div class="video-track">
-                    <div class="video-item">
-                        <div class="video-placeholder"><span>Video 1</span></div>
-                    </div>
-                    <div class="video-item">
-                        <div class="video-placeholder"><span>Video 2</span></div>
-                    </div>
-                    <div class="video-item">
-                        <div class="video-placeholder"><span>Video 3</span></div>
-                    </div>
-                    <div class="video-item">
-                        <div class="video-placeholder"><span>Video 4</span></div>
-                    </div>
-                    <div class="video-item">
-                        <div class="video-placeholder"><span>Video 5</span></div>
-                    </div>
-                    <!-- Duplicate for seamless loop -->
-                    <div class="video-item">
-                        <div class="video-placeholder"><span>Video 1</span></div>
-                    </div>
-                    <div class="video-item">
-                        <div class="video-placeholder"><span>Video 2</span></div>
-                    </div>
-                    <div class="video-item">
-                        <div class="video-placeholder"><span>Video 3</span></div>
-                    </div>
-                    <div class="video-item">
-                        <div class="video-placeholder"><span>Video 4</span></div>
-                    </div>
-                    <div class="video-item">
-                        <div class="video-placeholder"><span>Video 5</span></div>
-                    </div>
-                </div>
+                <div class="video-track" id="video-track"></div>
             </div>
         </section>
 
-        <section class="photo-grid-section">
+        <section class="photo-grid-section" id="photo-section">
             <h2>Stills</h2>
-            <div class="photo-grid">
-                <div class="photo-item">
-                    <div class="photo-placeholder"><span>Photo</span></div>
-                </div>
-                <div class="photo-item">
-                    <div class="photo-placeholder"><span>Photo</span></div>
-                </div>
-                <div class="photo-item">
-                    <div class="photo-placeholder"><span>Photo</span></div>
-                </div>
-                <div class="photo-item">
-                    <div class="photo-placeholder"><span>Photo</span></div>
-                </div>
-                <div class="photo-item">
-                    <div class="photo-placeholder"><span>Photo</span></div>
-                </div>
-                <div class="photo-item">
-                    <div class="photo-placeholder"><span>Photo</span></div>
-                </div>
-                <!-- Add more photos here -->
-            </div>
+            <div class="photo-grid" id="photo-grid"></div>
         </section>
+
+        <script>
+            (function() {
+                const VIDEOS_KEY = 'art_videos';
+                const PHOTOS_KEY = 'art_photos';
+
+                const defaultVideos = [
+                    { id: 'vid_1', title: 'Video 1', url: '', thumbnail: '', visibility: 'visible' },
+                    { id: 'vid_2', title: 'Video 2', url: '', thumbnail: '', visibility: 'visible' },
+                    { id: 'vid_3', title: 'Video 3', url: '', thumbnail: '', visibility: 'visible' },
+                    { id: 'vid_4', title: 'Video 4', url: '', thumbnail: '', visibility: 'visible' },
+                    { id: 'vid_5', title: 'Video 5', url: '', thumbnail: '', visibility: 'visible' }
+                ];
+
+                const defaultPhotos = [
+                    { id: 'photo_1', title: 'Photo 1', url: '', visibility: 'visible' },
+                    { id: 'photo_2', title: 'Photo 2', url: '', visibility: 'visible' },
+                    { id: 'photo_3', title: 'Photo 3', url: '', visibility: 'visible' },
+                    { id: 'photo_4', title: 'Photo 4', url: '', visibility: 'visible' },
+                    { id: 'photo_5', title: 'Photo 5', url: '', visibility: 'visible' },
+                    { id: 'photo_6', title: 'Photo 6', url: '', visibility: 'visible' }
+                ];
+
+                function getVideos() {
+                    const data = localStorage.getItem(VIDEOS_KEY);
+                    const videos = data ? JSON.parse(data) : defaultVideos;
+                    return videos.filter(v => v.visibility !== 'hidden');
+                }
+
+                function getPhotos() {
+                    const data = localStorage.getItem(PHOTOS_KEY);
+                    const photos = data ? JSON.parse(data) : defaultPhotos;
+                    return photos.filter(p => p.visibility !== 'hidden');
+                }
+
+                function renderVideos() {
+                    const videos = getVideos();
+                    const track = document.getElementById('video-track');
+                    if (!track || videos.length === 0) return;
+
+                    // Render videos (with duplicates for seamless loop)
+                    const videoHTML = videos.map(video => {
+                        const isComingSoon = video.visibility === 'coming_soon';
+                        const comingSoonClass = isComingSoon ? ' content-coming-soon' : '';
+
+                        if (isComingSoon) {
+                            return `<div class="video-item${comingSoonClass}">
+                                <div class="video-placeholder"><span>Coming Soon</span></div>
+                            </div>`;
+                        }
+
+                        if (video.thumbnail) {
+                            return `<div class="video-item">
+                                <img src="${video.thumbnail}" alt="${video.title}">
+                            </div>`;
+                        }
+                        return `<div class="video-item">
+                            <div class="video-placeholder"><span>${video.title}</span></div>
+                        </div>`;
+                    }).join('');
+
+                    // Duplicate for seamless carousel loop
+                    track.innerHTML = videoHTML + videoHTML;
+                }
+
+                function renderPhotos() {
+                    const photos = getPhotos();
+                    const grid = document.getElementById('photo-grid');
+                    if (!grid) return;
+
+                    grid.innerHTML = photos.map(photo => {
+                        const isComingSoon = photo.visibility === 'coming_soon';
+                        const comingSoonClass = isComingSoon ? ' content-coming-soon' : '';
+
+                        if (isComingSoon) {
+                            return `<div class="photo-item${comingSoonClass}">
+                                <div class="photo-placeholder"><span>Coming Soon</span></div>
+                            </div>`;
+                        }
+
+                        if (photo.url) {
+                            return `<div class="photo-item">
+                                <img src="${photo.url}" alt="${photo.title}">
+                            </div>`;
+                        }
+                        return `<div class="photo-item">
+                            <div class="photo-placeholder"><span>${photo.title}</span></div>
+                        </div>`;
+                    }).join('');
+                }
+
+                renderVideos();
+                renderPhotos();
+
+                // Scroll to hash if present
+                if (window.location.hash) {
+                    const target = document.querySelector(window.location.hash);
+                    if (target) setTimeout(() => target.scrollIntoView({ behavior: 'smooth' }), 100);
+                }
+            })();
+        </script>
     </main>
 
     <footer>
@@ -101,6 +177,15 @@
     </footer>
     <script src="animation.js"></script>
     <script>
+        // Hamburger menu toggle
+        const hamburger = document.getElementById('hamburger');
+        const navLinks = document.getElementById('nav-links');
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            navLinks.classList.toggle('active');
+        });
+
+        // Page transition
         document.querySelectorAll('nav a').forEach(link => {
             link.addEventListener('click', function(e) {
                 if (this.href && !this.href.includes('#')) {

@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Literature - Daniel Carrera</title>
     <link rel="icon" type="image/png" href="logo.png">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css?v=56">
 </head>
-<body>
+<body class="subpage">
     <div class="page-flash"></div>
     <canvas id="constellation-bg"></canvas>
     <canvas id="constellation-fg"></canvas>
@@ -16,14 +16,39 @@
             <img src="logo.png" alt="Logo" class="nav-logo">
             Daniel Carrera
         </a>
-        <div class="nav-links">
-            <a href="/art.html">Art</a>
-            <a href="/literature.html" class="active">Literature</a>
-            <a href="/music.html">Music</a>
-            <a href="/software.html">Software</a>
-            <a href="/hardware.html">Hardware</a>
-            <a href="/textiles.html">Textiles</a>
+        <div class="hamburger" id="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
         </div>
+        <div class="nav-links" id="nav-links">
+            <a href="/art.html" id="nav-art">Art</a>
+            <a href="/literature.html" id="nav-literature" class="active">Literature</a>
+            <a href="/music.html" id="nav-music">Music</a>
+            <a href="/software.html" id="nav-software">Software</a>
+            <a href="/hardware.html" id="nav-hardware">Hardware</a>
+            <a href="/textiles.html" id="nav-textiles">Textiles</a>
+        </div>
+        <script>
+            (function() {
+                const settings = JSON.parse(localStorage.getItem('site_settings') || '{}');
+                const navContainer = document.getElementById('nav-links');
+                const navItems = ['art', 'literature', 'music', 'software', 'hardware', 'textiles'];
+
+                navItems.forEach(key => {
+                    const el = document.getElementById('nav-' + key);
+                    const showKey = 'show' + key.charAt(0).toUpperCase() + key.slice(1) + 'Nav';
+                    if (el && settings[showKey] === false) el.style.display = 'none';
+                });
+
+                if (settings.navOrder && navContainer) {
+                    settings.navOrder.forEach(key => {
+                        const el = document.getElementById('nav-' + key);
+                        if (el) navContainer.appendChild(el);
+                    });
+                }
+            })();
+        </script>
     </nav>
 
     <main>
@@ -48,6 +73,15 @@
     </footer>
     <script src="animation.js"></script>
     <script>
+        // Hamburger menu toggle
+        const hamburger = document.getElementById('hamburger');
+        const navLinks = document.getElementById('nav-links');
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            navLinks.classList.toggle('active');
+        });
+
+        // Page transition
         document.querySelectorAll('nav a').forEach(link => {
             link.addEventListener('click', function(e) {
                 if (this.href && !this.href.includes('#')) {
@@ -109,10 +143,57 @@
         function getPosts() {
             const data = localStorage.getItem(STORAGE_KEY);
             const posts = data ? JSON.parse(data) : [];
-            return posts.length > 0 ? posts : defaultPosts;
+            const allPosts = posts.length > 0 ? posts : defaultPosts;
+
+            // Filter based on visibility
+            return allPosts.filter(post => {
+                const visibility = post.visibility || 'visible';
+
+                // Hide hidden posts
+                if (visibility === 'hidden') return false;
+
+                // Hide scheduled posts that haven't reached their publish date
+                if (visibility === 'scheduled') {
+                    if (post.publishDate && new Date(post.publishDate) > new Date()) {
+                        return false;
+                    }
+                }
+
+                // Show visible and coming_soon posts
+                return true;
+            });
+        }
+
+        function isComingSoon(post) {
+            return post.visibility === 'coming_soon';
         }
 
         function renderPost(post) {
+            const comingSoon = isComingSoon(post);
+            const comingSoonClass = comingSoon ? ' content-coming-soon' : '';
+            const typeLabel = post.type === 'essay' ? 'Article' : post.type === 'meditation' ? 'Reflection' : post.type === 'post' ? 'Tangent' : post.type.charAt(0).toUpperCase() + post.type.slice(1);
+
+            // Don't reveal real content for coming soon - show placeholder only
+            if (comingSoon) {
+                if (post.type === 'meditation') {
+                    return `
+                        <article class="lit-item lit-meditation content-coming-soon" data-type="meditation">
+                            <span class="lit-type-label">Reflection</span>
+                            <blockquote>"..."</blockquote>
+                            <cite>Coming Soon</cite>
+                        </article>
+                    `;
+                } else {
+                    return `
+                        <article class="lit-item content-coming-soon" data-type="${post.type}">
+                            <span class="lit-type-label">${typeLabel}</span>
+                            <h2>Coming Soon</h2>
+                            <p>This content will be available soon.</p>
+                        </article>
+                    `;
+                }
+            }
+
             if (post.type === 'meditation') {
                 return `
                     <article class="lit-item lit-meditation" data-type="meditation">
@@ -126,7 +207,7 @@
             } else {
                 return `
                     <article class="lit-item" data-type="${post.type}">
-                        <span class="lit-type-label">${post.type === 'essay' ? 'Article' : post.type === 'post' ? 'Tangent' : post.type.charAt(0).toUpperCase() + post.type.slice(1)}</span>
+                        <span class="lit-type-label">${typeLabel}</span>
                         <time datetime="${post.date}">${formatDate(post.date)}</time>
                         <h2><a href="${post.link || '#'}">${post.title}</a></h2>
                         <p>${post.content}</p>
@@ -168,6 +249,20 @@
         document.addEventListener('DOMContentLoaded', () => {
             renderPosts();
             setupFilters();
+
+            // Handle filter from URL query param
+            const urlParams = new URLSearchParams(window.location.search);
+            const filterParam = urlParams.get('filter');
+            if (filterParam) {
+                const tab = document.querySelector(`.lit-tab[data-filter="${filterParam}"]`);
+                if (tab) tab.click();
+            }
+
+            // Scroll to hash if present
+            if (window.location.hash) {
+                const target = document.querySelector(window.location.hash);
+                if (target) setTimeout(() => target.scrollIntoView({ behavior: 'smooth' }), 100);
+            }
         });
     </script>
 </body>

@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hardware - Daniel Carrera</title>
     <link rel="icon" type="image/png" href="logo.png">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css?v=56">
 </head>
-<body>
+<body class="subpage">
     <div class="page-flash"></div>
     <canvas id="constellation-bg"></canvas>
     <canvas id="constellation-fg"></canvas>
@@ -16,14 +16,39 @@
             <img src="logo.png" alt="Logo" class="nav-logo">
             Daniel Carrera
         </a>
-        <div class="nav-links">
-            <a href="/art.html">Art</a>
-            <a href="/literature.html">Literature</a>
-            <a href="/music.html">Music</a>
-            <a href="/software.html">Software</a>
-            <a href="/hardware.html" class="active">Hardware</a>
-            <a href="/textiles.html">Textiles</a>
+        <div class="hamburger" id="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
         </div>
+        <div class="nav-links" id="nav-links">
+            <a href="/art.html" id="nav-art">Art</a>
+            <a href="/literature.html" id="nav-literature">Literature</a>
+            <a href="/music.html" id="nav-music">Music</a>
+            <a href="/software.html" id="nav-software">Software</a>
+            <a href="/hardware.html" id="nav-hardware" class="active">Hardware</a>
+            <a href="/textiles.html" id="nav-textiles">Textiles</a>
+        </div>
+        <script>
+            (function() {
+                const settings = JSON.parse(localStorage.getItem('site_settings') || '{}');
+                const navContainer = document.getElementById('nav-links');
+                const navItems = ['art', 'literature', 'music', 'software', 'hardware', 'textiles'];
+
+                navItems.forEach(key => {
+                    const el = document.getElementById('nav-' + key);
+                    const showKey = 'show' + key.charAt(0).toUpperCase() + key.slice(1) + 'Nav';
+                    if (el && settings[showKey] === false) el.style.display = 'none';
+                });
+
+                if (settings.navOrder && navContainer) {
+                    settings.navOrder.forEach(key => {
+                        const el = document.getElementById('nav-' + key);
+                        if (el) navContainer.appendChild(el);
+                    });
+                }
+            })();
+        </script>
     </nav>
 
     <main>
@@ -31,9 +56,47 @@
             <h1>Hardware</h1>
         </section>
 
-        <section class="hardware-list">
-            <!-- Add hardware projects here -->
-        </section>
+        <section class="hardware-list" id="hardware-list"></section>
+        <script>
+            (function() {
+                const HARDWARE_KEY = 'hardware_projects';
+                const defaultProjects = [
+                    { id: 'project_1', title: 'Project 1', description: 'Hardware project description.', visibility: 'visible' }
+                ];
+
+                function getProjects() {
+                    const data = localStorage.getItem(HARDWARE_KEY);
+                    const projects = data ? JSON.parse(data) : defaultProjects;
+                    return projects.filter(p => p.visibility !== 'hidden');
+                }
+
+                const projects = getProjects();
+                const container = document.getElementById('hardware-list');
+
+                if (projects.length === 0) {
+                    container.innerHTML = '<p class="content-placeholder">No projects yet.</p>';
+                    return;
+                }
+
+                container.innerHTML = projects.map(project => {
+                    const isComingSoon = project.visibility === 'coming_soon';
+                    const comingSoonClass = isComingSoon ? ' content-coming-soon' : '';
+
+                    return `
+                        <article class="hardware-card${comingSoonClass}" id="${project.id}">
+                            <h2>${isComingSoon ? 'Coming Soon' : project.title}</h2>
+                            <p>${isComingSoon ? 'This project will be available soon.' : (project.description || '')}</p>
+                        </article>
+                    `;
+                }).join('');
+
+                // Scroll to hash if present
+                if (window.location.hash) {
+                    const target = document.querySelector(window.location.hash);
+                    if (target) target.scrollIntoView({ behavior: 'smooth' });
+                }
+            })();
+        </script>
     </main>
 
     <footer>
@@ -41,6 +104,15 @@
     </footer>
     <script src="animation.js"></script>
     <script>
+        // Hamburger menu toggle
+        const hamburger = document.getElementById('hamburger');
+        const navLinks = document.getElementById('nav-links');
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            navLinks.classList.toggle('active');
+        });
+
+        // Page transition
         document.querySelectorAll('nav a').forEach(link => {
             link.addEventListener('click', function(e) {
                 if (this.href && !this.href.includes('#')) {

@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Textiles - Daniel Carrera</title>
     <link rel="icon" type="image/png" href="logo.png">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css?v=56">
 </head>
-<body>
+<body class="subpage">
     <div class="page-flash"></div>
     <canvas id="constellation-bg"></canvas>
     <canvas id="constellation-fg"></canvas>
@@ -16,14 +16,39 @@
             <img src="logo.png" alt="Logo" class="nav-logo">
             Daniel Carrera
         </a>
-        <div class="nav-links">
-            <a href="/art.html">Art</a>
-            <a href="/literature.html">Literature</a>
-            <a href="/music.html">Music</a>
-            <a href="/software.html">Software</a>
-            <a href="/hardware.html">Hardware</a>
-            <a href="/textiles.html" class="active">Textiles</a>
+        <div class="hamburger" id="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
         </div>
+        <div class="nav-links" id="nav-links">
+            <a href="/art.html" id="nav-art">Art</a>
+            <a href="/literature.html" id="nav-literature">Literature</a>
+            <a href="/music.html" id="nav-music">Music</a>
+            <a href="/software.html" id="nav-software">Software</a>
+            <a href="/hardware.html" id="nav-hardware">Hardware</a>
+            <a href="/textiles.html" id="nav-textiles" class="active">Textiles</a>
+        </div>
+        <script>
+            (function() {
+                const settings = JSON.parse(localStorage.getItem('site_settings') || '{}');
+                const navContainer = document.getElementById('nav-links');
+                const navItems = ['art', 'literature', 'music', 'software', 'hardware', 'textiles'];
+
+                navItems.forEach(key => {
+                    const el = document.getElementById('nav-' + key);
+                    const showKey = 'show' + key.charAt(0).toUpperCase() + key.slice(1) + 'Nav';
+                    if (el && settings[showKey] === false) el.style.display = 'none';
+                });
+
+                if (settings.navOrder && navContainer) {
+                    settings.navOrder.forEach(key => {
+                        const el = document.getElementById('nav-' + key);
+                        if (el) navContainer.appendChild(el);
+                    });
+                }
+            })();
+        </script>
     </nav>
 
     <main>
@@ -31,9 +56,47 @@
             <h1>Textiles</h1>
         </section>
 
-        <section class="content-placeholder">
-            <p>Coming soon.</p>
-        </section>
+        <section class="textiles-list" id="textiles-list"></section>
+        <script>
+            (function() {
+                const TEXTILES_KEY = 'textiles_items';
+                const defaultItems = [
+                    { id: 'textile_1', title: 'Design 1', description: 'Textile design description.', visibility: 'visible' }
+                ];
+
+                function getItems() {
+                    const data = localStorage.getItem(TEXTILES_KEY);
+                    const items = data ? JSON.parse(data) : defaultItems;
+                    return items.filter(i => i.visibility !== 'hidden');
+                }
+
+                const items = getItems();
+                const container = document.getElementById('textiles-list');
+
+                if (items.length === 0) {
+                    container.innerHTML = '<p class="content-placeholder">No designs yet.</p>';
+                    return;
+                }
+
+                container.innerHTML = items.map(item => {
+                    const isComingSoon = item.visibility === 'coming_soon';
+                    const comingSoonClass = isComingSoon ? ' content-coming-soon' : '';
+
+                    return `
+                        <article class="textile-card${comingSoonClass}" id="${item.id}">
+                            <h2>${isComingSoon ? 'Coming Soon' : item.title}</h2>
+                            <p>${isComingSoon ? 'This design will be available soon.' : (item.description || '')}</p>
+                        </article>
+                    `;
+                }).join('');
+
+                // Scroll to hash if present
+                if (window.location.hash) {
+                    const target = document.querySelector(window.location.hash);
+                    if (target) target.scrollIntoView({ behavior: 'smooth' });
+                }
+            })();
+        </script>
     </main>
 
     <footer>
@@ -41,6 +104,15 @@
     </footer>
     <script src="animation.js"></script>
     <script>
+        // Hamburger menu toggle
+        const hamburger = document.getElementById('hamburger');
+        const navLinks = document.getElementById('nav-links');
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            navLinks.classList.toggle('active');
+        });
+
+        // Page transition
         document.querySelectorAll('nav a').forEach(link => {
             link.addEventListener('click', function(e) {
                 if (this.href && !this.href.includes('#')) {

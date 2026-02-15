@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin - Daniel Carrera</title>
     <link rel="icon" type="image/png" href="logo.png">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css?v=56">
 </head>
-<body>
+<body class="subpage">
     <canvas id="constellation-bg"></canvas>
     <canvas id="constellation-fg"></canvas>
     <!-- Admin Dashboard -->
@@ -23,16 +23,208 @@
         </nav>
 
         <main>
-            <section class="page-header">
+            <section class="page-header admin-header-row">
                 <h1>Admin Dashboard</h1>
+                <div class="admin-capsule-group">
+                    <button class="admin-capsule active" data-panel="homepage">Homepage</button>
+                    <button class="admin-capsule" data-panel="navigation">Navigation</button>
+                </div>
             </section>
 
-            <div class="admin-actions">
-                <button id="new-post-btn" class="admin-btn primary">+ New Post</button>
+            <div class="admin-page-capsules">
+                <button class="admin-capsule" data-panel="art">Art</button>
+                <button class="admin-capsule" data-panel="hardware">Hardware</button>
+                <button class="admin-capsule" data-panel="literature">Literature</button>
+                <button class="admin-capsule" data-panel="music">Music</button>
+                <button class="admin-capsule" data-panel="software">Software</button>
+                <button class="admin-capsule" data-panel="textiles">Textiles</button>
             </div>
 
-            <section class="admin-post-list" id="post-list">
-                <!-- Posts will be rendered here -->
+            <section class="admin-panel" id="panel-homepage">
+                <h2>Homepage Sections</h2>
+                <div class="admin-sortable-list" id="section-list">
+                    <div class="admin-sortable-item" data-section="latest" draggable="true">
+                        <span class="admin-drag-handle">☰</span>
+                        <input type="text" id="latest-section-title" class="admin-item-name-input" value="Latest" placeholder="Section Title">
+                        <div class="admin-controls-right">
+                            <select id="latest-source" class="admin-source-select">
+                                <option value="literature">Literature</option>
+                                <option value="art">Art</option>
+                                <option value="music">Music</option>
+                                <option value="software">Software</option>
+                                <option value="hardware">Hardware</option>
+                                <option value="textiles">Textiles</option>
+                            </select>
+                            <select id="latest-section-target" class="admin-source-select">
+                                <option value="">Page Top</option>
+                            </select>
+                            <label class="admin-toggle">
+                                <input type="checkbox" id="show-latest-section" checked>
+                                <span class="admin-toggle-slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="admin-sortable-item" data-section="art" draggable="true">
+                        <span class="admin-drag-handle">☰</span>
+                        <span class="admin-item-name">Art</span>
+                        <label class="admin-toggle">
+                            <input type="checkbox" id="show-art-section" checked>
+                            <span class="admin-toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="admin-sortable-item" data-section="hardware" draggable="true">
+                        <span class="admin-drag-handle">☰</span>
+                        <span class="admin-item-name">Hardware</span>
+                        <label class="admin-toggle">
+                            <input type="checkbox" id="show-hardware-section" checked>
+                            <span class="admin-toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="admin-sortable-item" data-section="literature" draggable="true">
+                        <span class="admin-drag-handle">☰</span>
+                        <span class="admin-item-name">Literature</span>
+                        <label class="admin-toggle">
+                            <input type="checkbox" id="show-literature-section" checked>
+                            <span class="admin-toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="admin-sortable-item" data-section="music" draggable="true">
+                        <span class="admin-drag-handle">☰</span>
+                        <span class="admin-item-name">Music</span>
+                        <label class="admin-toggle">
+                            <input type="checkbox" id="show-music-section" checked>
+                            <span class="admin-toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="admin-sortable-item" data-section="software" draggable="true">
+                        <span class="admin-drag-handle">☰</span>
+                        <span class="admin-item-name">Software</span>
+                        <label class="admin-toggle">
+                            <input type="checkbox" id="show-software-section" checked>
+                            <span class="admin-toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="admin-sortable-item" data-section="textiles" draggable="true">
+                        <span class="admin-drag-handle">☰</span>
+                        <span class="admin-item-name">Textiles</span>
+                        <label class="admin-toggle">
+                            <input type="checkbox" id="show-textiles-section" checked>
+                            <span class="admin-toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </section>
+
+            <section class="admin-panel" id="panel-navigation" style="display: none;">
+                <h2>Navigation Pages</h2>
+                <div class="admin-sortable-list" id="nav-list">
+                    <div class="admin-sortable-item" data-nav="art" draggable="true">
+                        <span class="admin-drag-handle">☰</span>
+                        <span class="admin-item-name">Art</span>
+                        <label class="admin-toggle">
+                            <input type="checkbox" id="show-art-nav" checked>
+                            <span class="admin-toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="admin-sortable-item" data-nav="literature" draggable="true">
+                        <span class="admin-drag-handle">☰</span>
+                        <span class="admin-item-name">Literature</span>
+                        <label class="admin-toggle">
+                            <input type="checkbox" id="show-literature-nav" checked>
+                            <span class="admin-toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="admin-sortable-item" data-nav="music" draggable="true">
+                        <span class="admin-drag-handle">☰</span>
+                        <span class="admin-item-name">Music</span>
+                        <label class="admin-toggle">
+                            <input type="checkbox" id="show-music-nav" checked>
+                            <span class="admin-toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="admin-sortable-item" data-nav="software" draggable="true">
+                        <span class="admin-drag-handle">☰</span>
+                        <span class="admin-item-name">Software</span>
+                        <label class="admin-toggle">
+                            <input type="checkbox" id="show-software-nav" checked>
+                            <span class="admin-toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="admin-sortable-item" data-nav="hardware" draggable="true">
+                        <span class="admin-drag-handle">☰</span>
+                        <span class="admin-item-name">Hardware</span>
+                        <label class="admin-toggle">
+                            <input type="checkbox" id="show-hardware-nav" checked>
+                            <span class="admin-toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="admin-sortable-item" data-nav="textiles" draggable="true">
+                        <span class="admin-drag-handle">☰</span>
+                        <span class="admin-item-name">Textiles</span>
+                        <label class="admin-toggle">
+                            <input type="checkbox" id="show-textiles-nav" checked>
+                            <span class="admin-toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </section>
+
+            <section class="admin-panel" id="panel-art" style="display: none;">
+                <h2>Art Content</h2>
+                <div class="admin-subsection">
+                    <h3>Motion Pictures</h3>
+                    <div class="admin-actions">
+                        <button id="new-video-btn" class="admin-btn primary">+ New Video</button>
+                    </div>
+                    <div class="admin-content-list" id="video-list"></div>
+                </div>
+                <div class="admin-subsection">
+                    <h3>Stills</h3>
+                    <div class="admin-actions">
+                        <button id="new-photo-btn" class="admin-btn primary">+ New Photo</button>
+                    </div>
+                    <div class="admin-content-list" id="photo-list"></div>
+                </div>
+            </section>
+
+            <section class="admin-panel" id="panel-hardware" style="display: none;">
+                <h2>Hardware Content</h2>
+                <div class="admin-actions">
+                    <button id="new-hardware-btn" class="admin-btn primary">+ New Project</button>
+                </div>
+                <div class="admin-content-list" id="hardware-list"></div>
+            </section>
+
+            <section class="admin-panel" id="panel-literature" style="display: none;">
+                <h2>Literature Posts</h2>
+                <div class="admin-actions">
+                    <button id="new-post-btn" class="admin-btn primary">+ New Post</button>
+                </div>
+                <div class="admin-content-list" id="post-list"></div>
+            </section>
+
+            <section class="admin-panel" id="panel-music" style="display: none;">
+                <h2>Music Content</h2>
+                <div class="admin-actions">
+                    <button id="new-track-btn" class="admin-btn primary">+ New Track</button>
+                </div>
+                <div class="admin-content-list" id="track-list"></div>
+            </section>
+
+            <section class="admin-panel" id="panel-software" style="display: none;">
+                <h2>Software Content</h2>
+                <div class="admin-actions">
+                    <button id="new-app-btn" class="admin-btn primary">+ New App</button>
+                </div>
+                <div class="admin-content-list" id="app-list"></div>
+            </section>
+
+            <section class="admin-panel" id="panel-textiles" style="display: none;">
+                <h2>Textiles Content</h2>
+                <div class="admin-actions">
+                    <button id="new-textile-btn" class="admin-btn primary">+ New Item</button>
+                </div>
+                <div class="admin-content-list" id="textile-list"></div>
             </section>
         </main>
     </div>
@@ -78,6 +270,22 @@
                     <input type="url" id="post-link" placeholder="https://...">
                 </div>
 
+                <div class="admin-form-group">
+                    <label for="post-visibility">Visibility</label>
+                    <select id="post-visibility">
+                        <option value="visible">Visible</option>
+                        <option value="scheduled">Scheduled</option>
+                        <option value="coming_soon">Coming Soon (Blurred)</option>
+                        <option value="hidden">Hidden</option>
+                    </select>
+                </div>
+
+                <div class="admin-form-group" id="publish-date-group" style="display: none;">
+                    <label for="post-publish-date">Publish Date</label>
+                    <input type="datetime-local" id="post-publish-date">
+                    <small style="color: var(--text-light); display: block; margin-top: 0.25rem;">Post will be hidden until this date</small>
+                </div>
+
                 <div class="admin-form-actions">
                     <button type="button" id="cancel-btn" class="admin-btn">Cancel</button>
                     <button type="submit" class="admin-btn primary">Save</button>
@@ -86,8 +294,452 @@
         </div>
     </div>
 
+    <!-- App Editor Modal -->
+    <div id="app-modal" class="admin-modal" style="display: none;">
+        <div class="admin-modal-content">
+            <h2 id="app-editor-title">New App</h2>
+            <form id="app-form">
+                <input type="hidden" id="app-id">
+                <div class="admin-form-group">
+                    <label for="app-name">App Name</label>
+                    <input type="text" id="app-name" placeholder="App name" required>
+                </div>
+                <div class="admin-form-group">
+                    <label for="app-subtitle">Subtitle</label>
+                    <input type="text" id="app-subtitle" placeholder="Brief description">
+                </div>
+                <div class="admin-form-group">
+                    <label for="app-description">Description</label>
+                    <textarea id="app-description" rows="3" placeholder="Full description..."></textarea>
+                </div>
+                <div class="admin-form-group">
+                    <label for="app-icon">Icon URL</label>
+                    <input type="text" id="app-icon" placeholder="icon-appname.png">
+                </div>
+                <div class="admin-form-group">
+                    <label for="app-link">Download Link</label>
+                    <input type="url" id="app-link" placeholder="https://...">
+                </div>
+                <div class="admin-form-group">
+                    <label for="app-status">Status</label>
+                    <select id="app-status">
+                        <option value="available">Available</option>
+                        <option value="coming_soon">Coming Soon</option>
+                        <option value="hidden">Hidden</option>
+                    </select>
+                </div>
+                <div class="admin-form-actions">
+                    <button type="button" class="admin-btn cancel-modal">Cancel</button>
+                    <button type="submit" class="admin-btn primary">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Video Editor Modal -->
+    <div id="video-modal" class="admin-modal" style="display: none;">
+        <div class="admin-modal-content">
+            <h2 id="video-editor-title">New Video</h2>
+            <form id="video-form">
+                <input type="hidden" id="video-id">
+                <div class="admin-form-group">
+                    <label for="video-title">Title</label>
+                    <input type="text" id="video-title" placeholder="Video title" required>
+                </div>
+                <div class="admin-form-group">
+                    <label for="video-url">Video URL</label>
+                    <input type="text" id="video-url" placeholder="video.mp4 or YouTube URL">
+                </div>
+                <div class="admin-form-group">
+                    <label for="video-thumbnail">Thumbnail URL</label>
+                    <input type="text" id="video-thumbnail" placeholder="thumbnail.jpg">
+                </div>
+                <div class="admin-form-group">
+                    <label for="video-visibility">Visibility</label>
+                    <select id="video-visibility">
+                        <option value="visible">Visible</option>
+                        <option value="coming_soon">Coming Soon</option>
+                        <option value="hidden">Hidden</option>
+                    </select>
+                </div>
+                <div class="admin-form-actions">
+                    <button type="button" class="admin-btn cancel-modal">Cancel</button>
+                    <button type="submit" class="admin-btn primary">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Photo Editor Modal -->
+    <div id="photo-modal" class="admin-modal" style="display: none;">
+        <div class="admin-modal-content">
+            <h2 id="photo-editor-title">New Photo</h2>
+            <form id="photo-form">
+                <input type="hidden" id="photo-id">
+                <div class="admin-form-group">
+                    <label for="photo-title">Title</label>
+                    <input type="text" id="photo-title" placeholder="Photo title">
+                </div>
+                <div class="admin-form-group">
+                    <label for="photo-url">Image URL</label>
+                    <input type="text" id="photo-url" placeholder="photo.jpg" required>
+                </div>
+                <div class="admin-form-group">
+                    <label for="photo-visibility">Visibility</label>
+                    <select id="photo-visibility">
+                        <option value="visible">Visible</option>
+                        <option value="coming_soon">Coming Soon</option>
+                        <option value="hidden">Hidden</option>
+                    </select>
+                </div>
+                <div class="admin-form-actions">
+                    <button type="button" class="admin-btn cancel-modal">Cancel</button>
+                    <button type="submit" class="admin-btn primary">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Track Editor Modal -->
+    <div id="track-modal" class="admin-modal" style="display: none;">
+        <div class="admin-modal-content">
+            <h2 id="track-editor-title">New Track</h2>
+            <form id="track-form">
+                <input type="hidden" id="track-id">
+                <div class="admin-form-group">
+                    <label for="track-title">Track Title</label>
+                    <input type="text" id="track-title" placeholder="Track title" required>
+                </div>
+                <div class="admin-form-group">
+                    <label for="track-file">Audio File</label>
+                    <input type="text" id="track-file" placeholder="track.mp3" required>
+                </div>
+                <div class="admin-form-group">
+                    <label for="track-visibility">Visibility</label>
+                    <select id="track-visibility">
+                        <option value="visible">Visible</option>
+                        <option value="coming_soon">Coming Soon</option>
+                        <option value="hidden">Hidden</option>
+                    </select>
+                </div>
+                <div class="admin-form-actions">
+                    <button type="button" class="admin-btn cancel-modal">Cancel</button>
+                    <button type="submit" class="admin-btn primary">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Hardware Editor Modal -->
+    <div id="hardware-modal" class="admin-modal" style="display: none;">
+        <div class="admin-modal-content">
+            <h2 id="hardware-editor-title">New Project</h2>
+            <form id="hardware-form">
+                <input type="hidden" id="hardware-id">
+                <div class="admin-form-group">
+                    <label for="hardware-title">Project Title</label>
+                    <input type="text" id="hardware-title" placeholder="Project title" required>
+                </div>
+                <div class="admin-form-group">
+                    <label for="hardware-description">Description</label>
+                    <textarea id="hardware-description" rows="3" placeholder="Project description..."></textarea>
+                </div>
+                <div class="admin-form-group">
+                    <label for="hardware-image">Image URL</label>
+                    <input type="text" id="hardware-image" placeholder="project.jpg">
+                </div>
+                <div class="admin-form-group">
+                    <label for="hardware-link">Link (optional)</label>
+                    <input type="url" id="hardware-link" placeholder="https://...">
+                </div>
+                <div class="admin-form-group">
+                    <label for="hardware-visibility">Visibility</label>
+                    <select id="hardware-visibility">
+                        <option value="visible">Visible</option>
+                        <option value="coming_soon">Coming Soon</option>
+                        <option value="hidden">Hidden</option>
+                    </select>
+                </div>
+                <div class="admin-form-actions">
+                    <button type="button" class="admin-btn cancel-modal">Cancel</button>
+                    <button type="submit" class="admin-btn primary">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Textile Editor Modal -->
+    <div id="textile-modal" class="admin-modal" style="display: none;">
+        <div class="admin-modal-content">
+            <h2 id="textile-editor-title">New Item</h2>
+            <form id="textile-form">
+                <input type="hidden" id="textile-id">
+                <div class="admin-form-group">
+                    <label for="textile-title">Item Title</label>
+                    <input type="text" id="textile-title" placeholder="Item title" required>
+                </div>
+                <div class="admin-form-group">
+                    <label for="textile-description">Description</label>
+                    <textarea id="textile-description" rows="3" placeholder="Item description..."></textarea>
+                </div>
+                <div class="admin-form-group">
+                    <label for="textile-image">Image URL</label>
+                    <input type="text" id="textile-image" placeholder="item.jpg">
+                </div>
+                <div class="admin-form-group">
+                    <label for="textile-visibility">Visibility</label>
+                    <select id="textile-visibility">
+                        <option value="visible">Visible</option>
+                        <option value="coming_soon">Coming Soon</option>
+                        <option value="hidden">Hidden</option>
+                    </select>
+                </div>
+                <div class="admin-form-actions">
+                    <button type="button" class="admin-btn cancel-modal">Cancel</button>
+                    <button type="submit" class="admin-btn primary">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
         const STORAGE_KEY = 'literature_posts';
+        const SETTINGS_KEY = 'site_settings';
+        const APPS_KEY = 'software_apps';
+        const VIDEOS_KEY = 'art_videos';
+        const PHOTOS_KEY = 'art_photos';
+        const TRACKS_KEY = 'music_tracks';
+        const HARDWARE_KEY = 'hardware_projects';
+        const TEXTILES_KEY = 'textiles_items';
+
+        // Site settings functions
+        function getSettings() {
+            const data = localStorage.getItem(SETTINGS_KEY);
+            const defaults = {
+                // Homepage sections
+                sectionOrder: ['latest', 'art', 'hardware', 'literature', 'music', 'software', 'textiles'],
+                latestSource: 'literature',
+                latestSectionTitle: 'Latest',
+                showLatestSection: true,
+                showArtSection: true,
+                showHardwareSection: true,
+                showLiteratureSection: true,
+                showMusicSection: true,
+                showSoftwareSection: true,
+                showTextilesSection: true,
+                // Navigation pages
+                navOrder: ['art', 'literature', 'music', 'software', 'hardware', 'textiles'],
+                showArtNav: true,
+                showLiteratureNav: true,
+                showMusicNav: true,
+                showSoftwareNav: true,
+                showHardwareNav: true,
+                showTextilesNav: true
+            };
+            return data ? { ...defaults, ...JSON.parse(data) } : defaults;
+        }
+
+        function saveSettings(settings) {
+            localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+        }
+
+        function loadSettingsUI() {
+            const settings = getSettings();
+
+            // Homepage sections
+            document.getElementById('show-latest-section').checked = settings.showLatestSection !== false;
+            document.getElementById('latest-section-title').value = settings.latestSectionTitle || 'Latest';
+            document.getElementById('latest-source').value = settings.latestSource || 'literature';
+            document.getElementById('show-art-section').checked = settings.showArtSection !== false;
+            document.getElementById('show-hardware-section').checked = settings.showHardwareSection !== false;
+            document.getElementById('show-literature-section').checked = settings.showLiteratureSection !== false;
+            document.getElementById('show-music-section').checked = settings.showMusicSection !== false;
+            document.getElementById('show-software-section').checked = settings.showSoftwareSection !== false;
+            document.getElementById('show-textiles-section').checked = settings.showTextilesSection !== false;
+
+            // Navigation pages
+            document.getElementById('show-art-nav').checked = settings.showArtNav !== false;
+            document.getElementById('show-literature-nav').checked = settings.showLiteratureNav !== false;
+            document.getElementById('show-music-nav').checked = settings.showMusicNav !== false;
+            document.getElementById('show-software-nav').checked = settings.showSoftwareNav !== false;
+            document.getElementById('show-hardware-nav').checked = settings.showHardwareNav !== false;
+            document.getElementById('show-textiles-nav').checked = settings.showTextilesNav !== false;
+
+            // Reorder sections based on saved order
+            reorderList('section-list', settings.sectionOrder, 'section');
+            reorderList('nav-list', settings.navOrder, 'nav');
+        }
+
+        function reorderList(listId, order, dataAttr) {
+            const list = document.getElementById(listId);
+            if (!list || !order) return;
+
+            order.forEach(key => {
+                const item = list.querySelector(`[data-${dataAttr}="${key}"]`);
+                if (item) list.appendChild(item);
+            });
+        }
+
+        function setupSettingsListeners() {
+            // Section toggles
+            const sectionToggles = [
+                { id: 'show-latest-section', key: 'showLatestSection' },
+                { id: 'show-art-section', key: 'showArtSection' },
+                { id: 'show-hardware-section', key: 'showHardwareSection' },
+                { id: 'show-literature-section', key: 'showLiteratureSection' },
+                { id: 'show-music-section', key: 'showMusicSection' },
+                { id: 'show-software-section', key: 'showSoftwareSection' },
+                { id: 'show-textiles-section', key: 'showTextilesSection' }
+            ];
+
+            sectionToggles.forEach(({ id, key }) => {
+                document.getElementById(id).addEventListener('change', (e) => {
+                    const settings = getSettings();
+                    settings[key] = e.target.checked;
+                    saveSettings(settings);
+                });
+            });
+
+            // Section options per page
+            const pageSections = {
+                literature: [
+                    { value: '', label: 'Page Top' },
+                    { value: 'latest', label: 'Latest Post' },
+                    { value: 'essay', label: 'Articles' },
+                    { value: 'meditation', label: 'Reflections' },
+                    { value: 'post', label: 'Tangents' }
+                ],
+                art: [
+                    { value: '', label: 'Page Top' },
+                    { value: 'video-section', label: 'Motion Picture' },
+                    { value: 'photo-section', label: 'Stills' }
+                ],
+                music: [
+                    { value: '', label: 'Page Top' },
+                    { value: 'latest', label: 'Latest Track' }
+                ],
+                software: [
+                    { value: '', label: 'Page Top' },
+                    { value: 'latest', label: 'Latest App' },
+                    { value: 'apps-list', label: 'All Apps' }
+                ],
+                hardware: [
+                    { value: '', label: 'Page Top' },
+                    { value: 'latest', label: 'Latest Project' }
+                ],
+                textiles: [
+                    { value: '', label: 'Page Top' },
+                    { value: 'latest', label: 'Latest Design' }
+                ]
+            };
+
+            function updateSectionDropdown(page) {
+                const dropdown = document.getElementById('latest-section-target');
+                const sections = pageSections[page] || [{ value: '', label: 'Page Top' }];
+                const settings = getSettings();
+
+                dropdown.innerHTML = sections.map(s =>
+                    `<option value="${s.value}"${settings.latestSectionTarget === s.value ? ' selected' : ''}>${s.label}</option>`
+                ).join('');
+            }
+
+            // Latest section special controls
+            document.getElementById('latest-source').addEventListener('change', (e) => {
+                const settings = getSettings();
+                settings.latestSource = e.target.value;
+                settings.latestSectionTarget = ''; // Reset section when page changes
+                saveSettings(settings);
+                updateSectionDropdown(e.target.value);
+            });
+
+            document.getElementById('latest-section-target').addEventListener('change', (e) => {
+                const settings = getSettings();
+                settings.latestSectionTarget = e.target.value;
+                saveSettings(settings);
+            });
+
+            document.getElementById('latest-section-title').addEventListener('input', (e) => {
+                const settings = getSettings();
+                settings.latestSectionTitle = e.target.value || 'Latest';
+                saveSettings(settings);
+            });
+
+            // Initialize section dropdown
+            updateSectionDropdown(document.getElementById('latest-source').value);
+
+            // Nav toggles
+            const navToggles = [
+                { id: 'show-art-nav', key: 'showArtNav' },
+                { id: 'show-literature-nav', key: 'showLiteratureNav' },
+                { id: 'show-music-nav', key: 'showMusicNav' },
+                { id: 'show-software-nav', key: 'showSoftwareNav' },
+                { id: 'show-hardware-nav', key: 'showHardwareNav' },
+                { id: 'show-textiles-nav', key: 'showTextilesNav' }
+            ];
+
+            navToggles.forEach(({ id, key }) => {
+                document.getElementById(id).addEventListener('change', (e) => {
+                    const settings = getSettings();
+                    settings[key] = e.target.checked;
+                    saveSettings(settings);
+                });
+            });
+
+            // Setup drag and drop
+            setupDragAndDrop('section-list', 'sectionOrder', 'section');
+            setupDragAndDrop('nav-list', 'navOrder', 'nav');
+        }
+
+        function setupDragAndDrop(listId, orderKey, dataAttr) {
+            const list = document.getElementById(listId);
+            let draggedItem = null;
+
+            list.addEventListener('dragstart', (e) => {
+                if (e.target.classList.contains('admin-sortable-item')) {
+                    draggedItem = e.target;
+                    e.target.classList.add('dragging');
+                }
+            });
+
+            list.addEventListener('dragend', (e) => {
+                if (e.target.classList.contains('admin-sortable-item')) {
+                    e.target.classList.remove('dragging');
+                    draggedItem = null;
+                    // Save new order
+                    const items = list.querySelectorAll('.admin-sortable-item');
+                    const newOrder = Array.from(items).map(item => item.dataset[dataAttr]);
+                    const settings = getSettings();
+                    settings[orderKey] = newOrder;
+                    saveSettings(settings);
+                }
+            });
+
+            list.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                const afterElement = getDragAfterElement(list, e.clientY);
+                if (draggedItem) {
+                    if (afterElement == null) {
+                        list.appendChild(draggedItem);
+                    } else {
+                        list.insertBefore(draggedItem, afterElement);
+                    }
+                }
+            });
+        }
+
+        function getDragAfterElement(container, y) {
+            const draggableElements = [...container.querySelectorAll('.admin-sortable-item:not(.dragging)')];
+
+            return draggableElements.reduce((closest, child) => {
+                const box = child.getBoundingClientRect();
+                const offset = y - box.top - box.height / 2;
+                if (offset < 0 && offset > closest.offset) {
+                    return { offset: offset, element: child };
+                } else {
+                    return closest;
+                }
+            }, { offset: Number.NEGATIVE_INFINITY }).element;
+        }
 
         // Default posts to seed if localStorage is empty
         const defaultPosts = [
@@ -145,6 +797,25 @@
             return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
         }
 
+        function getVisibilityLabel(post) {
+            const visibility = post.visibility || 'visible';
+            if (visibility === 'hidden') return 'Hidden';
+            if (visibility === 'coming_soon') return 'Coming Soon';
+            if (visibility === 'scheduled') {
+                if (post.publishDate && new Date(post.publishDate) > new Date()) {
+                    return `Scheduled: ${formatDate(post.publishDate)}`;
+                }
+                return 'Scheduled (Past)';
+            }
+            return '';
+        }
+
+        function updateVisibilityFields() {
+            const visibility = document.getElementById('post-visibility').value;
+            const publishDateGroup = document.getElementById('publish-date-group');
+            publishDateGroup.style.display = visibility === 'scheduled' ? 'block' : 'none';
+        }
+
         // ===== Storage Functions =====
         function getPosts() {
             const data = localStorage.getItem(STORAGE_KEY);
@@ -193,19 +864,26 @@
                 return;
             }
 
-            container.innerHTML = posts.map(post => `
-                <div class="admin-post-card" data-id="${post.id}">
+            container.innerHTML = posts.map(post => {
+                const visibility = post.visibility || 'visible';
+                const visibilityLabel = getVisibilityLabel(post);
+                const visibilityClass = visibility === 'hidden' ? 'status-hidden' :
+                                        visibility === 'coming_soon' ? 'status-coming-soon' :
+                                        visibility === 'scheduled' ? 'status-scheduled' : '';
+                return `
+                <div class="admin-post-card ${visibilityClass}" data-id="${post.id}">
                     <div class="admin-post-info">
                         <span class="admin-post-type">${post.type === 'meditation' ? 'reflection' : post.type === 'essay' ? 'article' : post.type === 'post' ? 'tangent' : post.type}</span>
                         <span class="admin-post-title">${post.type === 'meditation' ? (post.content || post.quote || '').substring(0, 50) + '...' : post.title}</span>
                         ${post.date ? `<span class="admin-post-date">${formatDate(post.date)}</span>` : ''}
+                        ${visibilityLabel ? `<span class="admin-post-visibility ${visibilityClass}">${visibilityLabel}</span>` : ''}
                     </div>
                     <div class="admin-post-actions">
                         <button class="admin-btn small edit-btn" data-id="${post.id}">Edit</button>
                         <button class="admin-btn small danger delete-btn" data-id="${post.id}">Delete</button>
                     </div>
                 </div>
-            `).join('');
+            `}).join('');
 
             // Add event listeners
             container.querySelectorAll('.edit-btn').forEach(btn => {
@@ -240,12 +918,17 @@
                     document.getElementById('post-content').value = post.content || post.quote || '';
                     document.getElementById('post-citation').value = post.citation || '';
                     document.getElementById('post-link').value = post.link || '';
+                    document.getElementById('post-visibility').value = post.visibility || 'visible';
+                    document.getElementById('post-publish-date').value = post.publishDate || '';
                     updateFormFields();
+                    updateVisibilityFields();
                 }
             } else {
                 title.textContent = 'New Post';
                 document.getElementById('post-date').value = new Date().toISOString().split('T')[0];
+                document.getElementById('post-visibility').value = 'visible';
                 updateFormFields();
+                updateVisibilityFields();
             }
 
             modal.style.display = 'flex';
@@ -275,13 +958,345 @@
             }
         }
 
+        // ===== Generic Content Management =====
+        function createContentManager(storageKey, defaults = []) {
+            return {
+                getAll: () => {
+                    const data = localStorage.getItem(storageKey);
+                    return data ? JSON.parse(data) : defaults;
+                },
+                save: (items) => {
+                    localStorage.setItem(storageKey, JSON.stringify(items));
+                },
+                add: (item) => {
+                    const items = JSON.parse(localStorage.getItem(storageKey) || '[]');
+                    item.id = 'item_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                    items.unshift(item);
+                    localStorage.setItem(storageKey, JSON.stringify(items));
+                    return item;
+                },
+                update: (id, updates) => {
+                    const items = JSON.parse(localStorage.getItem(storageKey) || '[]');
+                    const index = items.findIndex(i => i.id === id);
+                    if (index !== -1) {
+                        items[index] = { ...items[index], ...updates };
+                        localStorage.setItem(storageKey, JSON.stringify(items));
+                    }
+                },
+                delete: (id) => {
+                    const items = JSON.parse(localStorage.getItem(storageKey) || '[]');
+                    const filtered = items.filter(i => i.id !== id);
+                    localStorage.setItem(storageKey, JSON.stringify(filtered));
+                },
+                get: (id) => {
+                    const items = JSON.parse(localStorage.getItem(storageKey) || '[]');
+                    return items.find(i => i.id === id);
+                },
+                seed: () => {
+                    if (!localStorage.getItem(storageKey) && defaults.length > 0) {
+                        localStorage.setItem(storageKey, JSON.stringify(defaults));
+                    }
+                }
+            };
+        }
+
+        // Default data for each content type
+        const defaultApps = [
+            { id: 'app_1', name: 'Tiempo', subtitle: 'AI-Daily Planner for iOS and macOS', description: 'Tiempo reimagines how you interact with your calendar.', icon: 'icon-tiempo.png', link: '#', status: 'available' },
+            { id: 'app_2', name: 'Synesthesia', subtitle: 'VisionOS app for experiencing music visually', icon: 'icon-synesthesia.png', status: 'coming_soon' },
+            { id: 'app_3', name: 'Arrow', subtitle: 'VisionOS app for Spatial Messaging', icon: 'icon-arrow.png', status: 'coming_soon' }
+        ];
+
+        const defaultVideos = [
+            { id: 'vid_1', title: 'Video 1', url: '', thumbnail: '', visibility: 'visible' },
+            { id: 'vid_2', title: 'Video 2', url: '', thumbnail: '', visibility: 'visible' },
+            { id: 'vid_3', title: 'Video 3', url: '', thumbnail: '', visibility: 'visible' },
+            { id: 'vid_4', title: 'Video 4', url: '', thumbnail: '', visibility: 'visible' },
+            { id: 'vid_5', title: 'Video 5', url: '', thumbnail: '', visibility: 'visible' }
+        ];
+
+        const defaultPhotos = [
+            { id: 'photo_1', title: 'Photo 1', url: '', visibility: 'visible' },
+            { id: 'photo_2', title: 'Photo 2', url: '', visibility: 'visible' },
+            { id: 'photo_3', title: 'Photo 3', url: '', visibility: 'visible' },
+            { id: 'photo_4', title: 'Photo 4', url: '', visibility: 'visible' },
+            { id: 'photo_5', title: 'Photo 5', url: '', visibility: 'visible' },
+            { id: 'photo_6', title: 'Photo 6', url: '', visibility: 'visible' }
+        ];
+
+        const defaultTracks = [
+            { id: 'track_1', title: 'Paradox', file: 'Paradox.mp3', visibility: 'visible' }
+        ];
+
+        // Content managers
+        const appsManager = createContentManager(APPS_KEY, defaultApps);
+        const videosManager = createContentManager(VIDEOS_KEY, defaultVideos);
+        const photosManager = createContentManager(PHOTOS_KEY, defaultPhotos);
+        const tracksManager = createContentManager(TRACKS_KEY, defaultTracks);
+        const hardwareManager = createContentManager(HARDWARE_KEY, []);
+        const textilesManager = createContentManager(TEXTILES_KEY, []);
+
+        // ===== Render Functions =====
+        function renderContentList(containerId, items, type) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+
+            if (items.length === 0) {
+                container.innerHTML = `<p class="admin-empty">No ${type} yet. Add your first one!</p>`;
+                return;
+            }
+
+            container.innerHTML = items.map(item => {
+                const visibility = item.visibility || item.status || 'visible';
+                const visibilityClass = visibility === 'hidden' ? 'status-hidden' :
+                                        visibility === 'coming_soon' ? 'status-coming-soon' : '';
+                const title = item.name || item.title || 'Untitled';
+                const subtitle = item.subtitle || item.description || item.file || item.url || '';
+
+                return `
+                <div class="admin-content-card ${visibilityClass}" data-id="${item.id}">
+                    <div class="admin-content-info">
+                        <span class="admin-content-title">${title}</span>
+                        ${subtitle ? `<span class="admin-content-subtitle">${subtitle.substring(0, 50)}${subtitle.length > 50 ? '...' : ''}</span>` : ''}
+                        ${visibility !== 'visible' ? `<span class="admin-post-visibility ${visibilityClass}">${visibility === 'coming_soon' ? 'Coming Soon' : visibility === 'hidden' ? 'Hidden' : visibility}</span>` : ''}
+                    </div>
+                    <div class="admin-content-actions">
+                        <button class="admin-btn small edit-${type}-btn" data-id="${item.id}">Edit</button>
+                        <button class="admin-btn small danger delete-${type}-btn" data-id="${item.id}">Delete</button>
+                    </div>
+                </div>
+            `}).join('');
+        }
+
+        function renderApps() {
+            const items = appsManager.getAll();
+            renderContentList('app-list', items, 'app');
+            setupContentListeners('app', appsManager, renderApps);
+        }
+
+        function renderVideos() {
+            const items = videosManager.getAll();
+            renderContentList('video-list', items, 'video');
+            setupContentListeners('video', videosManager, renderVideos);
+        }
+
+        function renderPhotos() {
+            const items = photosManager.getAll();
+            renderContentList('photo-list', items, 'photo');
+            setupContentListeners('photo', photosManager, renderPhotos);
+        }
+
+        function renderTracks() {
+            const items = tracksManager.getAll();
+            renderContentList('track-list', items, 'track');
+            setupContentListeners('track', tracksManager, renderTracks);
+        }
+
+        function renderHardware() {
+            const items = hardwareManager.getAll();
+            renderContentList('hardware-list', items, 'hardware');
+            setupContentListeners('hardware', hardwareManager, renderHardware);
+        }
+
+        function renderTextiles() {
+            const items = textilesManager.getAll();
+            renderContentList('textile-list', items, 'textile');
+            setupContentListeners('textile', textilesManager, renderTextiles);
+        }
+
+        function setupContentListeners(type, manager, renderFn) {
+            document.querySelectorAll(`.edit-${type}-btn`).forEach(btn => {
+                btn.addEventListener('click', () => openContentEditor(type, btn.dataset.id));
+            });
+            document.querySelectorAll(`.delete-${type}-btn`).forEach(btn => {
+                btn.addEventListener('click', () => {
+                    if (confirm('Are you sure you want to delete this?')) {
+                        manager.delete(btn.dataset.id);
+                        renderFn();
+                    }
+                });
+            });
+        }
+
+        // ===== Content Editor Functions =====
+        function openContentEditor(type, itemId = null) {
+            const modal = document.getElementById(`${type}-modal`);
+            const form = document.getElementById(`${type}-form`);
+            const title = document.getElementById(`${type}-editor-title`);
+
+            if (!modal || !form) return;
+            form.reset();
+
+            const managers = {
+                app: appsManager, video: videosManager, photo: photosManager,
+                track: tracksManager, hardware: hardwareManager, textile: textilesManager
+            };
+            const manager = managers[type];
+
+            if (itemId) {
+                const item = manager.get(itemId);
+                if (item) {
+                    title.textContent = `Edit ${type.charAt(0).toUpperCase() + type.slice(1)}`;
+                    document.getElementById(`${type}-id`).value = item.id;
+
+                    // Populate form fields based on type
+                    if (type === 'app') {
+                        document.getElementById('app-name').value = item.name || '';
+                        document.getElementById('app-subtitle').value = item.subtitle || '';
+                        document.getElementById('app-description').value = item.description || '';
+                        document.getElementById('app-icon').value = item.icon || '';
+                        document.getElementById('app-link').value = item.link || '';
+                        document.getElementById('app-status').value = item.status || 'available';
+                    } else if (type === 'video') {
+                        document.getElementById('video-title').value = item.title || '';
+                        document.getElementById('video-url').value = item.url || '';
+                        document.getElementById('video-thumbnail').value = item.thumbnail || '';
+                        document.getElementById('video-visibility').value = item.visibility || 'visible';
+                    } else if (type === 'photo') {
+                        document.getElementById('photo-title').value = item.title || '';
+                        document.getElementById('photo-url').value = item.url || '';
+                        document.getElementById('photo-visibility').value = item.visibility || 'visible';
+                    } else if (type === 'track') {
+                        document.getElementById('track-title').value = item.title || '';
+                        document.getElementById('track-file').value = item.file || '';
+                        document.getElementById('track-visibility').value = item.visibility || 'visible';
+                    } else if (type === 'hardware') {
+                        document.getElementById('hardware-title').value = item.title || '';
+                        document.getElementById('hardware-description').value = item.description || '';
+                        document.getElementById('hardware-image').value = item.image || '';
+                        document.getElementById('hardware-link').value = item.link || '';
+                        document.getElementById('hardware-visibility').value = item.visibility || 'visible';
+                    } else if (type === 'textile') {
+                        document.getElementById('textile-title').value = item.title || '';
+                        document.getElementById('textile-description').value = item.description || '';
+                        document.getElementById('textile-image').value = item.image || '';
+                        document.getElementById('textile-visibility').value = item.visibility || 'visible';
+                    }
+                }
+            } else {
+                title.textContent = `New ${type.charAt(0).toUpperCase() + type.slice(1)}`;
+                document.getElementById(`${type}-id`).value = '';
+            }
+
+            modal.style.display = 'flex';
+        }
+
+        function closeModal(modal) {
+            modal.style.display = 'none';
+        }
+
+        function setupContentForms() {
+            const formConfigs = [
+                { type: 'app', manager: appsManager, render: renderApps, fields: ['name', 'subtitle', 'description', 'icon', 'link', 'status'] },
+                { type: 'video', manager: videosManager, render: renderVideos, fields: ['title', 'url', 'thumbnail', 'visibility'] },
+                { type: 'photo', manager: photosManager, render: renderPhotos, fields: ['title', 'url', 'visibility'] },
+                { type: 'track', manager: tracksManager, render: renderTracks, fields: ['title', 'file', 'visibility'] },
+                { type: 'hardware', manager: hardwareManager, render: renderHardware, fields: ['title', 'description', 'image', 'link', 'visibility'] },
+                { type: 'textile', manager: textilesManager, render: renderTextiles, fields: ['title', 'description', 'image', 'visibility'] }
+            ];
+
+            formConfigs.forEach(({ type, manager, render, fields }) => {
+                const form = document.getElementById(`${type}-form`);
+                if (!form) return;
+
+                form.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const id = document.getElementById(`${type}-id`).value;
+                    const data = {};
+
+                    fields.forEach(field => {
+                        const el = document.getElementById(`${type}-${field}`);
+                        if (el) data[field] = el.value;
+                    });
+
+                    if (id) {
+                        manager.update(id, data);
+                    } else {
+                        manager.add(data);
+                    }
+
+                    closeModal(document.getElementById(`${type}-modal`));
+                    render();
+                });
+            });
+
+            // New item buttons
+            document.getElementById('new-app-btn')?.addEventListener('click', () => openContentEditor('app'));
+            document.getElementById('new-video-btn')?.addEventListener('click', () => openContentEditor('video'));
+            document.getElementById('new-photo-btn')?.addEventListener('click', () => openContentEditor('photo'));
+            document.getElementById('new-track-btn')?.addEventListener('click', () => openContentEditor('track'));
+            document.getElementById('new-hardware-btn')?.addEventListener('click', () => openContentEditor('hardware'));
+            document.getElementById('new-textile-btn')?.addEventListener('click', () => openContentEditor('textile'));
+
+            // Cancel buttons for all modals
+            document.querySelectorAll('.cancel-modal').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const modal = btn.closest('.admin-modal');
+                    if (modal) closeModal(modal);
+                });
+            });
+
+            // Close modals on outside click
+            document.querySelectorAll('.admin-modal').forEach(modal => {
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) closeModal(modal);
+                });
+            });
+        }
+
+        // ===== Panel Toggle Functions =====
+        function setupPanelToggles() {
+            const capsules = document.querySelectorAll('.admin-capsule');
+            const panels = document.querySelectorAll('.admin-panel');
+
+            capsules.forEach(capsule => {
+                capsule.addEventListener('click', () => {
+                    const panelId = capsule.dataset.panel;
+                    const targetPanel = document.getElementById('panel-' + panelId);
+
+                    if (capsule.classList.contains('active')) {
+                        // Clicking active capsule hides it
+                        capsule.classList.remove('active');
+                        if (targetPanel) targetPanel.style.display = 'none';
+                    } else {
+                        // Hide all panels and deactivate all capsules
+                        capsules.forEach(c => c.classList.remove('active'));
+                        panels.forEach(p => p.style.display = 'none');
+
+                        // Show selected panel and activate capsule
+                        capsule.classList.add('active');
+                        if (targetPanel) targetPanel.style.display = 'block';
+                    }
+                });
+            });
+        }
+
         // ===== Event Listeners =====
         document.addEventListener('DOMContentLoaded', () => {
-            // Seed default posts if localStorage is empty
-            seedDefaultPosts();
+            // Setup panel toggles
+            setupPanelToggles();
+            // Load site settings
+            loadSettingsUI();
+            setupSettingsListeners();
 
-            // Render posts on load
+            // Seed default data for all content types
+            seedDefaultPosts();
+            appsManager.seed();
+            videosManager.seed();
+            photosManager.seed();
+            tracksManager.seed();
+
+            // Render all content lists
             renderPostList();
+            renderApps();
+            renderVideos();
+            renderPhotos();
+            renderTracks();
+            renderHardware();
+            renderTextiles();
+
+            // Setup content forms
+            setupContentForms();
 
             // New post button
             document.getElementById('new-post-btn').addEventListener('click', () => openEditor());
@@ -299,17 +1314,26 @@
             // Type change
             document.getElementById('post-type').addEventListener('change', updateFormFields);
 
+            // Visibility change
+            document.getElementById('post-visibility').addEventListener('change', updateVisibilityFields);
+
             // Post form submit
             document.getElementById('post-form').addEventListener('submit', (e) => {
                 e.preventDefault();
 
                 const id = document.getElementById('post-id').value;
                 const type = document.getElementById('post-type').value;
+                const visibility = document.getElementById('post-visibility').value;
 
                 const post = {
                     type,
-                    link: document.getElementById('post-link').value || '#'
+                    link: document.getElementById('post-link').value || '#',
+                    visibility: visibility
                 };
+
+                if (visibility === 'scheduled') {
+                    post.publishDate = document.getElementById('post-publish-date').value;
+                }
 
                 if (type === 'meditation') {
                     post.quote = document.getElementById('post-content').value;

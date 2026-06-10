@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-06-10T05:03:23.192Z",
+  "updatedAt": "2026-06-10T05:03:25.377Z",
   "settings": {
     "sectionOrder": [
       "latest",
@@ -103,7 +103,9 @@
       "name": "Arrow",
       "subtitle": "VisionOS app for Spatial Messaging",
       "icon": "icon-arrow.png",
-      "status": "coming_soon"
+      "status": "hidden",
+      "description": "",
+      "link": ""
     }
   ],
   "videos": [

@@ -1,26 +1,26 @@
 {
   "version": 1,
-  "updatedAt": "2026-06-10T04:54:47.887Z",
+  "updatedAt": "2026-06-10T05:02:26.861Z",
   "settings": {
     "sectionOrder": [
       "latest",
+      "software",
+      "music",
       "art",
       "hardware",
       "literature",
-      "music",
-      "software",
       "textiles"
     ],
-    "latestSource": "literature",
+    "latestSource": "hardware",
     "latestSectionTitle": "Latest",
     "latestSectionTarget": "",
     "showLatestSection": true,
-    "showArtSection": true,
-    "showHardwareSection": true,
-    "showLiteratureSection": true,
+    "showArtSection": false,
+    "showHardwareSection": false,
+    "showLiteratureSection": false,
     "showMusicSection": true,
     "showSoftwareSection": true,
-    "showTextilesSection": true,
+    "showTextilesSection": false,
     "navOrder": [
       "art",
       "literature",
@@ -29,64 +29,31 @@
       "hardware",
       "textiles"
     ],
-    "showArtNav": true,
-    "showLiteratureNav": true,
-    "showMusicNav": true,
-    "showSoftwareNav": true,
-    "showHardwareNav": true,
-    "showTextilesNav": true
+    "showArtNav": false,
+    "showLiteratureNav": false,
+    "showMusicNav": false,
+    "showSoftwareNav": false,
+    "showHardwareNav": false,
+    "showTextilesNav": false
   },
   "posts": [
     {
-      "id": "default_1",
-      "type": "essay",
-      "title": "On the Nature of Creative Work",
-      "date": "2026-01-20",
-      "content": "A longer exploration of how creativity intersects with discipline, and why the most meaningful work often emerges from constraint rather than freedom.",
-      "link": "#",
-      "visibility": "visible"
-    },
-    {
-      "id": "default_2",
       "type": "meditation",
-      "quote": "The impediment to action advances action. What stands in the way becomes the way.",
-      "citation": "- Marcus Aurelius, Meditations",
-      "visibility": "visible"
-    },
-    {
-      "id": "default_3",
-      "type": "post",
-      "title": "Your First Blog Post",
-      "date": "2026-01-23",
-      "content": "This is where your blog post excerpt will appear. Write about anything that interests you.",
       "link": "#",
-      "visibility": "visible"
-    },
-    {
-      "id": "default_4",
-      "type": "meditation",
-      "quote": "Waste no more time arguing about what a good man should be. Be one.",
-      "citation": "- Marcus Aurelius, Meditations",
-      "visibility": "visible"
-    },
-    {
-      "id": "default_5",
-      "type": "essay",
-      "title": "The Quiet Architecture of Habit",
-      "date": "2026-01-15",
-      "content": "How small, repeated actions compound into the invisible structure of our lives, and why understanding this changes everything about how we approach change.",
-      "link": "#",
-      "visibility": "visible"
+      "visibility": "hidden",
+      "quote": "Rage, rage, rage unto that holy war. Rage not against the people or the world. Rage unto the dying of the light for all that which is good. Rage against the corpse, the greatest enemy of all, that binds your soul. Rage against its experiences and perspectives that blind the soul. Seek peace and question its opinions. Seek love with others that are too, imperfect. Rage for sight to fight this holy war. This sight to observe thyself, the God of nothing which is everything and the everything in the nothing. The God that binds the atoms with its unobservable forces. The God that is omnipotent and above all religions. For God created purpose for each structure in the cosmos. For even the rock on the mountain becomes the loudest rock of all as it tumbles at the life of ones conscious vehicle. The fear of God and love of God are intimately intertwined. May one ask for not a life of prosperity and good fortune but for the obstacles to lead them there. Rage against the dying of the light, for when that time comes may the rage be redeemed for peace with what always was and will be. How beautiful is it to experience life, death, love, and the chemicals of what makes us all imperfectly human. I hope not to find the answers but the right questions for God to speak through the nothing(everything).",
+      "citation": "Daniel Carrera",
+      "id": "post_1775870783252_32hd7ejfr"
     }
   ],
   "apps": [
     {
       "id": "app_1",
-      "name": "Tiempo",
-      "subtitle": "AI-Daily Planner for iOS and macOS",
-      "description": "Tiempo reimagines how you interact with your calendar.",
+      "name": "AllTime",
+      "subtitle": "AI Health Calendar for iOS and macOS",
+      "description": "Workouts, goals, nutrition, and more.",
       "icon": "icon-tiempo.png",
-      "link": "/software.html#tiempo",
+      "link": "https://apps.apple.com/us/app/alltime-health-calendar/id6759578102",
       "status": "available"
     },
     {
@@ -94,14 +61,18 @@
       "name": "Synesthesia",
       "subtitle": "VisionOS app for experiencing music visually",
       "icon": "icon-synesthesia.png",
-      "status": "coming_soon"
+      "status": "hidden",
+      "description": "",
+      "link": ""
     },
     {
       "id": "app_3",
       "name": "Arrow",
       "subtitle": "VisionOS app for Spatial Messaging",
       "icon": "icon-arrow.png",
-      "status": "coming_soon"
+      "status": "hidden",
+      "description": "",
+      "link": ""
     }
   ],
   "videos": [

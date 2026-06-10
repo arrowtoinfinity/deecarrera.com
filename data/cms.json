@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-06-10T05:03:10.212Z",
+  "updatedAt": "2026-06-10T05:03:23.192Z",
   "settings": {
     "sectionOrder": [
       "latest",
@@ -94,7 +94,9 @@
       "name": "Synesthesia",
       "subtitle": "VisionOS app for experiencing music visually",
       "icon": "icon-synesthesia.png",
-      "status": "coming_soon"
+      "status": "hidden",
+      "description": "",
+      "link": ""
     },
     {
       "id": "app_3",

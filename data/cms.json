@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-06-10T05:02:26.861Z",
+  "updatedAt": "2026-06-10T05:02:35.305Z",
   "settings": {
     "sectionOrder": [
       "latest",
@@ -11,7 +11,7 @@
       "literature",
       "textiles"
     ],
-    "latestSource": "hardware",
+    "latestSource": "software",
     "latestSectionTitle": "Latest",
     "latestSectionTarget": "",
     "showLatestSection": true,

@@ -1,8 +1,16 @@
 {
   "version": 1,
-  "updatedAt": "2026-02-15T00:00:00.000Z",
+  "updatedAt": "2026-06-10T04:54:47.887Z",
   "settings": {
-    "sectionOrder": ["latest", "art", "hardware", "literature", "music", "software", "textiles"],
+    "sectionOrder": [
+      "latest",
+      "art",
+      "hardware",
+      "literature",
+      "music",
+      "software",
+      "textiles"
+    ],
     "latestSource": "literature",
     "latestSectionTitle": "Latest",
     "latestSectionTarget": "",
@@ -13,7 +21,14 @@
     "showMusicSection": true,
     "showSoftwareSection": true,
     "showTextilesSection": true,
-    "navOrder": ["art", "literature", "music", "software", "hardware", "textiles"],
+    "navOrder": [
+      "art",
+      "literature",
+      "music",
+      "software",
+      "hardware",
+      "textiles"
+    ],
     "showArtNav": true,
     "showLiteratureNav": true,
     "showMusicNav": true,
@@ -90,22 +105,87 @@
     }
   ],
   "videos": [
-    { "id": "vid_1", "title": "Video 1", "url": "", "thumbnail": "", "visibility": "visible" },
-    { "id": "vid_2", "title": "Video 2", "url": "", "thumbnail": "", "visibility": "visible" },
-    { "id": "vid_3", "title": "Video 3", "url": "", "thumbnail": "", "visibility": "visible" },
-    { "id": "vid_4", "title": "Video 4", "url": "", "thumbnail": "", "visibility": "visible" },
-    { "id": "vid_5", "title": "Video 5", "url": "", "thumbnail": "", "visibility": "visible" }
+    {
+      "id": "vid_1",
+      "title": "Video 1",
+      "url": "",
+      "thumbnail": "",
+      "visibility": "visible"
+    },
+    {
+      "id": "vid_2",
+      "title": "Video 2",
+      "url": "",
+      "thumbnail": "",
+      "visibility": "visible"
+    },
+    {
+      "id": "vid_3",
+      "title": "Video 3",
+      "url": "",
+      "thumbnail": "",
+      "visibility": "visible"
+    },
+    {
+      "id": "vid_4",
+      "title": "Video 4",
+      "url": "",
+      "thumbnail": "",
+      "visibility": "visible"
+    },
+    {
+      "id": "vid_5",
+      "title": "Video 5",
+      "url": "",
+      "thumbnail": "",
+      "visibility": "visible"
+    }
   ],
   "photos": [
-    { "id": "photo_1", "title": "Photo 1", "url": "", "visibility": "visible" },
-    { "id": "photo_2", "title": "Photo 2", "url": "", "visibility": "visible" },
-    { "id": "photo_3", "title": "Photo 3", "url": "", "visibility": "visible" },
-    { "id": "photo_4", "title": "Photo 4", "url": "", "visibility": "visible" },
-    { "id": "photo_5", "title": "Photo 5", "url": "", "visibility": "visible" },
-    { "id": "photo_6", "title": "Photo 6", "url": "", "visibility": "visible" }
+    {
+      "id": "photo_1",
+      "title": "Photo 1",
+      "url": "",
+      "visibility": "visible"
+    },
+    {
+      "id": "photo_2",
+      "title": "Photo 2",
+      "url": "",
+      "visibility": "visible"
+    },
+    {
+      "id": "photo_3",
+      "title": "Photo 3",
+      "url": "",
+      "visibility": "visible"
+    },
+    {
+      "id": "photo_4",
+      "title": "Photo 4",
+      "url": "",
+      "visibility": "visible"
+    },
+    {
+      "id": "photo_5",
+      "title": "Photo 5",
+      "url": "",
+      "visibility": "visible"
+    },
+    {
+      "id": "photo_6",
+      "title": "Photo 6",
+      "url": "",
+      "visibility": "visible"
+    }
   ],
   "tracks": [
-    { "id": "track_1", "title": "Paradox", "file": "Paradox.mp3", "visibility": "visible" }
+    {
+      "id": "track_1",
+      "title": "Paradox",
+      "file": "Paradox.mp3",
+      "visibility": "visible"
+    }
   ],
   "hardware": [],
   "textiles": []

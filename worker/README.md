@@ -26,9 +26,12 @@ Secrets:
 
 ```bash
 cd worker
-wrangler secret put GITHUB_TOKEN
-wrangler secret put ADMIN_KEY
-wrangler deploy
+cp wrangler.toml.example wrangler.toml
+npm install
+npx wrangler login
+npx wrangler secret put GITHUB_TOKEN
+npx wrangler secret put ADMIN_KEY
+npm run deploy
 ```
 
 Then configure the deployed Worker URL inside `admin.html` when prompted.

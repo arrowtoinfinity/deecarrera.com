@@ -519,7 +519,7 @@
         const TEXTILES_KEY = 'textiles_items';
         const CMS_MIGRATION_FLAG = 'cms_migrated_v1';
         const CMS_WORKER_URL_KEY = 'cms_worker_url';
-        const DEFAULT_CMS_WORKER_URL = 'https://REPLACE_WITH_YOUR_WORKER_URL';
+        const DEFAULT_CMS_WORKER_URL = 'https://deecarrera-cms.suzanneshwagerwebsite.workers.dev';
         const CMS_KEYS = [STORAGE_KEY, SETTINGS_KEY, APPS_KEY, VIDEOS_KEY, PHOTOS_KEY, TRACKS_KEY, HARDWARE_KEY, TEXTILES_KEY];
 
         let cmsHydrating = false;
@@ -603,14 +603,33 @@
             setSyncStatus('Loaded from GitHub JSON.');
         }
 
+        function isValidWorkerUrl(value) {
+            if (!value || value.includes('REPLACE_WITH_YOUR_WORKER_URL')) return false;
+            try {
+                const parsed = new URL(value);
+                return parsed.protocol === 'https:' || parsed.protocol === 'http:';
+            } catch {
+                return false;
+            }
+        }
+
         async function getSyncConfig() {
             let workerUrl = (localStorage.getItem(CMS_WORKER_URL_KEY) || '').trim();
-            if (!workerUrl) workerUrl = DEFAULT_CMS_WORKER_URL;
 
-            if (!workerUrl || workerUrl.includes('REPLACE_WITH_YOUR_WORKER_URL')) {
-                const entered = prompt('Enter your Cloudflare Worker base URL (example: https://deecarrera-cms.your-subdomain.workers.dev)', workerUrl.includes('http') ? workerUrl : '');
+            // Ignore a previously saved value that is blank or malformed (e.g. a typo
+            // like "ttps://...") and fall back to the configured default.
+            if (!isValidWorkerUrl(workerUrl)) {
+                workerUrl = DEFAULT_CMS_WORKER_URL;
+            }
+
+            if (!isValidWorkerUrl(workerUrl)) {
+                const seed = workerUrl.includes('http') ? workerUrl : '';
+                const entered = prompt('Enter your Cloudflare Worker base URL (example: https://deecarrera-cms.your-subdomain.workers.dev)', seed);
                 if (!entered) throw new Error('CMS sync canceled: missing Worker URL.');
                 workerUrl = entered.trim();
+                if (!isValidWorkerUrl(workerUrl)) {
+                    throw new Error('CMS sync canceled: that Worker URL is not a valid http(s) URL.');
+                }
             }
             workerUrl = workerUrl.replace(/\/$/, '');
             localStorage.setItem(CMS_WORKER_URL_KEY, workerUrl);

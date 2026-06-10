@@ -85,6 +85,8 @@ function githubHeaders(env) {
         Authorization: `Bearer ${env.GITHUB_TOKEN}`,
         Accept: 'application/vnd.github+json',
         'X-GitHub-Api-Version': '2022-11-28',
+        // GitHub API requires a User-Agent header.
+        'User-Agent': 'deecarrera-cms-worker',
         'Content-Type': 'application/json'
     };
 }

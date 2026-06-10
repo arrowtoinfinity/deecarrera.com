@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-06-10T05:03:25.377Z",
+  "updatedAt": "2026-06-10T05:06:38.268Z",
   "settings": {
     "sectionOrder": [
       "latest",
@@ -84,9 +84,9 @@
       "id": "app_1",
       "name": "Tiempo",
       "subtitle": "AI-Daily Planner for iOS and macOS",
-      "description": "Tiempo reimagines how you interact with your calendar.",
+      "description": "All-in-one ai health calendar to manage work and life. Core emphasis is on workouts, goals, and nutrition with event-synced logging. Eliminates subscriptions for 5+ apps like Calendly, Cal AI, TickTick, Flo, Calm, and MyFitnessPal in one app.",
       "icon": "icon-tiempo.png",
-      "link": "/software.html#tiempo",
+      "link": "https://apps.apple.com/us/app/alltime-health-calendar/id6759578102",
       "status": "available"
     },
     {

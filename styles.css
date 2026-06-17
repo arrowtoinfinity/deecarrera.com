@@ -650,8 +650,8 @@ section h2 {
 }
 
 /* App-specific colored shadows */
-.card-tiempo:hover {
-    box-shadow: 0 8px 40px rgba(230, 80, 80, 0.35);
+.card-alltime:hover {
+    box-shadow: 0 8px 40px rgba(255, 138, 76, 0.4);
 }
 
 .card-synesthesia:hover {
@@ -815,6 +815,15 @@ section h2 {
     height: 280px;
     background: linear-gradient(135deg, #e8e8e8 0%, #d8d8d8 100%);
     border-radius: 12px;
+}
+
+.screenshot-img {
+    flex-shrink: 0;
+    width: 158px;
+    height: 280px;
+    object-fit: cover;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #e8e8e8 0%, #d8d8d8 100%);
 }
 
 /* Horizontal screenshots for VisionOS apps */

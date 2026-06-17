@@ -82,12 +82,23 @@
   "apps": [
     {
       "id": "app_1",
-      "name": "Tiempo",
-      "subtitle": "AI-Daily Planner for iOS and macOS",
-      "description": "All-in-one ai health calendar to manage work and life. Core emphasis is on workouts, goals, and nutrition with event-synced logging. Eliminates subscriptions for 5+ apps like Calendly, Cal AI, TickTick, Flo, Calm, and MyFitnessPal in one app.",
-      "icon": "icon-tiempo.png",
+      "name": "AllTime: Health Calendar",
+      "slug": "alltime",
+      "subtitle": "Workouts, meals, goals, tasks",
+      "description": "A health-forward super calendar for iPhone, Mac, and Apple Watch. Apple, Google, and Outlook sync in one timeline, with workouts, meals, goals, and to-dos built in, plus an AI assistant that drags, plans, and builds your day.",
+      "icon": "icon-alltime.png",
       "link": "https://apps.apple.com/us/app/alltime-health-calendar/id6759578102",
-      "status": "available"
+      "status": "available",
+      "screenshots": [
+        "screenshots/01-Timeline.png",
+        "screenshots/02-DailyBriefing.png",
+        "screenshots/03-AIChat.png",
+        "screenshots/04-CycleTracker.png",
+        "screenshots/05-FocusTimer.png",
+        "screenshots/06-Analytics.png",
+        "screenshots/07-Workouts.png",
+        "screenshots/08-Checklist.png"
+      ]
     },
     {
       "id": "app_2",

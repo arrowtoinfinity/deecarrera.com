@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hardware - Daniel Carrera</title>
     <link rel="icon" type="image/png" href="logo.png">
-    <link rel="stylesheet" href="styles.css?v=57">
-    <script src="cms-client.js?v=2"></script>
+    <link rel="stylesheet" href="styles.css?v=61">
+    <script src="cms-client.js?v=5"></script>
 </head>
 <body class="subpage">
     <div class="page-flash"></div>
@@ -73,11 +73,16 @@
                 container.innerHTML = projects.map((project) => {
                     const isComingSoon = project.visibility === 'coming_soon';
                     const comingSoonClass = isComingSoon ? ' content-coming-soon' : '';
+                    const images = Array.isArray(project.images) ? project.images : (project.image ? [project.image] : []);
+                    const imagesHtml = (!isComingSoon && images.length)
+                        ? `<div class="hardware-gallery"><div class="hardware-gallery-scroll">${images.map((src) => `<img src="${src}" alt="${project.title}" class="hardware-img" loading="lazy">`).join('')}</div></div>`
+                        : '';
 
                     return `
                         <article class="hardware-card${comingSoonClass}" id="${project.id}">
                             <h2>${isComingSoon ? 'Coming Soon' : project.title}</h2>
-                            <p>${isComingSoon ? 'This project will be available soon.' : (project.description || '')}</p>
+                            ${(!isComingSoon && project.description) ? `<p>${project.description}</p>` : (isComingSoon ? '<p>This project will be available soon.</p>' : '')}
+                            ${imagesHtml}
                         </article>
                     `;
                 }).join('');

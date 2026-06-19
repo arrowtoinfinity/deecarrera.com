@@ -820,8 +820,9 @@ section h2 {
 .screenshot-img {
     flex-shrink: 0;
     width: 158px;
-    height: 280px;
-    object-fit: cover;
+    height: auto;
+    aspect-ratio: 1260 / 2736;
+    object-fit: contain;
     border-radius: 12px;
     background: linear-gradient(135deg, #e8e8e8 0%, #d8d8d8 100%);
 }
@@ -843,6 +844,123 @@ section h2 {
     color: var(--text-light);
     font-size: 0.95rem;
     line-height: 1.6;
+}
+
+/* Hardware page */
+.hardware-list {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+}
+
+.hardware-card {
+    position: relative;
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    border-radius: 24px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+}
+
+.hardware-card h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.hardware-card p {
+    color: var(--text-light);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+}
+
+.hardware-gallery {
+    margin: 0 -1.5rem;
+    padding: 0 1.5rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.hardware-gallery::-webkit-scrollbar {
+    display: none;
+}
+
+.hardware-gallery-scroll {
+    display: flex;
+    gap: 0.75rem;
+    padding-bottom: 0.5rem;
+}
+
+.hardware-img {
+    flex-shrink: 0;
+    width: 210px;
+    height: auto;
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #e8e8e8 0%, #d8d8d8 100%);
+}
+
+/* Textiles page */
+.textiles-list {
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+}
+
+.textile-card {
+    position: relative;
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    border-radius: 24px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+}
+
+.textile-card h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.textile-card p {
+    color: var(--text-light);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+}
+
+.textile-gallery {
+    margin: 0 -1.5rem;
+    padding: 0 1.5rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.textile-gallery::-webkit-scrollbar {
+    display: none;
+}
+
+.textile-gallery-scroll {
+    display: flex;
+    gap: 0.75rem;
+    padding-bottom: 0.5rem;
+}
+
+.textile-img {
+    flex-shrink: 0;
+    width: auto;
+    height: 280px;
+    object-fit: cover;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #e8e8e8 0%, #d8d8d8 100%);
 }
 
 .btn {

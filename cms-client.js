@@ -93,14 +93,18 @@
                 link: 'https://apps.apple.com/us/app/alltime-health-calendar/id6759578102',
                 status: 'available',
                 screenshots: [
-                    'screenshots/01-Timeline.png',
-                    'screenshots/02-DailyBriefing.png',
-                    'screenshots/03-AIChat.png',
-                    'screenshots/04-CycleTracker.png',
-                    'screenshots/05-FocusTimer.png',
-                    'screenshots/06-Analytics.png',
-                    'screenshots/07-Workouts.png',
-                    'screenshots/08-Checklist.png'
+                    'screenshots/01-Time-Reimagined.png',
+                    'screenshots/02-AI-Powered-Assistance.png',
+                    'screenshots/03-AI-Nutrition-Tracker.png',
+                    'screenshots/04-Schedule-Smarter.png',
+                    'screenshots/05-Cards-n-Blocks.png',
+                    'screenshots/06-Powerful-Controls.png',
+                    'screenshots/07-Eliminate-Distraction.png',
+                    'screenshots/08-Todos.png',
+                    'screenshots/09-Cycle-Tracking.png',
+                    'screenshots/10-Workout-Sync.png',
+                    'screenshots/11-Analytics-Hub.png',
+                    'screenshots/12-Truly-Your-Own.png'
                 ]
             },
             {
@@ -136,8 +140,67 @@
         tracks: [
             { id: 'track_1', title: 'Paradox', file: 'Paradox.mp3', visibility: 'visible' }
         ],
-        hardware: [],
-        textiles: []
+        hardware: [
+            {
+                id: 'hw_surfboard',
+                title: 'Surfboard',
+                description: '',
+                images: [
+                    'hardware/surfboard-01.jpg',
+                    'hardware/surfboard-02.jpg',
+                    'hardware/surfboard-03.jpg',
+                    'hardware/surfboard-04.jpg',
+                    'hardware/surfboard-05.jpg'
+                ],
+                link: '',
+                visibility: 'visible'
+            }
+        ],
+        textiles: [
+            {
+                id: 'tx_apollo',
+                title: 'Apollo Carrera',
+                description: '',
+                images: ['textiles/apollo-01.jpg'],
+                visibility: 'visible'
+            },
+            {
+                id: 'tx_hat',
+                title: 'Hat',
+                description: '',
+                images: [
+                    'textiles/hat-01.jpg',
+                    'textiles/hat-02.jpg',
+                    'textiles/hat-03.jpg',
+                    'textiles/hat-04.jpg',
+                    'textiles/hat-05.jpg'
+                ],
+                visibility: 'visible'
+            },
+            {
+                id: 'tx_socks',
+                title: 'Socks',
+                description: '',
+                images: [
+                    'textiles/socks-01.jpg',
+                    'textiles/socks-02.jpg',
+                    'textiles/socks-03.jpg',
+                    'textiles/socks-04.jpg',
+                    'textiles/socks-05.jpg'
+                ],
+                visibility: 'visible'
+            },
+            {
+                id: 'tx_tarpitz',
+                title: 'Tarpitz Shirt',
+                description: '',
+                images: [
+                    'textiles/tarpitz-01.jpg',
+                    'textiles/tarpitz-02.jpg'
+                ],
+                visibility: 'visible'
+            }
+        ]
     };
 
     let memoryCms = null;

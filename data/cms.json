@@ -102,6 +102,18 @@
         "screenshots/10-Workout-Sync.png",
         "screenshots/11-Analytics-Hub.png",
         "screenshots/12-Truly-Your-Own.png"
+      ],
+      "techStack": [
+        { "group": "Languages", "items": ["Swift 5", "TypeScript"] },
+        { "group": "Platforms", "items": ["iOS 18", "watchOS 11", "macOS 15", "iPhone", "Apple Watch", "Mac"] },
+        { "group": "Client", "items": ["SwiftUI", "UIKit", "SwiftData", "WidgetKit", "ActivityKit (Live Activities)", "App Intents", "EventKit", "HealthKit", "StoreKit 2", "WatchConnectivity"] },
+        { "group": "Backend", "items": ["Supabase (Postgres)", "Auth", "Storage", "35 Edge Functions (Deno)"] },
+        { "group": "AI", "items": ["Google Gemini (2.5 / 3 Flash)", "Anthropic Claude (Sonnet 4.6, Haiku 4.5)"] },
+        { "group": "Payments", "items": ["RevenueCat"] },
+        { "group": "Analytics", "items": ["Mixpanel", "Meta SDK", "AppsFlyer", "TelemetryDeck"] },
+        { "group": "Monitoring", "items": ["Sentry"] },
+        { "group": "Integrations", "items": ["Apple Calendar", "Google Calendar", "Outlook (MSAL)", "Garmin (OAuth 2.0 + PKCE)"] },
+        { "group": "Libraries", "items": ["PhoneNumberKit", "MCEmojiPicker", "json-logic-swift"] }
       ]
     },
     {

@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Software - Daniel Carrera</title>
     <link rel="icon" type="image/png" href="logo.png">
-    <link rel="stylesheet" href="styles.css?v=61">
-    <script src="cms-client.js?v=5"></script>
+    <link rel="stylesheet" href="styles.css?v=62">
+    <script src="cms-client.js?v=6"></script>
 </head>
 <body class="subpage">
     <div class="page-flash"></div>
@@ -73,6 +73,10 @@
                     const shotsHtml = shots.length
                         ? shots.map((src) => `<img src="${src}" alt="${app.name} screenshot" class="screenshot-img" loading="lazy">`).join('')
                         : Array(isVisionOS ? 6 : 8).fill('<div class="screenshot-placeholder"></div>').join('');
+                    const tech = Array.isArray(app.techStack) ? app.techStack : [];
+                    const techHtml = tech.length
+                        ? `<div class="app-tech-stack"><h3>Built with</h3><dl class="tech-stack-grid">${tech.map((g) => `<div class="tech-group"><dt>${g.group}</dt><dd>${(g.items || []).join(' · ')}</dd></div>`).join('')}</dl></div>`
+                        : '';
 
                     if (isComingSoon) {
                         return `
@@ -110,6 +114,7 @@
                                 </div>
                             </div>
                             ${app.description ? `<div class="app-store-description"><p>${app.description}</p></div>` : ''}
+                            ${techHtml}
                         </article>
                     `;
                 }).join('');

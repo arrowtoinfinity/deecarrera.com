@@ -846,6 +846,52 @@ section h2 {
     line-height: 1.6;
 }
 
+/* App tech stack */
+.app-tech-stack {
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+}
+
+.app-tech-stack h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+}
+
+.tech-stack-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.tech-group {
+    display: grid;
+    grid-template-columns: 110px 1fr;
+    gap: 0.75rem;
+    align-items: baseline;
+}
+
+.tech-group dt {
+    color: var(--text);
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.tech-group dd {
+    color: var(--text-light);
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin: 0;
+}
+
+@media (max-width: 600px) {
+    .tech-group {
+        grid-template-columns: 1fr;
+        gap: 0.15rem;
+    }
+}
+
 /* Hardware page */
 .hardware-list {
     display: flex;

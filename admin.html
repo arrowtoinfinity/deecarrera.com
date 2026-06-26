@@ -589,12 +589,27 @@
             }
         }
 
+        function getLocalCmsTimestamp() {
+            // The cms-client cache (cms_data_cache_v1) preserves the real updatedAt
+            // of the last cms this browser fetched or saved. Read it BEFORE fetchCms()
+            // runs, since fetchCms() overwrites that cache as a side effect.
+            const cached = window.CMS.readCachedCms && window.CMS.readCachedCms();
+            const ts = cached && typeof cached.updatedAt === 'string' ? Date.parse(cached.updatedAt) : NaN;
+            return Number.isNaN(ts) ? 0 : ts;
+        }
+
         async function initializeCmsStorage() {
             const migrated = localStorage.getItem(CMS_MIGRATION_FLAG) === '1';
             const hasLocal = hasLocalCmsData();
+            const localTs = getLocalCmsTimestamp();
             const remoteCms = await window.CMS.fetchCms();
+            const remoteTs = typeof remoteCms.updatedAt === 'string' ? (Date.parse(remoteCms.updatedAt) || 0) : 0;
 
-            if (hasLocal && !migrated) {
+            // Keep local data only when it could hold unsaved edits AND the remote
+            // hasn't moved ahead of it. If the published cms.json is newer than what
+            // this browser last saw (e.g. a deploy happened), adopt it so the admin
+            // self-heals instead of clinging to a stale cache.
+            if (hasLocal && !migrated && remoteTs <= localTs) {
                 setSyncStatus('Using local data. First save will sync to GitHub.');
                 return;
             }

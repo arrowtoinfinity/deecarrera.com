@@ -83,7 +83,7 @@
                                     </svg>
                                     Download
                                 </a>`
-                        : `<a href="mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent('TestFlight access: ' + app.name)}" class="app-store-btn">Request TestFlight</a>`;
+                        : `<a href="mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent('Access request: ' + app.name)}" class="app-store-btn">Request access</a>`;
                     const tech = Array.isArray(app.techStack) ? app.techStack : [];
                     const techHtml = tech.length
                         ? `<div class="app-tech-stack"><h3>Built with</h3><dl class="tech-stack-grid">${tech.map((g) => `<div class="tech-group"><dt>${g.group}</dt><dd>${(g.items || []).join(' · ')}</dd></div>`).join('')}</dl></div>`

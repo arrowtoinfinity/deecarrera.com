@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-06-26T18:52:49.571Z",
+  "updatedAt": "2026-06-26T18:57:49.848Z",
   "settings": {
     "sectionOrder": [
       "latest",
@@ -208,7 +208,7 @@
       "name": "LifeMates",
       "slug": "lifemates",
       "subtitle": "Cadence-based reminders to stay in touch",
-      "description": "An iOS app that nudges you to stay in touch with the people who matter, on a cadence you set per person, with a simple log of every check-in. Built for personal use; reach out if you'd like TestFlight access.",
+      "description": "An iOS app that nudges you to stay in touch with family and friends, on a cadence you set per person, with a simple log of every check-in. Built for personal use; reach out if you'd like TestFlight access.",
       "icon": "icon-lifemates.png",
       "link": "",
       "status": "available"

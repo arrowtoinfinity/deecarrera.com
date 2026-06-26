@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-06-26T22:47:57.000Z",
+  "updatedAt": "2026-06-26T22:49:41.993Z",
   "settings": {
     "sectionOrder": [
       "latest",
@@ -228,7 +228,7 @@
       "name": "Apollo",
       "slug": "apollo",
       "subtitle": "Hands-free voice control for Claude Code",
-      "description": "A web-downloadable app for macOS that lets you drive Claude Code entirely by voice, hands-free, so you can code and direct your agent while away from the keyboard. Built for personal use; reach out if you'd like access.",
+      "description": "A Jarvis-like macOS app for driving multiple Claude Code projects entirely by voice, hands-free, so you can code and direct your agent while away from the keyboard. Built for personal use; reach out if you'd like TestFlight access.",
       "icon": "icon-apollo.png",
       "link": "",
       "status": "available"

@@ -39,7 +39,7 @@
 
                 navItems.forEach((key) => {
                     const el = document.getElementById('nav-' + key);
-                    const showKey = 'show' + key.charAt(0).toUpperCase() + key.slice(1) + 'Nav';
+                    const showKey = 'show' + key.charAt(0).toUpperCase() + key.slice(1) + 'Section';
                     if (el && settings[showKey] === false) el.style.display = 'none';
                 });
 
@@ -137,7 +137,7 @@
     <footer>
         <p>&copy; 2026 Daniel Carrera</p>
     </footer>
-    <script src="animation.js"></script>
+    <script src="animation.js?v=20"></script>
     <script>
         // Hamburger menu toggle
         const hamburger = document.getElementById('hamburger');

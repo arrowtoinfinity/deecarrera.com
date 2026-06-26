@@ -117,22 +117,34 @@
       ]
     },
     {
-      "id": "app_2",
-      "name": "Synesthesia",
+      "id": "app_boomsphere",
+      "name": "BoomSphere",
+      "slug": "boomsphere",
       "subtitle": "VisionOS app for experiencing music visually",
-      "icon": "icon-synesthesia.png",
-      "status": "hidden",
       "description": "",
-      "link": ""
+      "icon": "icon-boomsphere.png",
+      "link": "",
+      "status": "hidden"
     },
     {
-      "id": "app_3",
-      "name": "Arrow",
-      "subtitle": "VisionOS app for Spatial Messaging",
-      "icon": "icon-arrow.png",
-      "status": "hidden",
+      "id": "app_lifemates",
+      "name": "LifeMates",
+      "slug": "lifemates",
+      "subtitle": "Cadence-based reminders to stay in touch",
       "description": "",
-      "link": ""
+      "icon": "icon-lifemates.png",
+      "link": "",
+      "status": "hidden"
+    },
+    {
+      "id": "app_arrow",
+      "name": "Arrow",
+      "slug": "arrow",
+      "subtitle": "VisionOS app for Spatial Messaging",
+      "description": "",
+      "icon": "icon-arrow.png",
+      "link": "",
+      "status": "hidden"
     }
   ],
   "videos": [

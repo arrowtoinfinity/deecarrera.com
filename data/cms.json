@@ -1,21 +1,21 @@
 {
   "version": 1,
-  "updatedAt": "2026-06-26T15:04:10.000Z",
+  "updatedAt": "2026-06-26T16:09:13.498Z",
   "settings": {
     "sectionOrder": [
       "latest",
       "art",
       "hardware",
       "literature",
-      "music",
       "software",
+      "music",
       "textiles"
     ],
     "latestSource": "software",
     "latestSectionTitle": "Latest",
     "latestSectionTarget": "",
     "showLatestSection": false,
-    "showArtSection": true,
+    "showArtSection": false,
     "showHardwareSection": false,
     "showLiteratureSection": false,
     "showMusicSection": true,
@@ -29,12 +29,12 @@
       "hardware",
       "textiles"
     ],
-    "showArtNav": true,
-    "showLiteratureNav": true,
-    "showMusicNav": true,
-    "showSoftwareNav": true,
-    "showHardwareNav": true,
-    "showTextilesNav": true
+    "showArtNav": false,
+    "showLiteratureNav": false,
+    "showMusicNav": false,
+    "showSoftwareNav": false,
+    "showHardwareNav": false,
+    "showTextilesNav": false
   },
   "posts": [
     {
@@ -102,49 +102,25 @@
         "screenshots/10-Workout-Sync.png",
         "screenshots/11-Analytics-Hub.png",
         "screenshots/12-Truly-Your-Own.png"
-      ],
-      "techStack": [
-        { "group": "Languages", "items": ["Swift 5", "TypeScript"] },
-        { "group": "Platforms", "items": ["iOS 18", "watchOS 11", "macOS 15", "iPhone", "Apple Watch", "Mac"] },
-        { "group": "Client", "items": ["SwiftUI", "UIKit", "SwiftData", "WidgetKit", "ActivityKit (Live Activities)", "App Intents", "EventKit", "HealthKit", "StoreKit 2", "WatchConnectivity"] },
-        { "group": "Backend", "items": ["Supabase (Postgres)", "Auth", "Storage", "35 Edge Functions (Deno)"] },
-        { "group": "AI", "items": ["Google Gemini (2.5 / 3 Flash)", "Anthropic Claude (Sonnet 4.6, Haiku 4.5)"] },
-        { "group": "Payments", "items": ["RevenueCat"] },
-        { "group": "Analytics", "items": ["Mixpanel", "Meta SDK", "AppsFlyer", "TelemetryDeck"] },
-        { "group": "Monitoring", "items": ["Sentry"] },
-        { "group": "Integrations", "items": ["Apple Calendar", "Google Calendar", "Outlook (MSAL)", "Garmin (OAuth 2.0 + PKCE)"] },
-        { "group": "Libraries", "items": ["PhoneNumberKit", "MCEmojiPicker", "json-logic-swift"] }
       ]
     },
     {
-      "id": "app_boomsphere",
-      "name": "BoomSphere",
-      "slug": "boomsphere",
+      "id": "app_2",
+      "name": "Synesthesia",
       "subtitle": "VisionOS app for experiencing music visually",
-      "description": "A visionOS app that turns music into a living, spatial visualization you can step inside. Built for personal use; reach out if you'd like TestFlight access.",
-      "icon": "icon-boomsphere.png",
-      "link": "",
-      "status": "available"
+      "icon": "icon-synesthesia.png",
+      "status": "hidden",
+      "description": "",
+      "link": ""
     },
     {
-      "id": "app_lifemates",
-      "name": "LifeMates",
-      "slug": "lifemates",
-      "subtitle": "Cadence-based reminders to stay in touch",
-      "description": "An iOS app that nudges you to stay in touch with the people who matter, on a cadence you set per person, with a simple log of every check-in. Built for personal use; reach out if you'd like TestFlight access.",
-      "icon": "icon-lifemates.png",
-      "link": "",
-      "status": "available"
-    },
-    {
-      "id": "app_arrow",
+      "id": "app_3",
       "name": "Arrow",
-      "slug": "arrow",
       "subtitle": "VisionOS app for Spatial Messaging",
-      "description": "A visionOS app for spatial messaging — leaving notes and messages anchored in the space around you. Built for personal use; reach out if you'd like TestFlight access.",
       "icon": "icon-arrow.png",
-      "link": "",
-      "status": "available"
+      "status": "hidden",
+      "description": "",
+      "link": ""
     }
   ],
   "videos": [

@@ -310,14 +310,10 @@
         const opts = options || {};
         const force = !!opts.force;
 
-        if (!force && !isMigratedToRemoteCms()) {
-            const legacy = readLegacyLocalStorage();
-            if (legacy) {
-                memoryCms = legacy;
-                writeCachedCms(legacy);
-                return deepClone(legacy);
-            }
-        }
+        // The published data/cms.json is the source of truth. Legacy localStorage
+        // is used only as an OFFLINE fallback below (catch block) — never as a
+        // pre-emptive return, or a browser with old localStorage keys would be
+        // permanently pinned to stale content and never see live edits.
 
         if (memoryCms && !force) {
             return deepClone(memoryCms);

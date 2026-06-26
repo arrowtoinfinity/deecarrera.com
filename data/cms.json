@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-06-26T16:09:29.098Z",
+  "updatedAt": "2026-06-26T16:09:32.011Z",
   "settings": {
     "sectionOrder": [
       "latest",
@@ -15,7 +15,7 @@
     "latestSectionTitle": "Latest",
     "latestSectionTarget": "",
     "showLatestSection": false,
-    "showArtSection": true,
+    "showArtSection": false,
     "showHardwareSection": false,
     "showLiteratureSection": false,
     "showMusicSection": true,

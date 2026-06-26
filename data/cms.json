@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-06-26T16:09:32.011Z",
+  "updatedAt": "2026-06-26T16:09:46.885Z",
   "settings": {
     "sectionOrder": [
       "latest",
@@ -29,7 +29,7 @@
       "hardware",
       "textiles"
     ],
-    "showArtNav": false,
+    "showArtNav": true,
     "showLiteratureNav": false,
     "showMusicNav": false,
     "showSoftwareNav": false,

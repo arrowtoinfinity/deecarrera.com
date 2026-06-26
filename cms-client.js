@@ -330,7 +330,11 @@
 
         inFlight = (async () => {
             try {
-                const response = await fetch(CMS_DATA_URL, { cache: 'no-store' });
+                // Append a unique timestamp so the CMS data is always fetched fresh,
+                // never served from the browser's HTTP cache (GitHub Pages sends
+                // max-age=600). This is what makes content edits appear in real time.
+                const bust = `${CMS_DATA_URL}${CMS_DATA_URL.includes('?') ? '&' : '?'}t=${Date.now()}`;
+                const response = await fetch(bust, { cache: 'no-store' });
                 if (!response.ok) {
                     throw new Error(`Failed to fetch CMS data (${response.status})`);
                 }

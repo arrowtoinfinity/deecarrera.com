@@ -117,22 +117,34 @@
       ]
     },
     {
-      "id": "app_2",
-      "name": "Synesthesia",
+      "id": "app_boomsphere",
+      "name": "BoomSphere",
+      "slug": "boomsphere",
       "subtitle": "VisionOS app for experiencing music visually",
-      "icon": "icon-synesthesia.png",
-      "status": "hidden",
-      "description": "",
-      "link": ""
+      "description": "A visionOS app that turns music into a living, spatial visualization you can step inside. Built for personal use; reach out if you'd like TestFlight access.",
+      "icon": "icon-boomsphere.png",
+      "link": "",
+      "status": "available"
     },
     {
-      "id": "app_3",
+      "id": "app_lifemates",
+      "name": "LifeMates",
+      "slug": "lifemates",
+      "subtitle": "Cadence-based reminders to stay in touch",
+      "description": "An iOS app that nudges you to stay in touch with the people who matter, on a cadence you set per person, with a simple log of every check-in. Built for personal use; reach out if you'd like TestFlight access.",
+      "icon": "icon-lifemates.png",
+      "link": "",
+      "status": "available"
+    },
+    {
+      "id": "app_arrow",
       "name": "Arrow",
+      "slug": "arrow",
       "subtitle": "VisionOS app for Spatial Messaging",
+      "description": "A visionOS app for spatial messaging — leaving notes and messages anchored in the space around you. Built for personal use; reach out if you'd like TestFlight access.",
       "icon": "icon-arrow.png",
-      "status": "hidden",
-      "description": "",
-      "link": ""
+      "link": "",
+      "status": "available"
     }
   ],
   "videos": [

@@ -39,7 +39,7 @@
 
                 navItems.forEach((key) => {
                     const el = document.getElementById('nav-' + key);
-                    const showKey = 'show' + key.charAt(0).toUpperCase() + key.slice(1) + 'Section';
+                    const showKey = 'show' + key.charAt(0).toUpperCase() + key.slice(1) + 'Nav';
                     if (el && settings[showKey] === false) el.style.display = 'none';
                 });
 

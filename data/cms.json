@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-06-26T23:01:06.595Z",
+  "updatedAt": "2026-06-27T01:37:12.484Z",
   "settings": {
     "sectionOrder": [
       "latest",
@@ -228,7 +228,7 @@
       "name": "Apollo",
       "slug": "apollo",
       "subtitle": "Hands-free voice control for simultaneous Claude Code projects",
-      "description": "A JARVIS-like app for macOS that lets you drive multiple Claude Code projects entirely by voice, hands-free, so you can code and direct your agent while away from the keyboard. Built for personal use; reach out if you'd like access.",
+      "description": "A JARVIS-like app for macOS that lets you drive multiple Claude Code projects entirely by voice, hands-free, so you can code and direct your agent while away from the keyboard using native LLMs. Built for personal use; reach out if you'd like access.",
       "icon": "icon-apollo.png",
       "link": "",
       "status": "available"

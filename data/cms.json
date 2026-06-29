@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-06-29T03:25:29.800Z",
+  "updatedAt": "2026-06-29T03:26:42.107Z",
   "settings": {
     "sectionOrder": [
       "latest",
@@ -84,7 +84,7 @@
       "id": "app_1",
       "name": "AllTime: Health Calendar",
       "slug": "alltime",
-      "subtitle": "Your AI-Powered Super Calendar for health, accountability, and consistency.",
+      "subtitle": "Your AI-powered super calendar for health, accountability, and consistency.",
       "description": "A health-forward super calendar for iPhone, Mac, and Apple Watch. Apple, Google, and Outlook sync in one timeline, with workouts, nutrition, goals, cycle tracking, focus, scheduling, and to-dos built in, plus an AI assistant that drags, plans, and builds your day.",
       "icon": "icon-alltime.png",
       "link": "https://apps.apple.com/us/app/alltime-health-calendar/id6759578102",

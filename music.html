@@ -103,6 +103,12 @@
                     `;
                 }
 
+                // The audio player script defines window.initMusicPlayer; run it now
+                // that the play button / audio element exist in the DOM.
+                if (typeof window.initMusicPlayer === 'function') {
+                    window.initMusicPlayer();
+                }
+
                 if (window.location.hash) {
                     const target = document.querySelector(window.location.hash);
                     if (target) target.scrollIntoView({ behavior: 'smooth' });
@@ -116,9 +122,12 @@
     </footer>
     <script src="animation.js?v=20"></script>
     <script>
-        // Audio Visualizer - uses buffer-based approach to avoid SES/extension conflicts
-        (function() {
+        // Audio Visualizer - uses buffer-based approach to avoid SES/extension conflicts.
+        // Exposed as a function and invoked by the track-render script once #play-btn
+        // exists, since that card is created asynchronously after fetchCms() resolves.
+        window.initMusicPlayer = function() {
             const playBtn = document.getElementById('play-btn');
+            if (!playBtn) return; // no playable track rendered (e.g. coming soon / empty)
             const playIcon = playBtn.querySelector('.play-icon');
             const pauseIcon = playBtn.querySelector('.pause-icon');
             const audioElement = document.getElementById('music-player');
@@ -270,13 +279,13 @@
                 }
             });
 
-            // Preload audio buffer on page load for instant playback
+            // Preload audio buffer for instant playback
             loadAudioBuffer().then(() => {
                 console.log('Audio preloaded and ready');
             }).catch(err => {
                 console.log('Preload skipped (will load on first play):', err.message);
             });
-        })();
+        };
     </script>
     <script>
         // Hamburger menu toggle

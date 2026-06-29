@@ -147,10 +147,12 @@ nav {
 }
 
 .subpage .nav-name {
-    position: static;
-    transform: none;
-    top: auto;
-    left: auto;
+    /* Keep the base fixed, horizontally-centered positioning so the home button
+       sits centered over the header bar on subpages (matches the homepage). */
+    position: fixed;
+    top: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
 .subpage .nav-links {
@@ -650,10 +652,6 @@ section h2 {
 }
 
 /* App-specific colored shadows */
-.card-alltime:hover {
-    box-shadow: 0 8px 40px rgba(255, 138, 76, 0.4);
-}
-
 .card-synesthesia:hover {
     box-shadow: 0 8px 40px rgba(230, 220, 0, 0.4);
 }

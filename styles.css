@@ -2241,7 +2241,8 @@ footer {
 
 .experience-media-tile img {
     width: 200px;
-    height: auto;
+    height: 112px;
+    object-fit: cover;
     border-radius: 10px;
     display: block;
 }

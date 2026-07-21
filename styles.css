@@ -2453,8 +2453,18 @@ body.music-focus .hero-chat {
     pointer-events: none;
 }
 
+/* While playing, the row lifts out of the page flow and pins to the
+   viewport center so the node ring is never cut off by the page edge —
+   the row is the last section, so scrolling can't center it. */
 body.music-focus .music-card.music-row {
-    max-width: 22rem;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: min(22rem, calc(100vw - 3rem));
+    max-width: none;
+    margin: 0;
+    z-index: 30;
 }
 
 .music-row h3 {

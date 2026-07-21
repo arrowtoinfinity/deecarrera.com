@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Daniel Carrera</title>
     <link rel="icon" type="image/png" href="logo.png">
-    <link rel="stylesheet" href="styles.css?v=93">
+    <link rel="stylesheet" href="styles.css?v=94">
     <script src="cms-client.js?v=8"></script>
     <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 </head>
@@ -365,12 +365,38 @@
             // Focus mode: while the track plays, fade out the rest of the page,
             // shrink the row, and lock scrolling so the audio-reactive
             // constellation plays unobstructed (see body.music-focus CSS).
+            // FLIP the row between its in-page slot and the viewport center:
+            // measure before/after the class toggle, pin it inline at the old
+            // spot, then glide to the new one so the move is animated rather
+            // than an instant reposition.
             const setMusicFocus = (on) => {
-                document.body.classList.toggle('music-focus', on);
-                if (on) {
-                    const row = document.getElementById('music-row-container');
-                    if (row) row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                const row = document.querySelector('.music-card.music-row');
+                const body = document.body;
+                if (!row) {
+                    body.classList.toggle('music-focus', on);
+                    return;
                 }
+                const first = row.getBoundingClientRect();
+                body.classList.toggle('music-focus', on);
+                const last = row.getBoundingClientRect();
+                row.style.transition = 'none';
+                row.style.position = 'fixed';
+                row.style.top = first.top + 'px';
+                row.style.left = first.left + 'px';
+                row.style.width = first.width + 'px';
+                row.style.maxWidth = 'none';
+                row.style.transform = 'none';
+                row.style.margin = '0';
+                row.style.zIndex = '30';
+                void row.offsetWidth;
+                row.style.transition = 'top 0.6s ease, left 0.6s ease, width 0.6s ease';
+                row.style.top = last.top + 'px';
+                row.style.left = last.left + 'px';
+                row.style.width = last.width + 'px';
+                clearTimeout(row._flipTimer);
+                row._flipTimer = setTimeout(() => {
+                    row.style.cssText = '';
+                }, 620);
             };
 
             // Load audio file as buffer (bypasses SES restrictions)

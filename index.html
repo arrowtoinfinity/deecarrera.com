@@ -753,16 +753,17 @@
                             <img src="${m.img}" alt="${m.caption}" loading="lazy">
                             <div class="yt-play-badge"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div>
                         </div>`).join('');
-                    const screenshotsHtml = (shots.length || extras.length)
-                        ? `<div class="app-screenshots"><div class="screenshot-scroll${isVisionOS ? ' horizontal' : ''}">${shotsHtml}${extrasHtml}<div class="strip-end" aria-hidden="true"></div></div></div>`
-                        : '';
                     const vids = APP_VIDEOS[key] || [];
-                    const videosHtml = vids.length
-                        ? `<div class="app-screenshots"><div class="screenshot-scroll project-videos">${vids.map((v) => `
+                    const vidsHtml = vids.map((v) => `
                             <div class="project-video-slide">
                                 <video controls playsinline preload="metadata" poster="${v.poster}" src="${v.src}"></video>
                                 <p class="unwrap-caption">${v.caption}</p>
-                            </div>`).join('')}<div class="strip-end" aria-hidden="true"></div></div></div>`
+                            </div>`).join('');
+                    // One combined carousel per app: videos, then screenshots,
+                    // then any YouTube tiles, in a single scrolling strip.
+                    const mediaInner = vidsHtml + shotsHtml + extrasHtml;
+                    const mediaHtml = mediaInner
+                        ? `<div class="app-screenshots"><div class="screenshot-scroll${vids.length ? ' project-videos' : ''}${isVisionOS ? ' horizontal' : ''}">${mediaInner}<div class="strip-end" aria-hidden="true"></div></div></div>`
                         : '';
                     const ctaHtml = app.link
                         ? `<a href="${app.link}" class="app-store-btn">
@@ -787,8 +788,7 @@
                                 </div>
                             </div>
                             <div class="project-details"><div class="project-details-inner">
-                                ${videosHtml}
-                                ${screenshotsHtml}
+                                ${mediaHtml}
                                 <div class="project-lower">
                                     ${app.description ? `<div class="app-store-description"><p>${app.description}</p></div>` : ''}
                                     ${techHtml ? `

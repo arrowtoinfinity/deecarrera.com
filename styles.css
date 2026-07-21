@@ -1769,7 +1769,12 @@ footer {
 
 .footer-links a {
     color: var(--text-light);
-    text-decoration: underline;
+    line-height: 0;
+}
+
+.footer-links svg {
+    width: 22px;
+    height: 22px;
 }
 
 .footer-links a:hover {

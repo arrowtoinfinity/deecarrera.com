@@ -599,7 +599,7 @@
     {
       "id": "chip_unwrap",
       "target": "unwrap-section",
-      "label": "🔥 Unwrap demo"
+      "label": "🔥 BDR Ramp demo"
     },
     {
       "id": "chip_software",

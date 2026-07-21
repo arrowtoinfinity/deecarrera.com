@@ -2475,6 +2475,15 @@ body.music-focus .music-card.music-row {
 
 .music-row .track-meta {
     margin-top: 0.25rem;
+    transition: opacity 0.4s ease, font-size 0.4s ease, line-height 0.4s ease, margin-top 0.4s ease;
+}
+
+/* Collapse the line entirely while playing so the card compacts vertically */
+body.music-focus .music-row .track-meta {
+    opacity: 0;
+    font-size: 0;
+    line-height: 0;
+    margin-top: 0;
 }
 
 .music-row .play-btn {

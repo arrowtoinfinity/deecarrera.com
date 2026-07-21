@@ -1830,8 +1830,6 @@ footer {
     margin: 0 -1.5rem;
     padding: 0 0 0 1.5rem;
     overflow-x: auto;
-    scroll-snap-type: x proximity;
-    scroll-padding: 0 1.5rem;
     scrollbar-width: none;
     -ms-overflow-style: none;
 }
@@ -1849,7 +1847,6 @@ footer {
 
 .unwrap-slide {
     flex-shrink: 0;
-    scroll-snap-align: start;
     text-decoration: none;
     color: var(--text);
 }

@@ -1884,6 +1884,10 @@ footer {
     color: var(--text-light);
 }
 
+.unwrap-slide .unwrap-caption {
+    text-align: center;
+}
+
 /* Homepage - Visuals reel carousel */
 .visuals-gallery {
     overflow-x: auto;

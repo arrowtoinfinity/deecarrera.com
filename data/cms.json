@@ -93,7 +93,7 @@
   "apps": [
     {
       "id": "app_1",
-      "name": "AllTime: Health Calendar",
+      "name": "AllTime",
       "slug": "alltime",
       "subtitle": "The AI-powered super calendar for health, accountability, and consistency.",
       "description": "A health-forward super calendar for iPhone, Mac, and Apple Watch. Apple, Google, and Outlook sync in one timeline, with workouts, nutrition, goals, cycle tracking, focus, scheduling, and to-dos built in, plus an AI assistant that drags, plans, and builds your day.",

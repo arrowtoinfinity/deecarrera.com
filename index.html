@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Daniel Carrera</title>
     <link rel="icon" type="image/png" href="logo.png">
-    <link rel="stylesheet" href="styles.css?v=100">
+    <link rel="stylesheet" href="styles.css?v=101">
     <script src="cms-client.js?v=8"></script>
     <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 </head>
@@ -265,6 +265,7 @@
                             <img src="unwrap/unwrap-cert-sales-hub.png" alt="HubSpot Sales Hub Software Certified" width="1140" height="880" loading="lazy">
                             <p class="unwrap-caption">HubSpot Sales Hub Software Certified</p>
                         </a>
+                        <div class="strip-end" aria-hidden="true"></div>
                     </div>
                 </div>
             </div>
@@ -674,7 +675,7 @@
                             <div class="yt-play-badge"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div>
                         </div>`).join('');
                     const screenshotsHtml = (shots.length || extras.length)
-                        ? `<div class="app-screenshots"><div class="screenshot-scroll${isVisionOS ? ' horizontal' : ''}">${shotsHtml}${extrasHtml}</div></div>`
+                        ? `<div class="app-screenshots"><div class="screenshot-scroll${isVisionOS ? ' horizontal' : ''}">${shotsHtml}${extrasHtml}<div class="strip-end" aria-hidden="true"></div></div></div>`
                         : '';
                     const vids = APP_VIDEOS[key] || [];
                     const videosHtml = vids.length
@@ -682,7 +683,7 @@
                             <div class="project-video-slide">
                                 <video controls playsinline preload="metadata" poster="${v.poster}" src="${v.src}"></video>
                                 <p class="unwrap-caption">${v.caption}</p>
-                            </div>`).join('')}</div></div>`
+                            </div>`).join('')}<div class="strip-end" aria-hidden="true"></div></div></div>`
                         : '';
                     const ctaHtml = app.link
                         ? `<a href="${app.link}" class="app-store-btn">

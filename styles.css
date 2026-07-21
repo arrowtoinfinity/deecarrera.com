@@ -1075,8 +1075,8 @@ section h2 {
         padding: 0 0 0 1.5rem;
     }
 
-    .project-card .screenshot-scroll > :last-child {
-        margin-right: 1.5rem;
+    .project-card .screenshot-scroll .strip-end {
+        flex-basis: 0.75rem;
     }
 
     .project-video-slide video {
@@ -1246,19 +1246,18 @@ section h2 {
     padding-bottom: 0.5rem;
 }
 
-/* Trailing padding on a horizontal scroller is not honored at scroll end,
-   which clipped the last card flush against the edge. A margin on the last
-   flex child is always included in the scroll extent (unlike padding or a
-   gap before an ::after spacer), giving it the same inset as the first. */
-.screenshot-scroll > :last-child,
-.hardware-gallery-scroll > :last-child,
-.textile-gallery-scroll > :last-child,
-.unwrap-gallery-scroll > :last-child {
-    margin-right: 1.5rem;
+/* Trailing inset for horizontal scrollers. Neither end padding, margins on
+   the last child, nor zero-height ::after boxes reliably extend the
+   scrollable overflow area (Chrome ignores zero-area boxes; margins are
+   excluded per spec) — a real, stretched flex item is counted everywhere.
+   flex-basis + the 0.75rem gap equals the strip's leading pad. */
+.strip-end {
+    flex: 0 0 0.75rem;
+    align-self: stretch;
 }
 
-.project-card .screenshot-scroll > :last-child {
-    margin-right: 2rem;
+.project-card .screenshot-scroll .strip-end {
+    flex-basis: 1.25rem;
 }
 
 .screenshot-placeholder {

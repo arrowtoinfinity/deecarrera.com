@@ -75,7 +75,7 @@
                     const comingSoonClass = isComingSoon ? ' content-coming-soon' : '';
                     const images = Array.isArray(project.images) ? project.images : (project.image ? [project.image] : []);
                     const imagesHtml = (!isComingSoon && images.length)
-                        ? `<div class="hardware-gallery"><div class="hardware-gallery-scroll">${images.map((src) => `<img src="${src}" alt="${project.title}" class="hardware-img" loading="lazy">`).join('')}</div></div>`
+                        ? `<div class="hardware-gallery"><div class="hardware-gallery-scroll">${images.map((src) => `<img src="${src}" alt="${project.title}" class="hardware-img" loading="lazy">`).join('')}<div class="strip-end" aria-hidden="true"></div></div></div>`
                         : '';
 
                     return `

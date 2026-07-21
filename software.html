@@ -74,7 +74,7 @@
                     const shots = Array.isArray(app.screenshots) ? app.screenshots : [];
                     const shotsHtml = shots.map((src) => `<img src="${src}" alt="${app.name} screenshot" class="screenshot-img" loading="lazy">`).join('');
                     const screenshotsHtml = shots.length
-                        ? `<div class="app-screenshots"><div class="screenshot-scroll${isVisionOS ? ' horizontal' : ''}">${shotsHtml}</div></div>`
+                        ? `<div class="app-screenshots"><div class="screenshot-scroll${isVisionOS ? ' horizontal' : ''}">${shotsHtml}<div class="strip-end" aria-hidden="true"></div></div></div>`
                         : '';
                     const ctaHtml = app.link
                         ? `<a href="${app.link}" class="app-store-btn">

@@ -279,7 +279,16 @@
       "description": "An iOS app that nudges you to stay in touch with family and friends, on a cadence you set per person, with a simple log of every check-in. Built for personal use; reach out if you'd like TestFlight access.",
       "icon": "icon-lifemates.png",
       "link": "",
-      "status": "available"
+      "status": "available",
+      "screenshots": [
+        "screenshots/lifemates-01.png",
+        "screenshots/lifemates-02.png",
+        "screenshots/lifemates-03.png",
+        "screenshots/lifemates-04.png",
+        "screenshots/lifemates-05.png",
+        "screenshots/lifemates-06.png",
+        "screenshots/lifemates-07.png"
+      ]
     },
     {
       "id": "app_apollo",

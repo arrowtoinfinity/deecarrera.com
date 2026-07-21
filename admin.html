@@ -690,33 +690,21 @@
             }
         }
 
-        function getLocalCmsTimestamp() {
-            // The cms-client cache (cms_data_cache_v1) preserves the real updatedAt
-            // of the last cms this browser fetched or saved. Read it BEFORE fetchCms()
-            // runs, since fetchCms() overwrites that cache as a side effect.
-            const cached = window.CMS.readCachedCms && window.CMS.readCachedCms();
-            const ts = cached && typeof cached.updatedAt === 'string' ? Date.parse(cached.updatedAt) : NaN;
-            return Number.isNaN(ts) ? 0 : ts;
-        }
-
         async function initializeCmsStorage() {
-            const migrated = localStorage.getItem(CMS_MIGRATION_FLAG) === '1';
-            const hasLocal = hasLocalCmsData();
-            const localTs = getLocalCmsTimestamp();
-            const remoteCms = await window.CMS.fetchCms();
-            const remoteTs = typeof remoteCms.updatedAt === 'string' ? (Date.parse(remoteCms.updatedAt) || 0) : 0;
-
-            // Keep local data only when it could hold unsaved edits AND the remote
-            // hasn't moved ahead of it. If the published cms.json is newer than what
-            // this browser last saw (e.g. a deploy happened), adopt it so the admin
-            // self-heals instead of clinging to a stale cache.
-            if (hasLocal && !migrated && remoteTs <= localTs) {
-                setSyncStatus('Using local data. First save will sync to GitHub.');
-                return;
+            // The published cms.json is the single source of truth: hydrate from
+            // it on every load. Timestamp/migration gating used to decide this and
+            // repeatedly wedged the admin on stale localStorage (cms.json content
+            // can change without its updatedAt moving). localStorage is now only a
+            // read fallback when the fetch genuinely fails.
+            try {
+                const res = await fetch(`data/cms.json?t=${Date.now()}`, { cache: 'no-store' });
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                const live = window.CMS.mergeCms(await res.json());
+                applyCmsToLocalStorage(live);
+                setSyncStatus('Loaded live site data.');
+            } catch (error) {
+                setSyncStatus(`Offline — showing this browser's local copy (${error.message}). Do not save until reloaded online.`);
             }
-
-            applyCmsToLocalStorage(remoteCms);
-            setSyncStatus('Loaded from GitHub JSON.');
         }
 
         function isValidWorkerUrl(value) {
@@ -1055,44 +1043,10 @@
         }
 
         // Default posts to seed if localStorage is empty
-        const defaultPosts = [
-            {
-                id: 'default_1',
-                type: 'essay',
-                title: 'On the Nature of Creative Work',
-                date: '2026-01-20',
-                content: 'A longer exploration of how creativity intersects with discipline, and why the most meaningful work often emerges from constraint rather than freedom.',
-                link: '#'
-            },
-            {
-                id: 'default_2',
-                type: 'meditation',
-                quote: 'The impediment to action advances action. What stands in the way becomes the way.',
-                citation: '- Marcus Aurelius, Meditations'
-            },
-            {
-                id: 'default_3',
-                type: 'post',
-                title: 'Your First Blog Post',
-                date: '2026-01-23',
-                content: 'This is where your blog post excerpt will appear. Write about anything that interests you.',
-                link: '#'
-            },
-            {
-                id: 'default_4',
-                type: 'meditation',
-                quote: 'Waste no more time arguing about what a good man should be. Be one.',
-                citation: '- Marcus Aurelius, Meditations'
-            },
-            {
-                id: 'default_5',
-                type: 'essay',
-                title: 'The Quiet Architecture of Habit',
-                date: '2026-01-15',
-                content: 'How small, repeated actions compound into the invisible structure of our lives, and why understanding this changes everything about how we approach change.',
-                link: '#'
-            }
-        ];
+        // Stale placeholder seeds retired: the admin hydrates from live
+        // cms.json on load; an offline first run shows empty lists instead
+        // of wrong content.
+        const defaultPosts = [];
 
         function seedDefaultPosts() {
             const existing = localStorage.getItem(STORAGE_KEY);
@@ -1319,32 +1273,25 @@
         }
 
         // Default data for each content type
-        const defaultApps = [
-            { id: 'app_1', name: 'AllTime: Health Calendar', slug: 'alltime', subtitle: 'Workouts, meals, goals, tasks', description: 'A health-forward super calendar for iPhone, Mac, and Apple Watch. Apple, Google, and Outlook sync in one timeline, with workouts, meals, goals, and to-dos built in, plus an AI assistant that drags, plans, and builds your day.', icon: 'icon-alltime.png', link: 'https://apps.apple.com/us/app/alltime-health-calendar/id6759578102', status: 'available' },
-            { id: 'app_2', name: 'Synesthesia', subtitle: 'VisionOS app for experiencing music visually', icon: 'icon-synesthesia.png', status: 'coming_soon' },
-            { id: 'app_3', name: 'Arrow', subtitle: 'VisionOS app for Spatial Messaging', icon: 'icon-arrow.png', status: 'coming_soon' }
-        ];
+        // Stale placeholder seeds retired: the admin hydrates from live
+        // cms.json on load; an offline first run shows empty lists instead
+        // of wrong content.
+        const defaultApps = [];
 
-        const defaultVideos = [
-            { id: 'vid_1', title: 'Video 1', url: '', thumbnail: '', visibility: 'visible' },
-            { id: 'vid_2', title: 'Video 2', url: '', thumbnail: '', visibility: 'visible' },
-            { id: 'vid_3', title: 'Video 3', url: '', thumbnail: '', visibility: 'visible' },
-            { id: 'vid_4', title: 'Video 4', url: '', thumbnail: '', visibility: 'visible' },
-            { id: 'vid_5', title: 'Video 5', url: '', thumbnail: '', visibility: 'visible' }
-        ];
+        // Stale placeholder seeds retired: the admin hydrates from live
+        // cms.json on load; an offline first run shows empty lists instead
+        // of wrong content.
+        const defaultVideos = [];
 
-        const defaultPhotos = [
-            { id: 'photo_1', title: 'Photo 1', url: '', visibility: 'visible' },
-            { id: 'photo_2', title: 'Photo 2', url: '', visibility: 'visible' },
-            { id: 'photo_3', title: 'Photo 3', url: '', visibility: 'visible' },
-            { id: 'photo_4', title: 'Photo 4', url: '', visibility: 'visible' },
-            { id: 'photo_5', title: 'Photo 5', url: '', visibility: 'visible' },
-            { id: 'photo_6', title: 'Photo 6', url: '', visibility: 'visible' }
-        ];
+        // Stale placeholder seeds retired: the admin hydrates from live
+        // cms.json on load; an offline first run shows empty lists instead
+        // of wrong content.
+        const defaultPhotos = [];
 
-        const defaultTracks = [
-            { id: 'track_1', title: 'Paradox', file: 'Paradox.mp3', visibility: 'visible' }
-        ];
+        // Stale placeholder seeds retired: the admin hydrates from live
+        // cms.json on load; an offline first run shows empty lists instead
+        // of wrong content.
+        const defaultTracks = [];
 
         // Content managers
         const appsManager = createContentManager(APPS_KEY, defaultApps);

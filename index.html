@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Daniel Carrera</title>
     <link rel="icon" type="image/png" href="logo.png">
-    <link rel="stylesheet" href="styles.css?v=63">
+    <link rel="stylesheet" href="styles.css?v=72">
     <script src="cms-client.js?v=8"></script>
     <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 </head>
@@ -182,6 +182,31 @@
             })();
         </script>
 
+        <section class="homepage-section" id="unwrap-section">
+            <h2>Unwrap</h2>
+            <div class="unwrap-card">
+                <p class="unwrap-intro">Already ramping on the BDR toolkit &mdash; a working demo, plus HubSpot Academy sales certifications.</p>
+                <div class="unwrap-gallery">
+                    <div class="unwrap-gallery-scroll">
+                        <div class="unwrap-slide">
+                            <video controls playsinline preload="metadata"
+                                poster="unwrap/unwrap-demo-poster.jpg"
+                                src="https://pub-5193f7e1b49d490689bb55e386ae3971.r2.dev/unwrap-demo.mp4"></video>
+                            <p class="unwrap-caption">Building a LinkedIn reactions campaign in Clay</p>
+                        </div>
+                        <a class="unwrap-slide" href="unwrap/unwrap-cert-inbound-sales.png" target="_blank" rel="noopener">
+                            <img src="unwrap/unwrap-cert-inbound-sales.png" alt="HubSpot Academy — Inbound Sales Certified" width="1140" height="880" loading="lazy">
+                            <p class="unwrap-caption">HubSpot Academy &mdash; Inbound Sales Certified</p>
+                        </a>
+                        <a class="unwrap-slide" href="unwrap/unwrap-cert-sales-hub.png" target="_blank" rel="noopener">
+                            <img src="unwrap/unwrap-cert-sales-hub.png" alt="HubSpot Sales Hub Software Certified" width="1140" height="880" loading="lazy">
+                            <p class="unwrap-caption">HubSpot Sales Hub Software Certified</p>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <section class="featured-media" id="art-section">
             <h2>Art</h2>
             <a href="/art.html" class="art-grid">
@@ -216,13 +241,233 @@
             </a>
         </section>
 
+        <script>
+        // Audio Visualizer - uses buffer-based approach to avoid SES/extension conflicts.
+        // Exposed as a function and invoked by the track-render script once #play-btn
+        // exists, since that card is created asynchronously after fetchCms() resolves.
+        window.initMusicPlayer = function() {
+            const playBtn = document.getElementById('play-btn');
+            if (!playBtn) return; // no playable track rendered (e.g. coming soon / empty)
+            const playIcon = playBtn.querySelector('.play-icon');
+            const pauseIcon = playBtn.querySelector('.pause-icon');
+            const audioElement = document.getElementById('music-player');
+
+            let audioContext = null;
+            let analyser = null;
+            let bufferSource = null;
+            let audioBuffer = null;
+            let dataArray = null;
+            let isPlaying = false;
+            let isLoading = false;
+            let startTime = 0;
+            let pauseTime = 0;
+
+            // Pre-initialize audioData
+            window.audioData = { bass: 0, mids: 0, treble: 0, active: false };
+
+            // Load audio file as buffer (bypasses SES restrictions)
+            async function loadAudioBuffer() {
+                if (audioBuffer) return audioBuffer;
+
+                const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                if (!audioContext) {
+                    audioContext = new AudioContextClass();
+                }
+
+                // Fetch the audio file
+                const response = await fetch('Paradox.mp3');
+                const arrayBuffer = await response.arrayBuffer();
+                audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+                console.log('Audio buffer loaded, duration:', audioBuffer.duration);
+
+                // Setup analyser - minimal smoothing for instant response
+                analyser = audioContext.createAnalyser();
+                analyser.fftSize = 256;
+                analyser.smoothingTimeConstant = 0.3; // Lower = faster response
+                dataArray = new Uint8Array(analyser.frequencyBinCount);
+
+                return audioBuffer;
+            }
+
+            // Start audio analysis loop
+            function startAnalysisLoop() {
+                function updateAudioData() {
+                    if (!isPlaying || !analyser) {
+                        window.audioData.active = false;
+                        return;
+                    }
+
+                    analyser.getByteFrequencyData(dataArray);
+
+                    // Frequency bands tuned for THIS song:
+                    // Low (345 Hz area): bins 1-2
+                    // High (517-1200 Hz): bins 3-7 - expanded range for more reactivity
+                    const low = (dataArray[1] + dataArray[2]) / 2;
+                    const high = (dataArray[3] + dataArray[4] + dataArray[5] + dataArray[6] + dataArray[7]) / 5;
+
+                    window.audioData = {
+                        low: low,
+                        high: high,
+                        active: true
+                    };
+
+                    // Debug: see which frequencies are active
+                    if (Math.random() < 0.03) {
+                        console.log('LOW:', low.toFixed(0), '| HIGH:', high.toFixed(0));
+                    }
+
+                    requestAnimationFrame(updateAudioData);
+                }
+                updateAudioData();
+            }
+
+            // Play audio
+            async function playAudio() {
+                if (isLoading) return;
+                isLoading = true;
+
+                try {
+                    await loadAudioBuffer();
+
+                    if (audioContext.state === 'suspended') {
+                        await audioContext.resume();
+                    }
+
+                    // Create new buffer source (required for each play)
+                    bufferSource = audioContext.createBufferSource();
+                    bufferSource.buffer = audioBuffer;
+                    bufferSource.connect(analyser);
+                    analyser.connect(audioContext.destination);
+
+                    // Handle end of audio
+                    bufferSource.onended = () => {
+                        if (isPlaying) {
+                            isPlaying = false;
+                            pauseTime = 0;
+                            window.audioData.active = false;
+                            playIcon.style.display = 'block';
+                            pauseIcon.style.display = 'none';
+                        }
+                    };
+
+                    // Start from pause position
+                    bufferSource.start(0, pauseTime);
+                    startTime = audioContext.currentTime - pauseTime;
+                    isPlaying = true;
+
+                    playIcon.style.display = 'none';
+                    pauseIcon.style.display = 'block';
+
+                    startAnalysisLoop();
+                    isLoading = false;
+                    console.log('Playing from:', pauseTime.toFixed(2));
+                } catch (err) {
+                    console.error('Play error:', err);
+                    isLoading = false;
+                }
+            }
+
+            // Pause audio
+            function pauseAudio() {
+                // Always update UI first
+                playIcon.style.display = 'block';
+                pauseIcon.style.display = 'none';
+                window.audioData.active = false;
+
+                if (bufferSource) {
+                    try {
+                        pauseTime = audioContext.currentTime - startTime;
+                        bufferSource.stop();
+                        bufferSource.disconnect();
+                    } catch (e) {
+                        // Already stopped
+                    }
+                    bufferSource = null;
+                }
+                isPlaying = false;
+                console.log('Paused at:', pauseTime.toFixed(2));
+            }
+
+            // Toggle play/stop - stop resets to beginning, play always starts fresh
+            playBtn.addEventListener('click', () => {
+                if (isPlaying) {
+                    pauseAudio();
+                    pauseTime = 0; // Reset to beginning when stopped
+                } else {
+                    pauseTime = 0; // Always start from beginning
+                    playAudio();
+                }
+            });
+
+            // Preload audio buffer for instant playback
+            loadAudioBuffer().then(() => {
+                console.log('Audio preloaded and ready');
+            }).catch(err => {
+                console.log('Preload skipped (will load on first play):', err.message);
+            });
+        };
+    </script>
         <section class="homepage-section" id="music-section">
             <h2>Music</h2>
-            <a href="/music.html" class="blog-preview-card">
-                <h3>Original Compositions</h3>
-                <p>Listen to original music tracks.</p>
-            </a>
+            <div id="music-row-container"></div>
         </section>
+        <script>
+            (async function() {
+                const cms = await window.CMS.fetchCms();
+                const tracks = (Array.isArray(cms.tracks) ? cms.tracks : []).filter((track) => track.visibility !== 'hidden');
+                const container = document.getElementById('music-row-container');
+
+                if (tracks.length === 0) {
+                    document.getElementById('music-section').style.display = 'none';
+                    return;
+                }
+
+                const track = tracks[0];
+                const isComingSoon = track.visibility === 'coming_soon';
+
+                if (isComingSoon) {
+                    container.innerHTML = `
+                        <article class="music-card music-row content-coming-soon" id="${track.id}">
+                            <div class="music-row-info">
+                                <h3>Coming Soon</h3>
+                            </div>
+                            <div class="play-btn" style="opacity: 0.5; cursor: default;">
+                                <svg class="play-icon" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M8 5v14l11-7z"/>
+                                </svg>
+                            </div>
+                        </article>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = `
+                    <article class="music-card music-row" id="${track.id}">
+                        <div class="music-row-info">
+                            <h3>${track.title}</h3>
+                            <p class="track-meta">Made with the OP-1 by Teenage Engineering</p>
+                        </div>
+                        <button class="play-btn" id="play-btn">
+                            <svg class="play-icon" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M8 5v14l11-7z"/>
+                            </svg>
+                            <svg class="pause-icon" viewBox="0 0 24 24" fill="currentColor" style="display:none;">
+                                <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/>
+                            </svg>
+                        </button>
+                        <audio id="music-player" crossorigin="anonymous">
+                            <source src="${track.file}" type="audio/mpeg">
+                        </audio>
+                    </article>
+                `;
+
+                // The audio player script defines window.initMusicPlayer; run it now
+                // that the play button / audio element exist in the DOM.
+                if (typeof window.initMusicPlayer === 'function') {
+                    window.initMusicPlayer();
+                }
+            })();
+        </script>
 
         <section class="projects" id="software-section">
             <h2>Software</h2>
@@ -238,30 +483,178 @@
                     grid.classList.add('few-cards');
                 }
 
+                const CONTACT_EMAIL = 'deecarrera12@gmail.com';
+
                 grid.innerHTML = apps.map((app) => {
                     const isComingSoon = app.status === 'coming_soon';
                     const key = app.slug || (app.name ? app.name.toLowerCase() : '');
                     const cardClass = key ? `card-${key}` : '';
-                    const appLink = key ? `/software.html#${key}` : '/software.html';
 
                     if (isComingSoon) {
                         return `
                             <div class="project-card ${cardClass} content-coming-soon">
-                                <img src="${app.icon || 'icon-default.png'}" alt="${app.name}" class="project-icon-img">
-                                <h3>${app.name}</h3>
-                                <p>Coming Soon</p>
+                                <div class="project-item-header">
+                                    <img src="${app.icon || 'icon-default.png'}" alt="${app.name}" class="project-icon-img">
+                                    <div>
+                                        <h3>${app.name}</h3>
+                                        <p>Coming Soon</p>
+                                    </div>
+                                </div>
                             </div>
                         `;
                     }
 
+                    const isVisionOS = app.subtitle && app.subtitle.toLowerCase().includes('visionos');
+                    const shots = Array.isArray(app.screenshots) ? app.screenshots : [];
+                    const shotsHtml = shots.map((src) => `<img src="${src}" alt="${app.name} screenshot" class="screenshot-img" loading="lazy">`).join('');
+                    const screenshotsHtml = shots.length
+                        ? `<div class="app-screenshots"><div class="screenshot-scroll${isVisionOS ? ' horizontal' : ''}">${shotsHtml}</div></div>`
+                        : '';
+                    const ctaHtml = app.link
+                        ? `<a href="${app.link}" class="app-store-btn">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+                                </svg>
+                                Download
+                            </a>`
+                        : `<a href="mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent('Access request: ' + app.name)}" class="app-store-btn">Request access</a>`;
+                    const tech = Array.isArray(app.techStack) ? app.techStack : [];
+                    const techHtml = tech.length
+                        ? `<div class="app-tech-stack"><dl class="tech-stack-grid">${tech.map((g) => `<div class="tech-group"><dt>${g.group}</dt><dd>${(g.items || []).join(' · ')}</dd></div>`).join('')}</dl></div>`
+                        : '';
+
                     return `
-                        <a href="${appLink}" class="project-card ${cardClass}">
-                            <img src="${app.icon || 'icon-default.png'}" alt="${app.name}" class="project-icon-img">
-                            <h3>${app.name}</h3>
-                            <p>${app.subtitle || ''}</p>
-                        </a>
+                        <div class="project-card ${cardClass}" tabindex="0">
+                            <div class="project-item-header">
+                                <img src="${app.icon || 'icon-default.png'}" alt="${app.name}" class="project-icon-img">
+                                <div>
+                                    <h3>${app.name}</h3>
+                                    <p>${app.subtitle || ''}</p>
+                                </div>
+                            </div>
+                            <div class="project-details"><div class="project-details-inner">
+                                ${screenshotsHtml}
+                                <div class="project-lower">
+                                    ${app.description ? `<div class="app-store-description"><p>${app.description}</p></div>` : ''}
+                                    ${techHtml ? `
+                                    <button class="builtwith-toggle" type="button">
+                                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+                                        Built with
+                                    </button>
+                                    <div class="tech-reveal"><div class="tech-reveal-inner">${techHtml}</div></div>` : ''}
+                                </div>
+                            </div></div>
+                            <div class="project-cta">${ctaHtml}</div>
+                            <div class="project-expand-hint">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+                            </div>
+                        </div>
                     `;
                 }).join('');
+
+                // Full-width expansion can move a card out from under the pointer
+                // (a mid-row card reflows to its own row), so :hover alone would
+                // flicker; expansion state lives on the grid instead and only a
+                // grid mouseleave collapses it.
+                // Switching focus is choreographed in phases so an open drawer is
+                // never reflowed into a half-width cell: close the current card's
+                // drawer at full width, swap grid positions while everything is
+                // compact, then spring the new card open at the top.
+                const hoverMedia = window.matchMedia('(hover: hover)');
+                const PHASE = 320;
+                let armed = true;
+                let pending = null;
+                let timer = null;
+
+                const setOpen = (card) => {
+                    card.classList.add('expanded');
+                    grid.classList.add('has-expanded');
+                    requestAnimationFrame(() => card.classList.add('open'));
+                };
+
+                const requestExpand = (card) => {
+                    const current = grid.querySelector('.project-card.expanded');
+                    if (!current) {
+                        pending = null;
+                        setOpen(card);
+                        return;
+                    }
+                    if (current === card) {
+                        // Re-hovered the focused card (possibly mid-close): restore it.
+                        pending = null;
+                        if (timer) { clearTimeout(timer); timer = null; }
+                        card.classList.add('open');
+                        return;
+                    }
+                    pending = card;
+                    if (timer) return;
+                    current.classList.remove('open');
+                    timer = setTimeout(() => {
+                        timer = null;
+                        current.classList.remove('expanded', 'tech-open');
+                        if (pending) {
+                            const next = pending;
+                            pending = null;
+                            setOpen(next);
+                        } else {
+                            grid.classList.remove('has-expanded');
+                        }
+                    }, PHASE);
+                };
+
+                const requestCollapse = () => {
+                    pending = null;
+                    const current = grid.querySelector('.project-card.expanded');
+                    if (timer) { clearTimeout(timer); timer = null; }
+                    if (!current) {
+                        grid.classList.remove('has-expanded');
+                        return;
+                    }
+                    current.classList.remove('open');
+                    timer = setTimeout(() => {
+                        timer = null;
+                        current.classList.remove('expanded', 'tech-open');
+                        grid.classList.remove('has-expanded');
+                    }, PHASE);
+                };
+
+                grid.addEventListener('mouseover', (e) => {
+                    if (!hoverMedia.matches) return;
+                    const card = e.target.closest('.project-card');
+                    if (!card || card.classList.contains('expanded')) {
+                        // Pointer over grid whitespace or the focused card re-arms
+                        // switching; a card that merely reflowed under a resting
+                        // pointer stays inert until a gap is crossed.
+                        armed = true;
+                        if (card) requestExpand(card);
+                        return;
+                    }
+                    if (!armed || !card.querySelector('.project-details')) return;
+                    armed = false;
+                    requestExpand(card);
+                });
+
+                grid.addEventListener('mouseleave', () => {
+                    if (!hoverMedia.matches) return;
+                    armed = true;
+                    requestCollapse();
+                });
+
+                grid.addEventListener('click', (e) => {
+                    const toggle = e.target.closest('.builtwith-toggle');
+                    if (toggle) {
+                        toggle.closest('.project-card').classList.toggle('tech-open');
+                        return;
+                    }
+                    if (hoverMedia.matches || e.target.closest('a')) return;
+                    const card = e.target.closest('.project-card');
+                    if (!card || !card.querySelector('.project-details')) return;
+                    if (card.classList.contains('expanded')) {
+                        requestCollapse();
+                    } else {
+                        requestExpand(card);
+                    }
+                });
             })();
         </script>
 
@@ -271,6 +664,96 @@
                 <h3>Textile Work</h3>
                 <p>Fabric designs and creations.</p>
             </a>
+        </section>
+
+        <section class="homepage-section" id="experience-section">
+            <h2>Experience</h2>
+            <div class="experience-card">
+                <div class="experience-item" tabindex="0">
+                    <div class="experience-item-header">
+                        <img class="experience-logo" src="experience/logo-dreamcast.jpg" alt="Dream Cast Media Group logo" loading="lazy">
+                        <div>
+                            <h3>Production Lead III, Sports Broadcasting</h3>
+                            <p class="experience-org">Dream Cast Media Group <time>Mar 2020 &ndash; Present</time></p>
+                        </div>
+                    </div>
+                    <div class="experience-details"><div class="experience-details-inner">
+                        <ul>
+                            <li>Built and retained relationships with marquee clients &mdash; ESPN, NBC Sports, and the LPGA &mdash; over six years, earning repeat business and four promotions.</li>
+                            <li>Day-to-day point of contact under live-broadcast deadline pressure.</li>
+                        </ul>
+                    </div></div>
+                </div>
+                <div class="experience-item" tabindex="0">
+                    <div class="experience-item-header">
+                        <img class="experience-logo" src="experience/logo-alltime.jpg" alt="AllTime logo" loading="lazy">
+                        <div>
+                            <h3>AllTime &mdash; Independent SaaS Project</h3>
+                            <p class="experience-org">Founder &amp; Developer <time>Nov 2025 &ndash; Jun 2026</time></p>
+                        </div>
+                    </div>
+                    <div class="experience-details"><div class="experience-details-inner">
+                        <ul>
+                            <li>Designed, shipped, and sold a full-stack SaaS product end to end, converting 17.7% of trials to paid.</li>
+                            <li>Cold-emailed my way into meetings with senior leaders at Google and Apple.</li>
+                        </ul>
+                    </div></div>
+                </div>
+                <div class="experience-item" tabindex="0">
+                    <div class="experience-item-header">
+                        <img class="experience-logo" src="experience/logo-gpa.jpg" alt="Gillett, Preston &amp; Associates logo" loading="lazy">
+                        <div>
+                            <h3>Business Development Intern</h3>
+                            <p class="experience-org">Gillett, Preston &amp; Associates <time>Jan &ndash; May 2024</time></p>
+                        </div>
+                    </div>
+                    <div class="experience-details"><div class="experience-details-inner">
+                        <ul>
+                            <li>Generated prospect interest for an international consultancy serving the World Bank and United Nations; managed CRM records and researched pipeline tools.</li>
+                        </ul>
+                    </div></div>
+                </div>
+                <div class="experience-item" tabindex="0">
+                    <div class="experience-item-header">
+                        <img class="experience-logo" src="experience/logo-scheinfeld.jpg" alt="Scheinfeld Center logo" loading="lazy">
+                        <div>
+                            <h3>Competitive Pitch Winner &amp; Team Lead, New Venture Challenge</h3>
+                            <p class="experience-org">Scheinfeld Center, SBCC <time>Aug &ndash; Dec 2023</time></p>
+                        </div>
+                    </div>
+                    <div class="experience-details"><div class="experience-details-inner">
+                        <ul>
+                            <li>Won the $10,000 grand prize and $2,000 pitch prize against a field of 10 finalist teams, then led senior engineers from concept to MVP.</li>
+                        </ul>
+                    </div></div>
+                </div>
+                <div class="experience-item" tabindex="0">
+                    <div class="experience-item-header">
+                        <img class="experience-logo" src="experience/logo-westmont.jpg" alt="Westmont College seal" loading="lazy">
+                        <div>
+                            <h3>B.A., Economics &amp; Business</h3>
+                            <p class="experience-org">Westmont College <time>2024</time></p>
+                        </div>
+                    </div>
+                    <div class="experience-details"><div class="experience-details-inner">
+                        <ul>
+                            <li>Honors in Economics (Omicron Delta Epsilon).</li>
+                            <li>Features Writer &mdash; in-depth profiles of CEOs and C-suite leaders, distributed campus-wide.</li>
+                        </ul>
+                    </div></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="homepage-section" id="about-section">
+            <h2>About</h2>
+            <div class="about-card">
+                <img class="about-photo" src="about-daniel.jpg" alt="Daniel Carrera"
+                     onerror="this.style.display='none'">
+                <div class="about-bio">
+                    <p>I'm Daniel &mdash; a Carpinteria native based in Santa Barbara. I studied Economics &amp; Business at Westmont College, I'm bilingual in English and Spanish, and I build and ship my own software (you're looking at some of it). I'm now taking that builder's instinct into software sales, where technical fluency meets the customer conversation.</p>
+                </div>
+            </div>
         </section>
 
         <script>
@@ -299,6 +782,14 @@
                         if (section) main.appendChild(section);
                     });
                 }
+
+                // Experience and About are hardcoded (not CMS-managed); keep them
+                // pinned below the CMS sections that sectionOrder just re-appended.
+                const mainEl = document.querySelector('main');
+                ['experience-section', 'about-section'].forEach((id) => {
+                    const el = document.getElementById(id);
+                    if (el && mainEl) mainEl.appendChild(el);
+                });
             })();
         </script>
     </main>

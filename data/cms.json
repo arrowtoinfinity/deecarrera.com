@@ -221,7 +221,7 @@
       "description": "A visionOS app for spatial messaging by sending messages as physical objects and having them land in the recipients spatial environment. Built for personal use; reach out if you'd like TestFlight access.",
       "icon": "icon-arrow.png",
       "link": "",
-      "status": "hidden"
+      "status": "available"
     },
     {
       "id": "app_apollo",
@@ -231,7 +231,7 @@
       "description": "A JARVIS-like app for macOS that lets you drive multiple Claude Code projects entirely by voice, hands-free, so you can code and direct your agent while away from the keyboard using native LLMs. Built for personal use; reach out if you'd like access.",
       "icon": "icon-apollo.png",
       "link": "",
-      "status": "available"
+      "status": "hidden"
     }
   ],
   "videos": [
@@ -312,7 +312,7 @@
   "tracks": [
     {
       "id": "track_1",
-      "title": "Paradox",
+      "title": "Autumn",
       "file": "Paradox.mp3",
       "visibility": "visible"
     }

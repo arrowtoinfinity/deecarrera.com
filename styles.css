@@ -3401,6 +3401,10 @@ body.music-focus .music-row .track-meta {
     transition: opacity 0.2s ease;
 }
 
+.lightbox[hidden] {
+    display: none;
+}
+
 .lightbox.shown {
     opacity: 1;
 }

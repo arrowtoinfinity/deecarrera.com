@@ -390,9 +390,19 @@ button.msg-option[data-target="unwrap-section"]:hover {
     background: #e66e00;
 }
 
-.msg-option.selected {
-    background: #0055cc;
-    border-color: rgba(255, 255, 255, 0.6);
+/* Used chips: activated outline with a tinted fill */
+.msg-option.selected,
+button.msg-option.selected:hover {
+    background: rgba(0, 122, 255, 0.12);
+    border: 1px solid #007AFF;
+    color: #007AFF;
+}
+
+.msg-option[data-target="unwrap-section"].selected,
+button.msg-option[data-target="unwrap-section"].selected:hover {
+    background: rgba(255, 122, 0, 0.12);
+    border: 1px solid #e66e00;
+    color: #e66e00;
 }
 
 /* The photo rides in the flow like a message but without bubble chrome */

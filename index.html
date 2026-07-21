@@ -1108,7 +1108,7 @@
                 const grid = document.getElementById('contrib-grid');
                 if (!section || !grid) return;
                 try {
-                    const res = await fetch('https://deecarrera-cms.suzanneshwagerwebsite.workers.dev/contributions');
+                    const res = await fetch('https://deecarrera-cms.deecarrera-cms.workers.dev/contributions');
                     if (!res.ok) throw new Error('unavailable');
                     const data = await res.json();
                     if (!Array.isArray(data.days) || !data.days.length) throw new Error('empty');

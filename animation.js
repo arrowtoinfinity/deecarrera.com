@@ -326,7 +326,7 @@
                 if (audioCircleMode && musicCard) {
                     const rect = musicCard.getBoundingClientRect();
                     const cardCenterX = rect.left + rect.width / 2;
-                    const cardCenterY = rect.top + rect.height / 2 + window.scrollY;
+                    const cardCenterY = rect.top + rect.height / 2;
 
                     // Dynamic clear zone that scales with breathing animation
                     const audio = window.audioData;
@@ -343,8 +343,13 @@
                     const clearRange = Math.max(50, Math.min(200, viewportMin * 0.25));
                     const clearRadius = baseClear + avgNorm * clearRange;
 
+                    // Compare in viewport space using this node's parallax-adjusted
+                    // screen position — nodes at depth render at baseY minus a
+                    // per-node fraction of scrollY, so document-space math misses
+                    // them whenever the card sits far down the page.
+                    const parallaxStrength = 1 - (node.z * config.scrollDepthMultiplier);
                     const dx = node.baseX - cardCenterX;
-                    const dy = (node.baseY - scrollY) - (cardCenterY - window.scrollY);
+                    const dy = (node.baseY - scrollY * parallaxStrength) - cardCenterY;
                     const distance = Math.sqrt(dx * dx + dy * dy);
 
                     if (distance < clearRadius && distance > 0) {

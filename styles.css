@@ -1675,12 +1675,18 @@ footer {
     width: fit-content;
 }
 
-.unwrap-video-overlay {
+/* Higher specificity than `.unwrap-slide img`, which would otherwise force
+   the cert-tile sizing/background onto the overlay */
+.unwrap-slide .unwrap-video-overlay {
     position: absolute;
-    inset: 0;
-    margin: auto;
-    max-width: 60%;
-    max-height: 60%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 55%;
+    height: auto;
+    aspect-ratio: auto;
+    background: none;
+    border-radius: 0;
     pointer-events: none;
     transition: opacity 0.4s ease;
 }

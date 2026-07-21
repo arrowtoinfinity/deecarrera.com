@@ -2063,6 +2063,16 @@ footer {
     background: rgba(0, 0, 0, 0.08);
 }
 
+/* Plain era label: same faint text, no hairlines */
+.experience-divider-plain {
+    justify-content: center;
+}
+
+.experience-divider-plain::before,
+.experience-divider-plain::after {
+    display: none;
+}
+
 /* Non-interactive rows (Loading, high-school jobs) */
 .experience-item.static {
     cursor: default;

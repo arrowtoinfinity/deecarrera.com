@@ -442,18 +442,14 @@ button.msg-option[data-target="unwrap-section"]:hover {
        overlap with the next section regardless of message count. A negative
        top margin pulls the conversation up over the statue's lower half, and
        z-index keeps it painted above the absolutely-positioned model. */
-    .hero {
-        min-height: 100vh;
-        box-sizing: border-box;
-    }
-
     .hero-chat {
         position: relative;
         z-index: 22;
         height: auto;
-        /* Start just below the centered title so the bubbles overlap the
-           statue's lower half without covering the h1 */
-        margin-top: -70vh;
+        /* Exact: chat flows at hero_top(4.5rem: 3rem nav + 1.5rem main pad)
+           + 100vh; target top = title bottom + gap = 50vh - 5.5rem.
+           margin = (50vh - 5.5rem) - (100vh + 4.5rem) = -50vh - 10rem. */
+        margin-top: calc(-50vh - 10rem);
         margin-bottom: 2rem;
         display: flex;
         flex-direction: column;
@@ -489,13 +485,7 @@ button.msg-option[data-target="unwrap-section"]:hover {
 }
 
 /* More hero space on mobile/condensed */
-@media (max-width: 767px) {
-    .hero {
-        /* Park the title at the statue's vertical center: the model sits at
-           top calc(50vh - 8rem); subtract main's 2rem top padding and half
-           the title's line box so the h1 midline lands on the same point. */
-        padding: calc(50vh - 11.5rem) 0 0;
-    }
+@media (max-width: 768px) {
 
 
     .hero-model {
@@ -1778,11 +1768,24 @@ footer {
     }
 
     .hero {
-        padding: 8rem 0 20rem;
+        /* Exact 100vh stage; the title is absolutely anchored below so hero
+           height never depends on content */
+        position: relative;
+        height: 100vh;
+        padding: 0;
+        box-sizing: border-box;
     }
 
     .hero h1 {
         font-size: 2.5rem;
+        /* Same anchor expression as .hero-model (top: calc(50vh - 8rem)),
+           minus the hero's 4.5rem document offset (3rem nav + 1.5rem main
+           padding) — the title centers on the statue at every viewport */
+        position: absolute;
+        left: 50%;
+        top: calc(50vh - 8rem - 4.5rem);
+        transform: translate(-50%, -50%);
+        margin: 0;
     }
 
     .app-feature {

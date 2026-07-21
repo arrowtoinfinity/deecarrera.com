@@ -2241,19 +2241,9 @@ footer {
 
 .experience-media-tile img {
     width: 200px;
-    height: 170px;
-    object-fit: cover;
+    height: auto;
     border-radius: 10px;
     display: block;
-}
-
-/* The AWE stage photo keeps its native ratio at the shared height */
-.experience-media-tile[href*="media-awe"] {
-    max-width: none;
-}
-
-.experience-media-tile[href*="media-awe"] img {
-    width: auto;
 }
 
 .experience-media-tile .unwrap-caption {

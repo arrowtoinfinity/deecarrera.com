@@ -6,7 +6,7 @@
     <title>Daniel Carrera</title>
     <link rel="icon" type="image/png" href="logo.png">
     <link rel="stylesheet" href="styles.css?v=107">
-    <script src="cms-client.js?v=8"></script>
+    <script src="cms-client.js?v=9"></script>
     <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 </head>
 <body>
@@ -112,9 +112,36 @@
             </div>
         </div>
         <script>
-            (function() {
+            (async function() {
                 const chat = document.querySelector('.hero-chat');
                 if (!chat) return;
+
+                // CMS-editable message copy: settings.heroMessages replaces the
+                // gray text bubbles (the photo bubble stays pinned after the
+                // first message; typing indicator and chips are structural).
+                try {
+                    const cms = await window.CMS.fetchCms();
+                    const messages = (cms.settings || {}).heroMessages;
+                    if (Array.isArray(messages) && messages.length) {
+                        const left = chat.querySelector('.hero-chat-left');
+                        const photo = left.querySelector('.msg-photo');
+                        const typingEl = left.querySelector('.msg.typing');
+                        left.querySelectorAll('.msg.from:not(.msg-photo):not(.typing)').forEach((m) => m.remove());
+                        messages.forEach((text, i) => {
+                            const bubble = document.createElement('div');
+                            bubble.className = 'msg from';
+                            bubble.textContent = text;
+                            if (i === 0 && photo) {
+                                left.insertBefore(bubble, photo);
+                            } else {
+                                left.insertBefore(bubble, typingEl);
+                            }
+                        });
+                    }
+                } catch (e) {
+                    // Offline/fetch failure: the hardcoded bubbles stay.
+                }
+
                 const grays = Array.from(chat.querySelectorAll('.hero-chat-left .msg:not(.typing)'));
                 const blues = Array.from(chat.querySelectorAll('.hero-chat-right .msg'));
                 const typing = chat.querySelector('.msg.typing');
@@ -1076,6 +1103,24 @@
                 ['experience-section', 'education-section', 'visuals-section', 'music-section'].forEach((id) => {
                     const el = document.getElementById(id);
                     if (el && mainEl) mainEl.appendChild(el);
+                });
+
+                // CMS-editable section headings (missing/empty key keeps the
+                // hardcoded default). "software" is the Projects section.
+                const titles = settings.sectionTitles || {};
+                const titleTargets = {
+                    unwrap: 'unwrap-section',
+                    software: 'software-section',
+                    experience: 'experience-section',
+                    education: 'education-section',
+                    visuals: 'visuals-section',
+                    music: 'music-section'
+                };
+                Object.entries(titleTargets).forEach(([key, id]) => {
+                    if (titles[key]) {
+                        const h2 = document.querySelector(`#${id} h2`);
+                        if (h2) h2.textContent = titles[key];
+                    }
                 });
             })();
         </script>

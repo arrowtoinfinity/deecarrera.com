@@ -33,8 +33,20 @@
                 <span id="cms-sync-status" class="admin-empty">Sync idle</span>
             </div>
 
+            <section class="admin-panel" id="panel-hero">
+                <h2>Hero Chat</h2>
+                <div class="admin-form-group">
+                    <label for="hero-messages">Messages (one per line — the photo bubble appears after the first message; 3-4 short messages fit best)</label>
+                    <textarea id="hero-messages" rows="5" placeholder="One message per line"></textarea>
+                </div>
+            </section>
+
             <section class="admin-panel" id="panel-unwrap">
                 <h2>Unwrap</h2>
+                <div class="admin-form-group">
+                    <label for="title-unwrap">Section title</label>
+                    <input type="text" id="title-unwrap" placeholder="Heading shown on the homepage">
+                </div>
                 <div class="admin-form-group">
                     <label for="unwrap-intro">Intro text</label>
                     <textarea id="unwrap-intro" rows="3" placeholder="Unwrap section intro"></textarea>
@@ -44,6 +56,10 @@
 
             <section class="admin-panel" id="panel-software">
                 <h2>Projects</h2>
+                <div class="admin-form-group">
+                    <label for="title-software">Section title</label>
+                    <input type="text" id="title-software" placeholder="Heading shown on the homepage">
+                </div>
                 <p class="admin-empty">Drag ☰ to reorder — this is the homepage Projects order.</p>
                 <div class="admin-actions">
                     <button id="new-app-btn" class="admin-btn primary">+ New App</button>
@@ -52,6 +68,10 @@
             </section>
             <section class="admin-panel" id="panel-experience">
                 <h2>Experience</h2>
+                <div class="admin-form-group">
+                    <label for="title-experience">Section title</label>
+                    <input type="text" id="title-experience" placeholder="Heading shown on the homepage">
+                </div>
                 <p class="admin-empty">Drag ☰ to reorder — this is the homepage Experience order. (Site wiring pending: edits here go live once the homepage reads these fields.)</p>
                 <div class="admin-actions">
                     <button id="new-experience-btn" class="admin-btn primary">+ New Role</button>
@@ -61,6 +81,10 @@
 
             <section class="admin-panel" id="panel-education">
                 <h2>Education</h2>
+                <div class="admin-form-group">
+                    <label for="title-education">Section title</label>
+                    <input type="text" id="title-education" placeholder="Heading shown on the homepage">
+                </div>
                 <p class="admin-empty">Drag ☰ to reorder — this is the homepage Education order.</p>
                 <div class="admin-actions">
                     <button id="new-education-btn" class="admin-btn primary">+ New School</button>
@@ -68,17 +92,13 @@
                 <div class="admin-content-list" id="education-list"></div>
             </section>
 
-            <section class="admin-panel" id="panel-about">
-                <h2>About</h2>
-                <div class="admin-form-group">
-                    <label for="about-bio">Bio</label>
-                    <textarea id="about-bio" rows="5" placeholder="About section biography"></textarea>
-                </div>
-            </section>
-
 
             <section class="admin-panel" id="panel-visuals">
                 <h2>Visuals</h2>
+                <div class="admin-form-group">
+                    <label for="title-visuals">Section title</label>
+                    <input type="text" id="title-visuals" placeholder="Heading shown on the homepage">
+                </div>
                 <p class="admin-empty">Drag ☰ to reorder — this is the homepage carousel order.</p>
                 <div class="admin-actions">
                     <button id="new-video-btn" class="admin-btn primary">+ New Video</button>
@@ -89,6 +109,10 @@
 
             <section class="admin-panel" id="panel-music">
                 <h2>Music</h2>
+                <div class="admin-form-group">
+                    <label for="title-music">Section title</label>
+                    <input type="text" id="title-music" placeholder="Heading shown on the homepage">
+                </div>
                 <div class="admin-actions">
                     <button id="new-track-btn" class="admin-btn primary">+ New Track</button>
                 </div>
@@ -819,7 +843,8 @@
                 showHardwareNav: true,
                 showTextilesNav: true,
                 unwrapIntro: '',
-                aboutBio: ''
+                heroMessages: [],
+                sectionTitles: {}
             };
             return data ? { ...defaults, ...JSON.parse(data) } : defaults;
         }
@@ -833,7 +858,12 @@
             const settings = getSettings();
 
             document.getElementById('unwrap-intro').value = settings.unwrapIntro || '';
-            document.getElementById('about-bio').value = settings.aboutBio || '';
+            document.getElementById('hero-messages').value = (settings.heroMessages || []).join('\n');
+            const sectionTitles = settings.sectionTitles || {};
+            ['unwrap', 'software', 'experience', 'education', 'visuals', 'music'].forEach((key) => {
+                const input = document.getElementById(`title-${key}`);
+                if (input) input.value = sectionTitles[key] || '';
+            });
 
             // Homepage sections
             document.getElementById('show-latest-section').checked = settings.showLatestSection !== false;
@@ -959,10 +989,20 @@
                 saveSettings(settings);
             });
 
-            document.getElementById('about-bio').addEventListener('input', (e) => {
+            document.getElementById('hero-messages').addEventListener('input', (e) => {
                 const settings = getSettings();
-                settings.aboutBio = e.target.value;
+                settings.heroMessages = e.target.value.split('\n').map((m) => m.trim()).filter(Boolean);
                 saveSettings(settings);
+            });
+
+            ['unwrap', 'software', 'experience', 'education', 'visuals', 'music'].forEach((key) => {
+                const input = document.getElementById(`title-${key}`);
+                if (!input) return;
+                input.addEventListener('input', (e) => {
+                    const settings = getSettings();
+                    settings.sectionTitles = { ...(settings.sectionTitles || {}), [key]: e.target.value };
+                    saveSettings(settings);
+                });
             });
 
             // Initialize section dropdown

@@ -713,6 +713,10 @@
                         { img: 'experience/media-alltime.jpg', embed: 'KypIimT1Mqc', caption: 'AllTime Full Overview' }
                     ]
                 };
+                // Optional visible captions for CMS screenshots, keyed by slug+index
+                const APP_SHOT_CAPTIONS = {
+                    boomsphere: ['BoomSphere UI']
+                };
                 const APP_VIDEOS = {
                     boomsphere: [
                         { src: `${MEDIA_BASE}/boomsphere-demo.mp4`, poster: 'boomsphere/poster-demo.jpg', caption: 'BoomSphere Demo' }
@@ -746,7 +750,13 @@
 
                     const isVisionOS = app.subtitle && app.subtitle.toLowerCase().includes('visionos');
                     const shots = Array.isArray(app.screenshots) ? app.screenshots : [];
-                    const shotsHtml = shots.map((src) => `<img src="${src}" alt="${app.name} screenshot" class="screenshot-img" loading="lazy">`).join('');
+                    const shotCaptions = APP_SHOT_CAPTIONS[key] || [];
+                    const shotsHtml = shots.map((src, i) => {
+                        const img = `<img src="${src}" alt="${shotCaptions[i] || `${app.name} screenshot`}" class="screenshot-img" loading="lazy">`;
+                        return shotCaptions[i]
+                            ? `<div class="project-video-slide">${img}<p class="unwrap-caption">${shotCaptions[i]}</p></div>`
+                            : img;
+                    }).join('');
                     const extras = APP_EXTRA_MEDIA[key] || [];
                     const extrasHtml = extras.map((m) => `
                         <div class="screenshot-yt" data-embed="${m.embed}" role="button" tabindex="0" aria-label="Play ${m.caption}">

@@ -1075,8 +1075,8 @@ section h2 {
         padding: 0 0 0 1.5rem;
     }
 
-    .project-card .screenshot-scroll::after {
-        flex-basis: 0.75rem;
+    .project-card .screenshot-scroll > :last-child {
+        margin-right: 1.5rem;
     }
 
     .project-video-slide video {
@@ -1247,18 +1247,18 @@ section h2 {
 }
 
 /* Trailing padding on a horizontal scroller is not honored at scroll end,
-   which clipped the last card flush against the edge; a flex spacer gives
-   it the same inset as the first card (spacer + 0.75rem gap = the pad). */
-.screenshot-scroll::after,
-.hardware-gallery-scroll::after,
-.textile-gallery-scroll::after,
-.unwrap-gallery-scroll::after {
-    content: '';
-    flex: 0 0 0.75rem;
+   which clipped the last card flush against the edge. A margin on the last
+   flex child is always included in the scroll extent (unlike padding or a
+   gap before an ::after spacer), giving it the same inset as the first. */
+.screenshot-scroll > :last-child,
+.hardware-gallery-scroll > :last-child,
+.textile-gallery-scroll > :last-child,
+.unwrap-gallery-scroll > :last-child {
+    margin-right: 1.5rem;
 }
 
-.project-card .screenshot-scroll::after {
-    flex-basis: 1.25rem;
+.project-card .screenshot-scroll > :last-child {
+    margin-right: 2rem;
 }
 
 .screenshot-placeholder {

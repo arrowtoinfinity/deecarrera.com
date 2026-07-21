@@ -2230,6 +2230,22 @@ footer {
     font-size: 0.75rem;
 }
 
+/* Photo strips: uniform height, natural widths (mixed orientations) */
+.experience-media-photos .experience-media-tile {
+    max-width: none;
+}
+
+.experience-media-photos .experience-media-tile img {
+    width: auto;
+    height: 200px;
+}
+
+@media (max-width: 768px) {
+    .experience-media-photos .experience-media-tile img {
+        height: 150px;
+    }
+}
+
 /* GitHub contribution heatmap */
 .github-card {
     position: relative;

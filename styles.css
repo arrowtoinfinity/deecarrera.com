@@ -437,6 +437,12 @@ button.msg-option[data-target="unwrap-section"]:hover {
 }
 
 @media (max-width: 768px) {
+    /* The 400px hero model overflows narrow viewports and lets the page
+       wiggle sideways, which reads as misalignment — clip it. */
+    body {
+        overflow-x: clip;
+    }
+
     /* Phone hero: the title keeps its full-viewport stage (min-height), and
        the chat sits IN FLOW so the page always reserves its real height — no
        overlap with the next section regardless of message count. A negative

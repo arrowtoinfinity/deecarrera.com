@@ -2247,6 +2247,15 @@ footer {
     display: block;
 }
 
+/* The AWE stage photo keeps its native ratio at the shared height */
+.experience-media-tile[href*="media-awe"] {
+    max-width: none;
+}
+
+.experience-media-tile[href*="media-awe"] img {
+    width: auto;
+}
+
 .experience-media-tile .unwrap-caption {
     text-align: center;
     font-size: 0.75rem;

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Daniel Carrera</title>
     <link rel="icon" type="image/png" href="logo.png">
-    <link rel="stylesheet" href="styles.css?v=108">
+    <link rel="stylesheet" href="styles.css?v=109">
     <script src="cms-client.js?v=11"></script>
     <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 </head>
@@ -1093,6 +1093,46 @@
             </div>
         </section>
 
+        <section class="homepage-section" id="github-section" style="display: none;">
+            <h2>GitHub</h2>
+            <div class="github-card">
+                <div class="contrib-scroll">
+                    <div id="contrib-grid" class="contrib-grid" aria-label="GitHub contribution activity for the past year"></div>
+                </div>
+                <p class="contrib-footer"><span id="contrib-total"></span><a href="https://github.com/arrowtoinfinity" target="_blank" rel="noopener">@arrowtoinfinity on GitHub</a></p>
+            </div>
+        </section>
+        <script>
+            (async function() {
+                const section = document.getElementById('github-section');
+                const grid = document.getElementById('contrib-grid');
+                if (!section || !grid) return;
+                try {
+                    const res = await fetch('https://deecarrera-cms.suzanneshwagerwebsite.workers.dev/contributions');
+                    if (!res.ok) throw new Error('unavailable');
+                    const data = await res.json();
+                    if (!Array.isArray(data.days) || !data.days.length) throw new Error('empty');
+                    const fmt = new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                    let total = 0;
+                    grid.innerHTML = data.days.map((d) => {
+                        total += d.count || 0;
+                        const label = d.count === undefined
+                            ? fmt.format(new Date(d.date + 'T12:00:00'))
+                            : `${d.count} contribution${d.count === 1 ? '' : 's'} · ${fmt.format(new Date(d.date + 'T12:00:00'))}`;
+                        return `<div class="contrib-cell contrib-l${d.level}" title="${label}"></div>`;
+                    }).join('');
+                    const totalEl = document.getElementById('contrib-total');
+                    if (totalEl && total) totalEl.textContent = `${total.toLocaleString()} contributions in the last year · `;
+                    section.style.display = '';
+                    // Show the most recent weeks first on narrow screens
+                    const scroll = section.querySelector('.contrib-scroll');
+                    if (scroll) scroll.scrollLeft = scroll.scrollWidth;
+                } catch (err) {
+                    // Worker not deployed / offline: keep the section hidden
+                }
+            })();
+        </script>
+
         <script>
             (async function() {
                 const cms = await window.CMS.fetchCms();
@@ -1123,7 +1163,7 @@
                 // Experience and About are hardcoded (not CMS-managed); keep them
                 // pinned below the CMS sections that sectionOrder just re-appended.
                 const mainEl = document.querySelector('main');
-                ['experience-section', 'education-section', 'visuals-section', 'music-section'].forEach((id) => {
+                ['experience-section', 'education-section', 'github-section', 'visuals-section', 'music-section'].forEach((id) => {
                     const el = document.getElementById(id);
                     if (el && mainEl) mainEl.appendChild(el);
                 });

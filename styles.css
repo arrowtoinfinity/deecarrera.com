@@ -2155,6 +2155,74 @@ footer {
     font-size: 0.75rem;
 }
 
+/* GitHub contribution heatmap */
+.github-card {
+    position: relative;
+    z-index: 20;
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    border-radius: 24px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+}
+
+.contrib-scroll {
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.contrib-scroll::-webkit-scrollbar {
+    display: none;
+}
+
+.contrib-grid {
+    display: grid;
+    grid-auto-flow: column;
+    grid-template-rows: repeat(7, 11px);
+    grid-auto-columns: 11px;
+    gap: 3px;
+    width: max-content;
+}
+
+.contrib-cell {
+    width: 11px;
+    height: 11px;
+    border-radius: 3px;
+}
+
+.contrib-l0 { background: rgba(0, 0, 0, 0.05); }
+.contrib-l1 { background: #cfe5ff; }
+.contrib-l2 { background: #8fc2ff; }
+.contrib-l3 { background: #3d95ff; }
+.contrib-l4 { background: #007AFF; }
+
+.contrib-footer {
+    margin-top: 0.75rem;
+    font-size: 0.8rem;
+    color: var(--text-light);
+}
+
+.contrib-footer a {
+    color: var(--text-light);
+    text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+    .contrib-grid {
+        grid-template-rows: repeat(7, 9px);
+        grid-auto-columns: 9px;
+        gap: 2px;
+    }
+
+    .contrib-cell {
+        width: 9px;
+        height: 9px;
+    }
+}
+
 @media (hover: none) {
     .experience-details {
         grid-template-rows: 1fr;

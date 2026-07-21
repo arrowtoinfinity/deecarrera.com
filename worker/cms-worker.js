@@ -5,6 +5,11 @@ export default {
         }
 
         const url = new URL(request.url);
+
+        if (url.pathname === '/contributions' && request.method === 'GET') {
+            return handleContributions();
+        }
+
         if (url.pathname !== '/cms') {
             return json({ error: 'Not found' }, 404, env);
         }
@@ -20,6 +25,56 @@ export default {
         return json({ error: 'Method not allowed' }, 405, env);
     }
 };
+
+// Public GitHub contribution calendar, parsed to JSON for the homepage
+// heatmap. No auth involved; served with open CORS (public data) and cached.
+async function handleContributions() {
+    try {
+        const res = await fetch('https://github.com/users/arrowtoinfinity/contributions', {
+            headers: { 'User-Agent': 'deecarrera.com contribution heatmap' },
+            cf: { cacheTtl: 21600, cacheEverything: true }
+        });
+        if (!res.ok) {
+            throw new Error(`GitHub responded ${res.status}`);
+        }
+        const html = await res.text();
+
+        // Day cells: data-date + data-level, keyed by the component id
+        const days = {};
+        const cellRe = /data-date="(\d{4}-\d{2}-\d{2})" id="(contribution-day-component-[\d-]+)" data-level="(\d)"/g;
+        let m;
+        while ((m = cellRe.exec(html)) !== null) {
+            days[m[2]] = { date: m[1], level: Number(m[3]) };
+        }
+
+        // Best-effort counts from the paired tool-tips ("No contributions on…" / "N contributions on…")
+        const tipRe = /<tool-tip[^>]*for="(contribution-day-component-[\d-]+)"[^>]*>(No|\d+) contributions? on/g;
+        while ((m = tipRe.exec(html)) !== null) {
+            if (days[m[1]]) {
+                days[m[1]].count = m[2] === 'No' ? 0 : Number(m[2]);
+            }
+        }
+
+        const list = Object.values(days).sort((a, b) => a.date.localeCompare(b.date));
+        if (!list.length) {
+            throw new Error('No contribution cells parsed');
+        }
+
+        return new Response(JSON.stringify({ updated: new Date().toISOString(), days: list }), {
+            status: 200,
+            headers: {
+                'Content-Type': 'application/json',
+                'Cache-Control': 'public, max-age=3600',
+                'Access-Control-Allow-Origin': '*'
+            }
+        });
+    } catch (error) {
+        return new Response(JSON.stringify({ error: error.message || 'Failed to load contributions' }), {
+            status: 502,
+            headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+        });
+    }
+}
 
 async function handleGet(env) {
     try {

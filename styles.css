@@ -1937,6 +1937,12 @@ footer {
     opacity: 0;
 }
 
+/* Apollo wordmark is white — a soft shadow keeps it legible on the light UI */
+.unwrap-slide .unwrap-overlay-apollo {
+    width: 62%;
+    filter: drop-shadow(0 2px 10px rgba(0, 0, 0, 0.55));
+}
+
 .unwrap-slide img {
     height: 340px;
     aspect-ratio: 1140 / 880;

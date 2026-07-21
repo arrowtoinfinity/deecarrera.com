@@ -1141,17 +1141,29 @@
             // high-school jobs) have no details and are skipped.
             document.querySelectorAll('#experience-section .experience-item, #education-section .experience-item').forEach((item) => {
                 if (!item.querySelector('.experience-details')) return;
-                item.addEventListener('mouseenter', () => item.classList.add('open'));
+                // A row the user clicked closed stays closed: the hover-open is
+                // suppressed until an explicit click reopens it.
+                const setOpen = (open) => {
+                    item.classList.toggle('open', open);
+                    if (open) {
+                        delete item.dataset.hoverLocked;
+                    } else {
+                        item.dataset.hoverLocked = '1';
+                    }
+                };
+                item.addEventListener('mouseenter', () => {
+                    if (!item.dataset.hoverLocked) item.classList.add('open');
+                });
                 item.addEventListener('click', (e) => {
                     if (e.target.closest('a')) return;
                     if (!e.target.closest('.experience-item-header')) return;
-                    item.classList.toggle('open');
+                    setOpen(!item.classList.contains('open'));
                 });
                 item.addEventListener('keydown', (e) => {
                     if (e.key !== 'Enter' && e.key !== ' ') return;
                     if (e.target !== item) return;
                     e.preventDefault();
-                    item.classList.toggle('open');
+                    setOpen(!item.classList.contains('open'));
                 });
             });
         </script>

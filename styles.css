@@ -453,9 +453,10 @@ button.msg-option[data-target="unwrap-section"]:hover {
         z-index: 22;
         height: auto;
         /* Exact: chat flows at hero_top(4.5rem: 3rem nav + 1.5rem main pad)
-           + 100vh; target top = title bottom + gap = 50vh - 5.5rem.
-           margin = (50vh - 5.5rem) - (100vh + 4.5rem) = -50vh - 10rem. */
-        margin-top: calc(-50vh - 10rem);
+           + 100vh; target top = just under the header, 4rem from the
+           viewport top (mirrors desktop's top: 14vh columns).
+           margin = 4rem - (100vh + 4.5rem) = -100vh - 0.5rem. */
+        margin-top: calc(-100vh - 0.5rem);
         margin-bottom: 2rem;
         display: flex;
         flex-direction: column;

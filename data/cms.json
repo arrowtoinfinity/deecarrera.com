@@ -285,38 +285,10 @@
   ],
   "videos": [
     {
-      "id": "vid_805",
-      "title": "805",
-      "url": "https://pub-5193f7e1b49d490689bb55e386ae3971.r2.dev/reel-805.mp4",
-      "thumbnail": "visuals/poster-805.jpg",
-      "visibility": "visible"
-    },
-    {
-      "id": "vid_rocket_man",
-      "title": "Rocket Man",
-      "url": "https://pub-5193f7e1b49d490689bb55e386ae3971.r2.dev/reel-rocket-man.mp4",
-      "thumbnail": "visuals/poster-rocket-man.jpg",
-      "visibility": "visible"
-    },
-    {
-      "id": "vid_santa_cruz_island",
-      "title": "Santa Cruz Island",
-      "url": "https://pub-5193f7e1b49d490689bb55e386ae3971.r2.dev/reel-santa-cruz-island.mp4",
-      "thumbnail": "visuals/poster-santa-cruz-island.jpg",
-      "visibility": "visible"
-    },
-    {
-      "id": "vid_outrigging",
-      "title": "Outrigging",
-      "url": "https://pub-5193f7e1b49d490689bb55e386ae3971.r2.dev/reel-outrigging.mp4",
-      "thumbnail": "visuals/poster-outrigging.jpg",
-      "visibility": "visible"
-    },
-    {
-      "id": "vid_cloudbreak",
-      "title": "Cloudbreak",
-      "url": "https://pub-5193f7e1b49d490689bb55e386ae3971.r2.dev/reel-cloudbreak.mp4",
-      "thumbnail": "visuals/poster-cloudbreak.jpg",
+      "id": "vid_wave_therapy",
+      "title": "Wave Therapy",
+      "url": "https://pub-5193f7e1b49d490689bb55e386ae3971.r2.dev/reel-wave-therapy.mp4",
+      "thumbnail": "visuals/poster-wave-therapy.jpg",
       "visibility": "visible"
     },
     {
@@ -327,10 +299,38 @@
       "visibility": "visible"
     },
     {
-      "id": "vid_wave_therapy",
-      "title": "Wave Therapy",
-      "url": "https://pub-5193f7e1b49d490689bb55e386ae3971.r2.dev/reel-wave-therapy.mp4",
-      "thumbnail": "visuals/poster-wave-therapy.jpg",
+      "id": "vid_cloudbreak",
+      "title": "Cloudbreak",
+      "url": "https://pub-5193f7e1b49d490689bb55e386ae3971.r2.dev/reel-cloudbreak.mp4",
+      "thumbnail": "visuals/poster-cloudbreak.jpg",
+      "visibility": "visible"
+    },
+    {
+      "id": "vid_rocket_man",
+      "title": "Rocket Man",
+      "url": "https://pub-5193f7e1b49d490689bb55e386ae3971.r2.dev/reel-rocket-man.mp4",
+      "thumbnail": "visuals/poster-rocket-man.jpg",
+      "visibility": "visible"
+    },
+    {
+      "id": "vid_805",
+      "title": "805",
+      "url": "https://pub-5193f7e1b49d490689bb55e386ae3971.r2.dev/reel-805.mp4",
+      "thumbnail": "visuals/poster-805.jpg",
+      "visibility": "visible"
+    },
+    {
+      "id": "vid_baja_blast",
+      "title": "Baja Blast",
+      "url": "https://pub-5193f7e1b49d490689bb55e386ae3971.r2.dev/reel-baja-blast.mp4",
+      "thumbnail": "visuals/poster-baja-blast.jpg",
+      "visibility": "visible"
+    },
+    {
+      "id": "vid_santa_cruz_island",
+      "title": "Santa Cruz Island",
+      "url": "https://pub-5193f7e1b49d490689bb55e386ae3971.r2.dev/reel-santa-cruz-island.mp4",
+      "thumbnail": "visuals/poster-santa-cruz-island.jpg",
       "visibility": "visible"
     },
     {
@@ -348,10 +348,10 @@
       "visibility": "visible"
     },
     {
-      "id": "vid_baja_blast",
-      "title": "Baja Blast",
-      "url": "https://pub-5193f7e1b49d490689bb55e386ae3971.r2.dev/reel-baja-blast.mp4",
-      "thumbnail": "visuals/poster-baja-blast.jpg",
+      "id": "vid_outrigging",
+      "title": "Outrigging",
+      "url": "https://pub-5193f7e1b49d490689bb55e386ae3971.r2.dev/reel-outrigging.mp4",
+      "thumbnail": "visuals/poster-outrigging.jpg",
       "visibility": "visible"
     },
     {

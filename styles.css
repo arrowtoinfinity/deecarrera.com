@@ -1972,6 +1972,74 @@ footer {
     transform: rotate(180deg);
 }
 
+/* Timeline era dividers: hairline with a centered faint label */
+.experience-divider {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.35rem 2rem;
+    color: var(--text-light);
+    font-size: 0.72rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    opacity: 0.75;
+}
+
+.experience-divider::before,
+.experience-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: rgba(0, 0, 0, 0.08);
+}
+
+/* Non-interactive rows (Loading, high-school jobs) */
+.experience-item.static {
+    cursor: default;
+}
+
+.experience-logo-plain {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: rgba(0, 0, 0, 0.04);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.35rem;
+    flex-shrink: 0;
+}
+
+.experience-spinner {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 3px solid rgba(0, 0, 0, 0.08);
+    border-top-color: #007AFF;
+    flex-shrink: 0;
+    animation: experience-spin 1s linear infinite;
+}
+
+@keyframes experience-spin {
+    to { transform: rotate(360deg); }
+}
+
+.loading-dots::after {
+    content: '';
+    display: inline-block;
+    width: 1.2em;
+    text-align: left;
+    animation: loading-dots 1.6s steps(1) infinite;
+}
+
+@keyframes loading-dots {
+    0% { content: ''; }
+    25% { content: '.'; }
+    50% { content: '..'; }
+    75% { content: '...'; }
+}
+
 @media (hover: none) {
     /* Touch layouts keep experience bullets always expanded — no hint needed */
     .experience-expand-hint {
@@ -2126,6 +2194,16 @@ footer {
     .experience-logo {
         width: 38px;
         height: 38px;
+    }
+
+    .experience-logo-plain,
+    .experience-spinner {
+        width: 38px;
+        height: 38px;
+    }
+
+    .experience-divider {
+        padding: 0.35rem 1.25rem;
     }
 
     .experience-details ul {

@@ -770,8 +770,10 @@
                                 <p class="unwrap-caption">${v.caption}</p>
                             </div>`).join('');
                     // One combined carousel per app: videos, then screenshots,
-                    // then any YouTube tiles, in a single scrolling strip.
-                    const mediaInner = vidsHtml + shotsHtml + extrasHtml;
+                    // then any YouTube tiles (BoomSphere leads with its UI still).
+                    const mediaInner = key === 'boomsphere'
+                        ? shotsHtml + vidsHtml + extrasHtml
+                        : vidsHtml + shotsHtml + extrasHtml;
                     const mediaHtml = mediaInner
                         ? `<div class="app-screenshots"><div class="screenshot-scroll${vids.length ? ' project-videos' : ''}${isVisionOS ? ' horizontal' : ''}">${mediaInner}<div class="strip-end" aria-hidden="true"></div></div></div>`
                         : '';

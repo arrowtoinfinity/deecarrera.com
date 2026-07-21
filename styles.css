@@ -438,7 +438,10 @@ button.msg-option[data-target="unwrap-section"]:hover {
 
 @media (max-width: 768px) {
     .hero-chat {
-        position: static;
+        /* relative (not static): z-index is inert on static elements, and the
+           chat must stack above the absolutely-positioned 3D hero model */
+        position: relative;
+        z-index: 22;
         height: auto;
         margin-bottom: 3rem;
     }

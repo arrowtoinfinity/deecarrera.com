@@ -283,38 +283,94 @@
   ],
   "videos": [
     {
-      "id": "vid_1",
-      "title": "Video 1",
-      "url": "",
-      "thumbnail": "",
+      "id": "vid_805",
+      "title": "805",
+      "url": "https://pub-5193f7e1b49d490689bb55e386ae3971.r2.dev/reel-805.mp4",
+      "thumbnail": "visuals/poster-805.jpg",
       "visibility": "visible"
     },
     {
-      "id": "vid_2",
-      "title": "Video 2",
-      "url": "",
-      "thumbnail": "",
+      "id": "vid_rocket_man",
+      "title": "Rocket Man",
+      "url": "https://pub-5193f7e1b49d490689bb55e386ae3971.r2.dev/reel-rocket-man.mp4",
+      "thumbnail": "visuals/poster-rocket-man.jpg",
       "visibility": "visible"
     },
     {
-      "id": "vid_3",
-      "title": "Video 3",
-      "url": "",
-      "thumbnail": "",
+      "id": "vid_santa_cruz_island",
+      "title": "Santa Cruz Island",
+      "url": "https://pub-5193f7e1b49d490689bb55e386ae3971.r2.dev/reel-santa-cruz-island.mp4",
+      "thumbnail": "visuals/poster-santa-cruz-island.jpg",
       "visibility": "visible"
     },
     {
-      "id": "vid_4",
-      "title": "Video 4",
-      "url": "",
-      "thumbnail": "",
+      "id": "vid_outrigging",
+      "title": "Outrigging",
+      "url": "https://pub-5193f7e1b49d490689bb55e386ae3971.r2.dev/reel-outrigging.mp4",
+      "thumbnail": "visuals/poster-outrigging.jpg",
       "visibility": "visible"
     },
     {
-      "id": "vid_5",
-      "title": "Video 5",
-      "url": "",
-      "thumbnail": "",
+      "id": "vid_cloudbreak",
+      "title": "Cloudbreak",
+      "url": "https://pub-5193f7e1b49d490689bb55e386ae3971.r2.dev/reel-cloudbreak.mp4",
+      "thumbnail": "visuals/poster-cloudbreak.jpg",
+      "visibility": "visible"
+    },
+    {
+      "id": "vid_serene_dream",
+      "title": "Serene Dream",
+      "url": "https://pub-5193f7e1b49d490689bb55e386ae3971.r2.dev/reel-serene-dream.mp4",
+      "thumbnail": "visuals/poster-serene-dream.jpg",
+      "visibility": "visible"
+    },
+    {
+      "id": "vid_wave_therapy",
+      "title": "Wave Therapy",
+      "url": "https://pub-5193f7e1b49d490689bb55e386ae3971.r2.dev/reel-wave-therapy.mp4",
+      "thumbnail": "visuals/poster-wave-therapy.jpg",
+      "visibility": "visible"
+    },
+    {
+      "id": "vid_catalina",
+      "title": "Catalina",
+      "url": "https://pub-5193f7e1b49d490689bb55e386ae3971.r2.dev/reel-catalina.mp4",
+      "thumbnail": "visuals/poster-catalina.jpg",
+      "visibility": "visible"
+    },
+    {
+      "id": "vid_hwy_1",
+      "title": "HWY 1",
+      "url": "https://pub-5193f7e1b49d490689bb55e386ae3971.r2.dev/reel-hwy-1.mp4",
+      "thumbnail": "visuals/poster-hwy-1.jpg",
+      "visibility": "visible"
+    },
+    {
+      "id": "vid_baja_blast",
+      "title": "Baja Blast",
+      "url": "https://pub-5193f7e1b49d490689bb55e386ae3971.r2.dev/reel-baja-blast.mp4",
+      "thumbnail": "visuals/poster-baja-blast.jpg",
+      "visibility": "visible"
+    },
+    {
+      "id": "vid_lami",
+      "title": "Lami",
+      "url": "https://pub-5193f7e1b49d490689bb55e386ae3971.r2.dev/reel-lami.mp4",
+      "thumbnail": "visuals/poster-lami.jpg",
+      "visibility": "visible"
+    },
+    {
+      "id": "vid_momi_bay",
+      "title": "Momi Bay",
+      "url": "https://pub-5193f7e1b49d490689bb55e386ae3971.r2.dev/reel-momi-bay.mp4",
+      "thumbnail": "visuals/poster-momi-bay.jpg",
+      "visibility": "visible"
+    },
+    {
+      "id": "vid_six_man_race",
+      "title": "Six Man Race",
+      "url": "https://pub-5193f7e1b49d490689bb55e386ae3971.r2.dev/reel-six-man-race.mp4",
+      "thumbnail": "visuals/poster-six-man-race.jpg",
       "visibility": "visible"
     }
   ],

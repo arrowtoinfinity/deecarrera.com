@@ -294,6 +294,161 @@ main {
     width: 100%;
 }
 
+/* Hero intro chat: bubbles layered around the 3D model in the first viewport */
+.hero-chat {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100vh;
+    z-index: 22;
+    pointer-events: none;
+}
+
+.hero-chat-left,
+.hero-chat-right {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    width: min(430px, 36vw);
+}
+
+.hero-chat-left {
+    left: 1rem;
+    top: 14vh;
+    align-items: flex-start;
+}
+
+.hero-chat-right {
+    right: 1rem;
+    bottom: 16vh;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    align-items: flex-start;
+    align-content: flex-end;
+    gap: 0.5rem;
+    width: min(460px, 38vw);
+}
+
+.msg {
+    padding: 0.8rem 1.3rem;
+    border-radius: 24px;
+    font-size: 1.1rem;
+    line-height: 1.45;
+    width: fit-content;
+    max-width: 100%;
+    pointer-events: auto;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.07);
+    opacity: 0;
+    transform: translateY(10px) scale(0.85);
+    transition: opacity 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.msg.shown {
+    opacity: 1;
+    transform: none;
+}
+
+.msg.from {
+    background: rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    color: var(--text);
+    transform-origin: bottom left;
+}
+
+/* Selectable chips: side-by-side, wrapping to at most a couple of rows */
+.msg.to {
+    background: rgba(0, 122, 255, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    color: #fff;
+    font-family: inherit;
+    cursor: pointer;
+    padding: 0.5rem 0.95rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    border-radius: 999px;
+    transform-origin: bottom right;
+    transition: opacity 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.2s ease;
+}
+
+button.msg.to:hover {
+    background: rgba(0, 122, 255, 1);
+}
+
+.msg-option.selected {
+    background: #0055cc;
+    border-color: rgba(255, 255, 255, 0.6);
+}
+
+/* The photo rides in the flow like a message but without bubble chrome */
+.msg.msg-photo {
+    padding: 0;
+    background: none;
+    border: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    box-shadow: none;
+    border-radius: 18px;
+}
+
+.msg-photo img {
+    width: 240px;
+    border-radius: 18px;
+    display: block;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+}
+
+.msg.typing {
+    display: inline-flex;
+    gap: 4px;
+    align-items: center;
+    padding: 0.8rem 0.95rem;
+}
+
+.msg.typing[hidden] {
+    display: none;
+}
+
+.msg.typing span {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #9a9aa0;
+    animation: typing-bounce 1.2s infinite ease-in-out;
+}
+
+.msg.typing span:nth-child(2) { animation-delay: 0.15s; }
+.msg.typing span:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes typing-bounce {
+    0%, 60%, 100% { transform: translateY(0); }
+    30% { transform: translateY(-4px); }
+}
+
+@media (max-width: 768px) {
+    .hero-chat {
+        position: static;
+        height: auto;
+        margin-bottom: 3rem;
+    }
+
+    .hero-chat-left,
+    .hero-chat-right {
+        position: static;
+        width: 100%;
+    }
+
+    .hero-chat-right {
+        margin-top: 0.75rem;
+    }
+}
+
 /* Hero */
 .hero {
     padding: 20rem 0 22rem;
@@ -1710,6 +1865,47 @@ footer {
     color: var(--text-light);
 }
 
+/* Homepage - Visuals reel carousel */
+.visuals-gallery {
+    overflow-x: auto;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.visuals-gallery::-webkit-scrollbar {
+    display: none;
+}
+
+.visuals-scroll {
+    display: flex;
+    gap: 0.75rem;
+    padding-bottom: 0.5rem;
+}
+
+.visuals-slide {
+    flex-shrink: 0;
+    scroll-snap-align: start;
+}
+
+.visuals-slide video {
+    height: 380px;
+    aspect-ratio: 9 / 16;
+    border-radius: 12px;
+    background: #000;
+    display: block;
+}
+
+.visuals-slide .unwrap-caption {
+    text-align: center;
+}
+
+@media (max-width: 768px) {
+    .visuals-slide video {
+        height: 300px;
+    }
+}
+
 /* Homepage - Experience section */
 .experience-card {
     position: relative;
@@ -2218,7 +2414,8 @@ footer,
 .hero-model,
 #model-click-overlay,
 .nav-links,
-#music-section h2 {
+#music-section h2,
+.hero-chat {
     transition: opacity 0.5s ease;
 }
 
@@ -2231,7 +2428,8 @@ body.music-focus footer,
 body.music-focus .hero-model,
 body.music-focus #model-click-overlay,
 body.music-focus .nav-links,
-body.music-focus #music-section h2 {
+body.music-focus #music-section h2,
+body.music-focus .hero-chat {
     opacity: 0;
     pointer-events: none;
 }
@@ -2806,12 +3004,25 @@ body.music-focus .music-card.music-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 1rem;
     padding: 1rem 1.25rem;
     background: rgba(255, 255, 255, 0.7);
     border: 1px solid var(--border);
     border-radius: 12px;
-    gap: 1rem;
     transition: background 0.2s;
+}
+
+.admin-content-card[draggable="true"] {
+    cursor: grab;
+}
+
+.admin-content-card.dragging {
+    opacity: 0.5;
+}
+
+.admin-content-card .admin-drag-handle {
+    color: var(--text-light);
+    flex-shrink: 0;
 }
 
 .admin-content-card:hover {

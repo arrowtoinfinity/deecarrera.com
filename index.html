@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Daniel Carrera</title>
     <link rel="icon" type="image/png" href="logo.png">
-    <link rel="stylesheet" href="styles.css?v=86">
+    <link rel="stylesheet" href="styles.css?v=90">
     <script src="cms-client.js?v=8"></script>
     <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 </head>
@@ -91,9 +91,70 @@
 
     <main>
         <section class="hero">
-            <h1>Daniel Carrera</h1>
-            <p class="hero-subtitle">projects</p>
+            <h1>Portfolio</h1>
         </section>
+
+        <div class="hero-chat" aria-label="Intro">
+            <div class="hero-chat-left">
+                <div class="msg from">Hey, welcome in! 👋</div>
+                <div class="msg from msg-photo"><img src="about-daniel.jpg" alt="Daniel Carrera"></div>
+                <div class="msg from">I'm Daniel. I grew up in Carpinteria, studied econ at Westmont, and I spend most of my time building things I wish existed.</div>
+                <div class="msg from">Anyway &mdash; enough about me. What do you want to see first?</div>
+                <div class="msg from typing" hidden><span></span><span></span><span></span></div>
+            </div>
+            <div class="hero-chat-right">
+                <button class="msg to msg-option" type="button" data-target="unwrap-section">👀 Unwrap demo</button>
+                <button class="msg to msg-option" type="button" data-target="software-section">🛠️ Projects</button>
+                <button class="msg to msg-option" type="button" data-target="experience-section">💼 Experience</button>
+                <button class="msg to msg-option" type="button" data-target="education-section">🎓 Education</button>
+                <button class="msg to msg-option" type="button" data-target="visuals-section">🎬 Visuals</button>
+                <button class="msg to msg-option" type="button" data-target="music-section">🎵 Music</button>
+            </div>
+        </div>
+        <script>
+            (function() {
+                const chat = document.querySelector('.hero-chat');
+                if (!chat) return;
+                const grays = Array.from(chat.querySelectorAll('.hero-chat-left .msg:not(.typing)'));
+                const blues = Array.from(chat.querySelectorAll('.hero-chat-right .msg'));
+                const typing = chat.querySelector('.msg.typing');
+                const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+                if (reduced) {
+                    grays.concat(blues).forEach((m) => m.classList.add('shown'));
+                } else {
+                    const typeFor = [700, 900, 700, 600];
+                    let t = 600;
+                    grays.forEach((msg, i) => {
+                        setTimeout(() => {
+                            // The typing bubble slides into the next message's slot
+                            msg.parentNode.insertBefore(typing, msg);
+                            typing.hidden = false;
+                            typing.classList.add('shown');
+                        }, t);
+                        t += typeFor[i] || 700;
+                        setTimeout(() => {
+                            typing.classList.remove('shown');
+                            typing.hidden = true;
+                            msg.classList.add('shown');
+                        }, t);
+                        t += 350;
+                    });
+                    blues.forEach((msg, i) => {
+                        setTimeout(() => msg.classList.add('shown'), t + i * 120);
+                    });
+                }
+
+                chat.addEventListener('click', (e) => {
+                    const opt = e.target.closest('.msg-option');
+                    if (!opt) return;
+                    blues.forEach((b) => b.classList.remove('selected'));
+                    opt.classList.add('selected');
+                    const target = document.getElementById(opt.dataset.target);
+                    if (target) target.scrollIntoView({ behavior: 'smooth' });
+                });
+            })();
+        </script>
 
         <section class="latest-blog" id="latest-blog-section">
             <h2 id="latest-section-heading">Latest</h2>
@@ -219,6 +280,29 @@
                 video.addEventListener('pause', () => wrap.classList.remove('playing'));
                 video.addEventListener('ended', () => wrap.classList.remove('playing'));
             });
+        </script>
+
+        <section class="homepage-section" id="visuals-section">
+            <h2>Visuals</h2>
+            <div class="visuals-gallery">
+                <div class="visuals-scroll" id="visuals-scroll"></div>
+            </div>
+        </section>
+        <script>
+            (async function() {
+                const cms = await window.CMS.fetchCms();
+                const videos = (Array.isArray(cms.videos) ? cms.videos : []).filter((v) => v.visibility !== 'hidden' && v.url);
+                const section = document.getElementById('visuals-section');
+                if (videos.length === 0) {
+                    section.style.display = 'none';
+                    return;
+                }
+                document.getElementById('visuals-scroll').innerHTML = videos.map((v) => `
+                    <div class="visuals-slide">
+                        <video controls playsinline preload="none" poster="${v.thumbnail || ''}" src="${v.url}"></video>
+                        <p class="unwrap-caption">${v.title || ''}</p>
+                    </div>`).join('');
+            })();
         </script>
 
         <section class="featured-media" id="art-section">
@@ -868,17 +952,6 @@
             </div>
         </section>
 
-        <section class="homepage-section" id="about-section">
-            <h2>About</h2>
-            <div class="about-card">
-                <img class="about-photo" src="about-daniel.jpg" alt="Daniel Carrera"
-                     onerror="this.style.display='none'">
-                <div class="about-bio">
-                    <p>I'm Daniel &mdash; a Carpinteria native based in Santa Barbara. I studied Economics &amp; Business at Westmont College, I'm bilingual in English and Spanish, and I build and ship my own software (you're looking at some of it). I'm now taking that builder's instinct into software sales, where technical fluency meets the customer conversation.</p>
-                </div>
-            </div>
-        </section>
-
         <script>
             (async function() {
                 const cms = await window.CMS.fetchCms();
@@ -909,7 +982,7 @@
                 // Experience and About are hardcoded (not CMS-managed); keep them
                 // pinned below the CMS sections that sectionOrder just re-appended.
                 const mainEl = document.querySelector('main');
-                ['experience-section', 'education-section', 'about-section', 'music-section'].forEach((id) => {
+                ['experience-section', 'education-section', 'visuals-section', 'music-section'].forEach((id) => {
                     const el = document.getElementById(id);
                     if (el && mainEl) mainEl.appendChild(el);
                 });

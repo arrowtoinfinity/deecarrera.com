@@ -6,7 +6,7 @@
     <title>Admin - Daniel Carrera</title>
     <link rel="icon" type="image/png" href="logo.png">
     <link rel="stylesheet" href="styles.css?v=88">
-    <script src="cms-client.js?v=10"></script>
+    <script src="cms-client.js?v=11"></script>
 </head>
 <body class="subpage">
     <canvas id="constellation-bg"></canvas>
@@ -35,38 +35,25 @@
 
             <section class="admin-panel" id="panel-hero">
                 <h2>Hero Chat</h2>
-                <p class="admin-empty">Drag ☰ to reorder — conversation order; the photo bubble follows the first message.</p>
-                <div class="admin-actions">
-                    <button id="new-heromsg-btn" class="admin-btn primary">+ New Message</button>
+                <div class="admin-subsection">
+                    <h3>Messages</h3>
+                    <p class="admin-empty">Drag ☰ to reorder — conversation order; the photo bubble follows the first message.</p>
+                    <div class="admin-actions">
+                        <button id="new-heromsg-btn" class="admin-btn primary">+ New Message</button>
+                    </div>
+                    <div class="admin-content-list" id="hero-message-list"></div>
                 </div>
-                <div class="admin-content-list" id="hero-message-list"></div>
+                <div class="admin-subsection">
+                    <h3>Action Chips</h3>
+                    <p class="admin-empty">Drag ☰ to reorder — chip order on the site; each chip scrolls to its chosen section.</p>
+                    <div class="admin-actions">
+                        <button id="new-herochip-btn" class="admin-btn primary">+ New Chip</button>
+                    </div>
+                    <div class="admin-content-list" id="hero-chip-list"></div>
+                </div>
                 <div class="admin-form-group">
                     <label for="hero-photo">Photo bubble image path</label>
                     <input type="text" id="hero-photo" placeholder="about-daniel.jpg">
-                </div>
-                <div class="admin-form-group">
-                    <label for="chip-unwrap">Chip: Unwrap</label>
-                    <input type="text" id="chip-unwrap" placeholder="🔥 Unwrap demo">
-                </div>
-                <div class="admin-form-group">
-                    <label for="chip-software">Chip: Projects</label>
-                    <input type="text" id="chip-software" placeholder="🛠️ Projects">
-                </div>
-                <div class="admin-form-group">
-                    <label for="chip-experience">Chip: Experience</label>
-                    <input type="text" id="chip-experience" placeholder="💼 Experience">
-                </div>
-                <div class="admin-form-group">
-                    <label for="chip-education">Chip: Education</label>
-                    <input type="text" id="chip-education" placeholder="🎓 Education">
-                </div>
-                <div class="admin-form-group">
-                    <label for="chip-visuals">Chip: Visuals</label>
-                    <input type="text" id="chip-visuals" placeholder="🎬 Visuals">
-                </div>
-                <div class="admin-form-group">
-                    <label for="chip-music">Chip: Music</label>
-                    <input type="text" id="chip-music" placeholder="🎵 Music">
                 </div>
             </section>
 
@@ -674,6 +661,35 @@
         </div>
     </div>
 
+    <!-- Hero Chip Editor Modal -->
+    <div id="herochip-modal" class="admin-modal" style="display: none;">
+        <div class="admin-modal-content">
+            <h2 id="herochip-editor-title">New Chip</h2>
+            <form id="herochip-form">
+                <input type="hidden" id="herochip-id">
+                <div class="admin-form-group">
+                    <label for="herochip-label">Label</label>
+                    <input type="text" id="herochip-label" placeholder="🔥 Unwrap demo" required>
+                </div>
+                <div class="admin-form-group">
+                    <label for="herochip-target">Scrolls to</label>
+                    <select id="herochip-target">
+                        <option value="unwrap-section">Unwrap</option>
+                        <option value="software-section">Projects</option>
+                        <option value="experience-section">Experience</option>
+                        <option value="education-section">Education</option>
+                        <option value="visuals-section">Visuals</option>
+                        <option value="music-section">Music</option>
+                    </select>
+                </div>
+                <div class="admin-form-actions">
+                    <button type="button" class="admin-btn cancel-modal">Cancel</button>
+                    <button type="submit" class="admin-btn primary">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
         const STORAGE_KEY = 'literature_posts';
         const SETTINGS_KEY = 'site_settings';
@@ -686,10 +702,11 @@
         const EXPERIENCE_KEY = 'experience_items';
         const EDUCATION_KEY = 'education_items';
         const HERO_MESSAGES_KEY = 'hero_messages';
+        const HERO_CHIPS_KEY = 'hero_chips';
         const CMS_MIGRATION_FLAG = 'cms_migrated_v1';
         const CMS_WORKER_URL_KEY = 'cms_worker_url';
         const DEFAULT_CMS_WORKER_URL = 'https://deecarrera-cms.suzanneshwagerwebsite.workers.dev';
-        const CMS_KEYS = [STORAGE_KEY, SETTINGS_KEY, APPS_KEY, VIDEOS_KEY, PHOTOS_KEY, TRACKS_KEY, HARDWARE_KEY, TEXTILES_KEY, EXPERIENCE_KEY, EDUCATION_KEY, HERO_MESSAGES_KEY];
+        const CMS_KEYS = [STORAGE_KEY, SETTINGS_KEY, APPS_KEY, VIDEOS_KEY, PHOTOS_KEY, TRACKS_KEY, HARDWARE_KEY, TEXTILES_KEY, EXPERIENCE_KEY, EDUCATION_KEY, HERO_MESSAGES_KEY, HERO_CHIPS_KEY];
 
         let cmsHydrating = false;
         let cmsSyncTimer = null;
@@ -741,7 +758,8 @@
                 textiles: parseStorageArray(TEXTILES_KEY, []),
                 experience: parseStorageArray(EXPERIENCE_KEY, []),
                 education: parseStorageArray(EDUCATION_KEY, []),
-                heroMessages: parseStorageArray(HERO_MESSAGES_KEY, [])
+                heroMessages: parseStorageArray(HERO_MESSAGES_KEY, []),
+                heroChips: parseStorageArray(HERO_CHIPS_KEY, [])
             });
         }
 
@@ -759,6 +777,7 @@
                 localStorage.setItem(EXPERIENCE_KEY, JSON.stringify(cms.experience || []));
                 localStorage.setItem(EDUCATION_KEY, JSON.stringify(cms.education || []));
                 localStorage.setItem(HERO_MESSAGES_KEY, JSON.stringify(cms.heroMessages || []));
+                localStorage.setItem(HERO_CHIPS_KEY, JSON.stringify(cms.heroChips || []));
             } finally {
                 cmsHydrating = false;
             }
@@ -894,7 +913,6 @@
                 showTextilesNav: true,
                 unwrapIntro: '',
                 heroPhoto: '',
-                chipLabels: {},
                 sectionTitles: {}
             };
             return data ? { ...defaults, ...JSON.parse(data) } : defaults;
@@ -910,11 +928,6 @@
 
             document.getElementById('unwrap-intro').value = settings.unwrapIntro || '';
             document.getElementById('hero-photo').value = settings.heroPhoto || '';
-            const chipLabels = settings.chipLabels || {};
-            ['unwrap', 'software', 'experience', 'education', 'visuals', 'music'].forEach((key) => {
-                const input = document.getElementById(`chip-${key}`);
-                if (input) input.value = chipLabels[key] || '';
-            });
             const sectionTitles = settings.sectionTitles || {};
             ['unwrap', 'software', 'experience', 'education', 'visuals', 'music'].forEach((key) => {
                 const input = document.getElementById(`title-${key}`);
@@ -1051,15 +1064,7 @@
                 saveSettings(settings);
             });
 
-            ['unwrap', 'software', 'experience', 'education', 'visuals', 'music'].forEach((key) => {
-                const input = document.getElementById(`chip-${key}`);
-                if (!input) return;
-                input.addEventListener('input', (e) => {
-                    const settings = getSettings();
-                    settings.chipLabels = { ...(settings.chipLabels || {}), [key]: e.target.value };
-                    saveSettings(settings);
-                });
-            });
+
 
             ['unwrap', 'software', 'experience', 'education', 'visuals', 'music'].forEach((key) => {
                 const input = document.getElementById(`title-${key}`);
@@ -1409,6 +1414,7 @@
         const experienceManager = createContentManager(EXPERIENCE_KEY, []);
         const educationManager = createContentManager(EDUCATION_KEY, []);
         const heroMessagesManager = createContentManager(HERO_MESSAGES_KEY, []);
+        const heroChipsManager = createContentManager(HERO_CHIPS_KEY, []);
 
         // ===== Render Functions =====
         function renderContentList(containerId, items, type, sortable = false) {
@@ -1424,8 +1430,8 @@
                 const visibility = item.visibility || item.status || 'visible';
                 const visibilityClass = visibility === 'hidden' ? 'status-hidden' :
                                         visibility === 'coming_soon' ? 'status-coming-soon' : '';
-                const title = item.name || item.title || item.text || 'Untitled';
-                const subtitle = item.subtitle || item.org || item.description || item.file || item.url || '';
+                const title = item.name || item.title || item.text || item.label || 'Untitled';
+                const subtitle = item.subtitle || item.org || item.description || item.file || item.url || item.target || '';
 
                 return `
                 <div class="admin-content-card ${visibilityClass}" data-id="${item.id}"${sortable ? ' draggable="true"' : ''}>
@@ -1553,6 +1559,13 @@
             setupContentDragAndDrop('hero-message-list', heroMessagesManager, renderHeroMessages);
         }
 
+        function renderHeroChips() {
+            const items = heroChipsManager.getAll();
+            renderContentList('hero-chip-list', items, 'herochip', true);
+            setupContentListeners('herochip', heroChipsManager, renderHeroChips);
+            setupContentDragAndDrop('hero-chip-list', heroChipsManager, renderHeroChips);
+        }
+
         function setupContentListeners(type, manager, renderFn) {
             document.querySelectorAll(`.edit-${type}-btn`).forEach(btn => {
                 btn.addEventListener('click', () => openContentEditor(type, btn.dataset.id));
@@ -1580,7 +1593,7 @@
                 app: appsManager, video: videosManager, photo: photosManager,
                 track: tracksManager, hardware: hardwareManager, textile: textilesManager,
                 experience: experienceManager, education: educationManager,
-                heromsg: heroMessagesManager
+                heromsg: heroMessagesManager, herochip: heroChipsManager
             };
             const manager = managers[type];
 
@@ -1630,6 +1643,9 @@
                         document.getElementById(`${type}-bullets`).value = (item.bullets || []).join('\n');
                     } else if (type === 'heromsg') {
                         document.getElementById('heromsg-text').value = item.text || '';
+                    } else if (type === 'herochip') {
+                        document.getElementById('herochip-label').value = item.label || '';
+                        document.getElementById('herochip-target').value = item.target || 'unwrap-section';
                     }
                 }
             } else {
@@ -1654,7 +1670,8 @@
                 { type: 'textile', manager: textilesManager, render: renderTextiles, fields: ['title', 'description', 'image', 'visibility'] },
                 { type: 'experience', manager: experienceManager, render: renderExperience, fields: ['logo', 'title', 'org', 'time', 'bullets'] },
                 { type: 'education', manager: educationManager, render: renderEducation, fields: ['logo', 'title', 'org', 'time', 'bullets'] },
-                { type: 'heromsg', manager: heroMessagesManager, render: renderHeroMessages, fields: ['text'] }
+                { type: 'heromsg', manager: heroMessagesManager, render: renderHeroMessages, fields: ['text'] },
+                { type: 'herochip', manager: heroChipsManager, render: renderHeroChips, fields: ['label', 'target'] }
             ];
 
             formConfigs.forEach(({ type, manager, render, fields }) => {
@@ -1695,6 +1712,7 @@
             document.getElementById('new-experience-btn')?.addEventListener('click', () => openContentEditor('experience'));
             document.getElementById('new-education-btn')?.addEventListener('click', () => openContentEditor('education'));
             document.getElementById('new-heromsg-btn')?.addEventListener('click', () => openContentEditor('heromsg'));
+            document.getElementById('new-herochip-btn')?.addEventListener('click', () => openContentEditor('herochip'));
 
             // Cancel buttons for all modals
             document.querySelectorAll('.cancel-modal').forEach(btn => {
@@ -1742,6 +1760,7 @@
             renderExperience();
             renderEducation();
             renderHeroMessages();
+            renderHeroChips();
 
             // Setup content forms
             setupContentForms();

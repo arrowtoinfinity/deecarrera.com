@@ -215,7 +215,8 @@
         ],
         experience: [],
         education: [],
-        heroMessages: []
+        heroMessages: [],
+        heroChips: []
     };
 
     let memoryCms = null;
@@ -260,7 +261,8 @@
             textiles: asArray(cms.textiles, DEFAULT_CMS.textiles),
             experience: asArray(cms.experience, DEFAULT_CMS.experience),
             education: asArray(cms.education, DEFAULT_CMS.education),
-            heroMessages: asArray(cms.heroMessages, DEFAULT_CMS.heroMessages)
+            heroMessages: asArray(cms.heroMessages, DEFAULT_CMS.heroMessages),
+            heroChips: asArray(cms.heroChips, DEFAULT_CMS.heroChips)
         };
     }
 

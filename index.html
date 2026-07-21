@@ -6,7 +6,7 @@
     <title>Daniel Carrera</title>
     <link rel="icon" type="image/png" href="logo.png">
     <link rel="stylesheet" href="styles.css?v=108">
-    <script src="cms-client.js?v=10"></script>
+    <script src="cms-client.js?v=11"></script>
     <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 </head>
 <body>
@@ -119,7 +119,7 @@
                 // CMS-editable hero: heroMessages items replace the gray text
                 // bubbles (photo bubble pinned after the first message; typing
                 // indicator structural), settings.heroPhoto swaps the photo,
-                // settings.chipLabels renames the blue chips (targets fixed).
+                // heroChips items rebuild the blue action chips (label + target).
                 try {
                     const cms = await window.CMS.fetchCms();
                     const settings = cms.settings || {};
@@ -146,21 +146,21 @@
                         const img = chat.querySelector('.msg-photo img');
                         if (img) img.src = settings.heroPhoto;
                     }
-                    const chipLabels = settings.chipLabels || {};
-                    const chipTargets = {
-                        unwrap: 'unwrap-section',
-                        software: 'software-section',
-                        experience: 'experience-section',
-                        education: 'education-section',
-                        visuals: 'visuals-section',
-                        music: 'music-section'
-                    };
-                    Object.entries(chipTargets).forEach(([key, id]) => {
-                        if (chipLabels[key]) {
-                            const btn = chat.querySelector(`.msg-option[data-target="${id}"]`);
-                            if (btn) btn.textContent = chipLabels[key];
-                        }
-                    });
+                    const chips = Array.isArray(cms.heroChips)
+                        ? cms.heroChips.filter((c) => c && c.label && c.target)
+                        : [];
+                    if (chips.length) {
+                        const right = chat.querySelector('.hero-chat-right');
+                        right.innerHTML = '';
+                        chips.forEach((chip) => {
+                            const btn = document.createElement('button');
+                            btn.className = 'msg to msg-option';
+                            btn.type = 'button';
+                            btn.dataset.target = chip.target;
+                            btn.textContent = chip.label;
+                            right.appendChild(btn);
+                        });
+                    }
                 } catch (e) {
                     // Offline/fetch failure: the hardcoded hero stays.
                 }

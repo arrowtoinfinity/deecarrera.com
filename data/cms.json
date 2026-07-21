@@ -45,15 +45,7 @@
       "visuals": "Visuals",
       "music": "Music"
     },
-    "heroPhoto": "about-daniel.jpg",
-    "chipLabels": {
-      "unwrap": "🔥 Unwrap demo",
-      "software": "🛠️ Projects",
-      "experience": "💼 Experience",
-      "education": "🎓 Education",
-      "visuals": "🎬 Visuals",
-      "music": "🎵 Music"
-    }
+    "heroPhoto": "about-daniel.jpg"
   },
   "posts": [
     {
@@ -601,6 +593,38 @@
     {
       "id": "hm_3",
       "text": "Anyway — enough about me. What do you want to see first?"
+    }
+  ],
+  "heroChips": [
+    {
+      "id": "chip_unwrap",
+      "target": "unwrap-section",
+      "label": "🔥 Unwrap demo"
+    },
+    {
+      "id": "chip_software",
+      "target": "software-section",
+      "label": "🛠️ Projects"
+    },
+    {
+      "id": "chip_experience",
+      "target": "experience-section",
+      "label": "💼 Experience"
+    },
+    {
+      "id": "chip_education",
+      "target": "education-section",
+      "label": "🎓 Education"
+    },
+    {
+      "id": "chip_visuals",
+      "target": "visuals-section",
+      "label": "🎬 Visuals"
+    },
+    {
+      "id": "chip_music",
+      "target": "music-section",
+      "label": "🎵 Music"
     }
   ]
 }

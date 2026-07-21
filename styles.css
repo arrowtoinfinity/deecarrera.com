@@ -1760,6 +1760,22 @@ footer {
     font-size: 0.9rem;
 }
 
+.footer-links {
+    display: flex;
+    justify-content: center;
+    gap: 1.25rem;
+    margin-bottom: 0.5rem;
+}
+
+.footer-links a {
+    color: var(--text-light);
+    text-decoration: underline;
+}
+
+.footer-links a:hover {
+    color: var(--text);
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     nav {

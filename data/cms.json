@@ -502,7 +502,9 @@
       "org": "AllTime · Independent Project",
       "time": "Nov 2025 – Jun 2026",
       "bullets": [
-        "Designed, shipped, and sold a full-stack SaaS product end to end, converting 17.7% of trials to paid."
+        "Designed, shipped, and sold a full-stack SaaS product end to end, converting 17.7% of trials to paid.",
+        "Built automated, AI-driven growth workflows end to end (Gemini, edge-function automation) — comfortable scaling outreach with tooling rather than brute force.",
+        "Instrumented growth with Mixpanel and AppsFlyer funnels and acted on the data — thinking in targeting, conversion, and pipeline, not just activity."
       ]
     },
     {
@@ -512,9 +514,9 @@
       "org": "Dream Cast Media Group · Contract",
       "time": "Mar 2020 – Present",
       "bullets": [
-        "Built and retained relationships with marquee clients — ESPN, NBC Sports, and the LPGA — over six years, earning repeat business and four promotions.",
-        "Promoted four times — Production Lead (Aug 2021) → Production Lead II (Aug 2022) → Production Lead III (Mar 2023) — alongside Group Editor (Video & Graphics) since Mar 2020.",
-        "Day-to-day point of contact under live-broadcast deadline pressure."
+        "Built and retained relationships with marquee clients — ESPN, NBC Sports, the LPGA, and USA National Water Polo — earning repeat business and four promotions.",
+        "Coordinate production processes and schedules to deliver seamless live-stream broadcasts under real deadlines.",
+        "Create graphics and narratives that strengthen brand visibility and the audience experience."
       ]
     },
     {
@@ -524,7 +526,8 @@
       "org": "Gillett, Preston & Associates",
       "time": "Jan – May 2024",
       "bullets": [
-        "Generated prospect interest for an international consultancy serving the World Bank and United Nations; managed CRM records and researched pipeline tools."
+        "Delivered persuasive presentations that translated complex technical concepts into clear, accessible value propositions for prospective clients.",
+        "Built client relationships with tailored solutions and ongoing support, and researched emerging tools to improve the agency’s operational efficiency."
       ]
     },
     {
@@ -534,7 +537,8 @@
       "org": "Westmont College",
       "time": "Jan – May 2024",
       "bullets": [
-        "Authored in-depth profiles of CEOs and C-suite leaders, distributed campus-wide."
+        "Authored in-depth features capturing executives’ insights on leadership, innovation, and industry strategy, distributed campus-wide.",
+        "Interviewed senior leaders and translated dense, high-level conversations into clear, engaging stories."
       ]
     },
     {
@@ -544,7 +548,8 @@
       "org": "Scheinfeld Center, SBCC",
       "time": "Aug – Dec 2023",
       "bullets": [
-        "Won the $10,000 grand prize and $2,000 pitch prize against a field of 10 finalist teams, then led senior engineers from concept to MVP.",
+        "Won the $10,000 grand prize and $2,000 pitch prize at the New Venture Challenge against a competitive field of finalist teams.",
+        "Led a cross-disciplinary team from concept to MVP and pitched the venture to investors and mentors, building support from zero.",
         "Cold-emailed my way into meetings with senior leaders at Google and Apple."
       ]
     },
@@ -555,6 +560,7 @@
       "org": "Santa Barbara City College",
       "time": "Aug 2021 – Dec 2022",
       "bullets": [
+        "Served on and helped lead the District Technology Committee, Makerspace Committee, and Associated Student Government.",
         "Drove a 30% lift in event turnout by building websites, promotional materials, and digital-media campaigns across student government and ambassador programs."
       ]
     }

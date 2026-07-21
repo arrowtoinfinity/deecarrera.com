@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Daniel Carrera</title>
     <link rel="icon" type="image/png" href="logo.png">
-    <link rel="stylesheet" href="styles.css?v=84">
+    <link rel="stylesheet" href="styles.css?v=85">
     <script src="cms-client.js?v=8"></script>
     <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 </head>
@@ -189,9 +189,12 @@
                 <div class="unwrap-gallery">
                     <div class="unwrap-gallery-scroll">
                         <div class="unwrap-slide">
-                            <video controls playsinline preload="metadata"
-                                poster="unwrap/unwrap-demo-poster.jpg"
-                                src="https://pub-5193f7e1b49d490689bb55e386ae3971.r2.dev/unwrap-demo.mp4"></video>
+                            <div class="unwrap-video-wrap">
+                                <video controls playsinline preload="metadata"
+                                    poster="unwrap/unwrap-demo-poster.jpg"
+                                    src="https://pub-5193f7e1b49d490689bb55e386ae3971.r2.dev/unwrap-demo.mp4"></video>
+                                <img class="unwrap-video-overlay" src="unwrap/clay-logo.png" alt="Clay logo">
+                            </div>
                             <p class="unwrap-caption">Building a LinkedIn reactions campaign in Clay</p>
                         </div>
                         <a class="unwrap-slide" href="unwrap/unwrap-cert-inbound-sales.png" target="_blank" rel="noopener">
@@ -206,6 +209,17 @@
                 </div>
             </div>
         </section>
+        <script>
+            // Clay logo floats over the Unwrap demo (video peeks through the
+            // transparency); it fades out during playback and returns on pause.
+            document.querySelectorAll('.unwrap-video-wrap').forEach((wrap) => {
+                const video = wrap.querySelector('video');
+                if (!video) return;
+                video.addEventListener('play', () => wrap.classList.add('playing'));
+                video.addEventListener('pause', () => wrap.classList.remove('playing'));
+                video.addEventListener('ended', () => wrap.classList.remove('playing'));
+            });
+        </script>
 
         <section class="featured-media" id="art-section">
             <h2>Art</h2>

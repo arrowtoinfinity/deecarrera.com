@@ -1669,6 +1669,26 @@ footer {
     display: block;
 }
 
+.unwrap-video-wrap {
+    position: relative;
+    display: block;
+    width: fit-content;
+}
+
+.unwrap-video-overlay {
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    max-width: 60%;
+    max-height: 60%;
+    pointer-events: none;
+    transition: opacity 0.4s ease;
+}
+
+.unwrap-video-wrap.playing .unwrap-video-overlay {
+    opacity: 0;
+}
+
 .unwrap-slide img {
     height: 340px;
     aspect-ratio: 1140 / 880;

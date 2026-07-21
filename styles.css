@@ -2025,7 +2025,7 @@ footer {
     to { transform: rotate(360deg); }
 }
 
-.loading-sub {
+.loading-title {
     transition: opacity 0.25s ease;
 }
 

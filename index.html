@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Daniel Carrera</title>
     <link rel="icon" type="image/png" href="logo.png">
-    <link rel="stylesheet" href="styles.css?v=106">
+    <link rel="stylesheet" href="styles.css?v=107">
     <script src="cms-client.js?v=8"></script>
     <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 </head>
@@ -818,8 +818,8 @@
                     <div class="experience-item-header">
                         <img class="experience-spinner" src="experience/spinner.png" alt="" aria-hidden="true">
                         <div>
-                            <h3 class="loading-dots">Loading Career</h3>
-                            <p class="experience-org"><span class="loading-sub">Your company?</span> <time>Current</time></p>
+                            <h3 class="loading-dots"><span class="loading-title">Loading Career</span></h3>
+                            <p class="experience-org">Your company? <time>Coming soon</time></p>
                         </div>
                     </div>
                 </div>
@@ -987,10 +987,10 @@
         </section>
         <script>
             (function() {
-                const sub = document.querySelector('.loading-sub');
+                const sub = document.querySelector('.loading-title');
                 if (!sub) return;
                 if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-                const phrases = ['Your company?', 'Dream job', 'Next big thing', 'Open to offers', 'Compiling references'];
+                const phrases = ['Loading Career', 'Polishing the Resume', 'Rehearsing the Elevator Pitch', 'Compiling References', 'Updating LinkedIn', 'Warming Up the Handshake'];
                 let i = 0;
                 setInterval(() => {
                     sub.style.opacity = '0';
@@ -999,7 +999,7 @@
                         sub.textContent = phrases[i];
                         sub.style.opacity = '1';
                     }, 250);
-                }, 2400);
+                }, 2600);
             })();
         </script>
 

@@ -293,9 +293,9 @@
         </script>
 
         <section class="homepage-section" id="unwrap-section">
-            <h2>Unwrap</h2>
+            <h2>BDR - AI Forward Tooling</h2>
             <div class="unwrap-card">
-                <p class="unwrap-intro">Already ramping on the BDR toolkit &mdash; a working demo, plus HubSpot Academy sales certifications.</p>
+                <p class="unwrap-intro">Already ramping on the BDR toolkit. Working demos, plus HubSpot Academy sales certifications.</p>
                 <div class="unwrap-gallery">
                     <div class="unwrap-gallery-scroll">
                         <div class="unwrap-slide">
@@ -1260,6 +1260,11 @@
                         if (h2) h2.textContent = titles[key];
                     }
                 });
+
+                if (settings.unwrapIntro) {
+                    const intro = document.querySelector('.unwrap-intro');
+                    if (intro) intro.textContent = settings.unwrapIntro;
+                }
             })();
         </script>
     </main>

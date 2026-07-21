@@ -2012,8 +2012,9 @@ footer {
 }
 
 .experience-spinner {
-    width: 44px;
-    height: 44px;
+    width: 30px;
+    height: 30px;
+    margin: 7px;
     flex-shrink: 0;
     /* steps(12) matches the 12-tick artwork: the dark tick advances in 30-degree
        jumps like the native control instead of smearing around */
@@ -2026,6 +2027,16 @@ footer {
 
 .loading-sub {
     transition: opacity 0.25s ease;
+}
+
+.loading-dots {
+    color: var(--text-light);
+    animation: loading-pulse 1.8s ease-in-out infinite alternate;
+}
+
+@keyframes loading-pulse {
+    from { opacity: 0.45; }
+    to { opacity: 0.95; }
 }
 
 .loading-dots::after {
@@ -2199,10 +2210,15 @@ footer {
         height: 38px;
     }
 
-    .experience-logo-plain,
-    .experience-spinner {
+    .experience-logo-plain {
         width: 38px;
         height: 38px;
+    }
+
+    .experience-spinner {
+        width: 26px;
+        height: 26px;
+        margin: 6px;
     }
 
     .experience-divider {

@@ -455,21 +455,22 @@ button.msg-option[data-target="unwrap-section"]:hover {
         margin-bottom: 2rem;
         display: flex;
         flex-direction: column;
-        align-items: flex-start;
+        /* One conversation column centered on the statue/title axis */
+        align-items: center;
         padding: 0 1.25rem;
     }
 
     .hero-chat-left,
     .hero-chat-right {
         position: static;
-        width: min(78vw, 340px);
+        width: min(86vw, 400px);
     }
 
     .hero-chat-right {
         margin-top: 0.75rem;
-        justify-content: flex-start;
+        /* Outgoing chips right-justified within the column, iMessage-style */
+        justify-content: flex-end;
         align-content: flex-start;
-        width: min(86vw, 380px);
     }
 
     .msg-photo img {

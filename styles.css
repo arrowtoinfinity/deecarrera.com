@@ -437,18 +437,27 @@ button.msg-option[data-target="unwrap-section"]:hover {
 }
 
 @media (max-width: 768px) {
-    /* Same overlay behavior as desktop — the chat layers over the hero and
-       the 3D model rather than flowing below them; only the offsets, widths,
-       and photo size shrink to phone scale. */
-    .hero-chat-left {
-        left: 1.25rem;
-        top: 9vh;
+    /* The overlay itself keeps desktop behavior (absolute, layered above the
+       3D model). Inside it, the columns stack vertically so the action chips
+       sit directly under the message bubbles instead of anchoring to the
+       overlay's bottom edge (which lands inside the next section on phones). */
+    .hero-chat {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 9vh 1.25rem 0;
+    }
+
+    .hero-chat-left,
+    .hero-chat-right {
+        position: static;
         width: min(78vw, 340px);
     }
 
     .hero-chat-right {
-        right: 1.25rem;
-        bottom: 8vh;
+        margin-top: 0.75rem;
+        justify-content: flex-start;
+        align-content: flex-start;
         width: min(86vw, 380px);
     }
 

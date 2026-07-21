@@ -2239,14 +2239,15 @@ footer {
 
 .experience-media-tile {
     flex-shrink: 0;
-    max-width: 200px;
+    width: min-content;
     text-decoration: none;
     color: var(--text);
 }
 
+/* All media share the Features Writer tile height, each at its own ratio */
 .experience-media-tile img {
-    width: 200px;
-    height: auto;
+    width: auto;
+    height: 112px;
     border-radius: 10px;
     display: block;
 }
@@ -2254,22 +2255,6 @@ footer {
 .experience-media-tile .unwrap-caption {
     text-align: center;
     font-size: 0.75rem;
-}
-
-/* Photo strips: uniform height, natural widths (mixed orientations) */
-.experience-media-photos .experience-media-tile {
-    max-width: none;
-}
-
-.experience-media-photos .experience-media-tile img {
-    width: auto;
-    height: 200px;
-}
-
-@media (max-width: 768px) {
-    .experience-media-photos .experience-media-tile img {
-        height: 150px;
-    }
 }
 
 /* GitHub contribution heatmap */

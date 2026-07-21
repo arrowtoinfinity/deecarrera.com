@@ -6,7 +6,7 @@
     <title>Daniel Carrera</title>
     <link rel="icon" type="image/png" href="logo.png">
     <link rel="stylesheet" href="styles.css?v=107">
-    <script src="cms-client.js?v=9"></script>
+    <script src="cms-client.js?v=10"></script>
     <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 </head>
 <body>
@@ -116,21 +116,25 @@
                 const chat = document.querySelector('.hero-chat');
                 if (!chat) return;
 
-                // CMS-editable message copy: settings.heroMessages replaces the
-                // gray text bubbles (the photo bubble stays pinned after the
-                // first message; typing indicator and chips are structural).
+                // CMS-editable hero: heroMessages items replace the gray text
+                // bubbles (photo bubble pinned after the first message; typing
+                // indicator structural), settings.heroPhoto swaps the photo,
+                // settings.chipLabels renames the blue chips (targets fixed).
                 try {
                     const cms = await window.CMS.fetchCms();
-                    const messages = (cms.settings || {}).heroMessages;
-                    if (Array.isArray(messages) && messages.length) {
+                    const settings = cms.settings || {};
+                    const messages = Array.isArray(cms.heroMessages)
+                        ? cms.heroMessages.filter((m) => m && m.text)
+                        : [];
+                    if (messages.length) {
                         const left = chat.querySelector('.hero-chat-left');
                         const photo = left.querySelector('.msg-photo');
                         const typingEl = left.querySelector('.msg.typing');
                         left.querySelectorAll('.msg.from:not(.msg-photo):not(.typing)').forEach((m) => m.remove());
-                        messages.forEach((text, i) => {
+                        messages.forEach((item, i) => {
                             const bubble = document.createElement('div');
                             bubble.className = 'msg from';
-                            bubble.textContent = text;
+                            bubble.textContent = item.text;
                             if (i === 0 && photo) {
                                 left.insertBefore(bubble, photo);
                             } else {
@@ -138,8 +142,27 @@
                             }
                         });
                     }
+                    if (settings.heroPhoto) {
+                        const img = chat.querySelector('.msg-photo img');
+                        if (img) img.src = settings.heroPhoto;
+                    }
+                    const chipLabels = settings.chipLabels || {};
+                    const chipTargets = {
+                        unwrap: 'unwrap-section',
+                        software: 'software-section',
+                        experience: 'experience-section',
+                        education: 'education-section',
+                        visuals: 'visuals-section',
+                        music: 'music-section'
+                    };
+                    Object.entries(chipTargets).forEach(([key, id]) => {
+                        if (chipLabels[key]) {
+                            const btn = chat.querySelector(`.msg-option[data-target="${id}"]`);
+                            if (btn) btn.textContent = chipLabels[key];
+                        }
+                    });
                 } catch (e) {
-                    // Offline/fetch failure: the hardcoded bubbles stay.
+                    // Offline/fetch failure: the hardcoded hero stays.
                 }
 
                 const grays = Array.from(chat.querySelectorAll('.hero-chat-left .msg:not(.typing)'));

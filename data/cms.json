@@ -37,11 +37,6 @@
     "showTextilesNav": false,
     "unwrapIntro": "Already ramping on the BDR toolkit — a working demo, plus HubSpot Academy sales certifications.",
     "aboutBio": "I'm Daniel — a Carpinteria native based in Santa Barbara. I studied Economics & Business at Westmont College, I'm bilingual in English and Spanish, and I build and ship my own software (you're looking at some of it). I'm now taking that builder's instinct into software sales, where technical fluency meets the customer conversation.",
-    "heroMessages": [
-      "Hey, welcome in! 👋",
-      "I'm Daniel. I grew up in Carpinteria, studied econ at Westmont, and I spend most of my time building things I wish existed.",
-      "Anyway — enough about me. What do you want to see first?"
-    ],
     "sectionTitles": {
       "unwrap": "Unwrap",
       "software": "Projects",
@@ -49,6 +44,15 @@
       "education": "Education",
       "visuals": "Visuals",
       "music": "Music"
+    },
+    "heroPhoto": "about-daniel.jpg",
+    "chipLabels": {
+      "unwrap": "🔥 Unwrap demo",
+      "software": "🛠️ Projects",
+      "experience": "💼 Experience",
+      "education": "🎓 Education",
+      "visuals": "🎬 Visuals",
+      "music": "🎵 Music"
     }
   },
   "posts": [
@@ -583,6 +587,20 @@
       "bullets": [
         "Activities & societies: Associated Student Government, Get REAL Accelerator Grand Prize Winner, New Venture Challenge Pitch Competition Awardee, District Technology Committee (student body representative), International Student Ambassador Program, Makerspace Committee, Passion Project Club, Book Club."
       ]
+    }
+  ],
+  "heroMessages": [
+    {
+      "id": "hm_1",
+      "text": "Hey, welcome in! 👋"
+    },
+    {
+      "id": "hm_2",
+      "text": "I'm Daniel. I grew up in Carpinteria, studied econ at Westmont, and I spend most of my time building things I wish existed."
+    },
+    {
+      "id": "hm_3",
+      "text": "Anyway — enough about me. What do you want to see first?"
     }
   ]
 }

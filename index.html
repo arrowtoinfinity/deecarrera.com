@@ -347,11 +347,37 @@
                     section.style.display = 'none';
                     return;
                 }
-                document.getElementById('visuals-scroll').innerHTML = videos.map((v) => `
+                // Featured YouTube video leads the strip (cover facade; the
+                // embed iframe only loads on click)
+                const ytSlide = `
+                    <div class="visuals-slide">
+                        <div class="visuals-yt" data-embed="BzXR1BPa-Nc" role="button" tabindex="0" aria-label="Play: Huge Surf at Sandspit Santa Barbara">
+                            <img src="https://i.ytimg.com/vi/BzXR1BPa-Nc/maxresdefault.jpg" alt="Huge Surf at Sandspit Santa Barbara" loading="lazy">
+                            <div class="yt-play-badge"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div>
+                        </div>
+                        <p class="unwrap-caption">Huge Surf at Sandspit Santa Barbara</p>
+                    </div>`;
+                const scroll = document.getElementById('visuals-scroll');
+                scroll.innerHTML = ytSlide + videos.map((v) => `
                     <div class="visuals-slide">
                         <video controls playsinline preload="none" poster="${v.thumbnail || ''}" src="${v.url}"></video>
                         <p class="unwrap-caption">${v.title || ''}</p>
                     </div>`).join('');
+
+                const playYt = (tile) => {
+                    if (tile.dataset.loaded) return;
+                    tile.dataset.loaded = '1';
+                    tile.innerHTML = `<iframe src="https://www.youtube.com/embed/${tile.dataset.embed}?autoplay=1" title="YouTube video player" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>`;
+                };
+                scroll.addEventListener('click', (e) => {
+                    const tile = e.target.closest('.visuals-yt');
+                    if (tile) playYt(tile);
+                });
+                scroll.addEventListener('keydown', (e) => {
+                    if (e.key !== 'Enter' && e.key !== ' ') return;
+                    const tile = e.target.closest('.visuals-yt');
+                    if (tile) { e.preventDefault(); playYt(tile); }
+                });
             })();
         </script>
 

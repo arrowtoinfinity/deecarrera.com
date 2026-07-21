@@ -1946,6 +1946,26 @@ footer {
     padding-bottom: 0.5rem;
 }
 
+/* Featured YouTube tile: landscape, same height as the portrait reels */
+.visuals-yt {
+    position: relative;
+    width: 676px;
+    height: 380px;
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    background: #000;
+}
+
+.visuals-yt img,
+.visuals-yt iframe {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border: 0;
+    display: block;
+}
+
 .visuals-slide {
     flex-shrink: 0;
     scroll-snap-align: start;
@@ -1964,6 +1984,11 @@ footer {
 }
 
 @media (max-width: 768px) {
+    .visuals-yt {
+        width: 533px;
+        height: 300px;
+    }
+
     .visuals-slide video {
         height: 300px;
     }

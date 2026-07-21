@@ -437,23 +437,23 @@ button.msg-option[data-target="unwrap-section"]:hover {
 }
 
 @media (max-width: 768px) {
-    .hero-chat {
-        /* relative (not static): z-index is inert on static elements, and the
-           chat must stack above the absolutely-positioned 3D hero model */
-        position: relative;
-        z-index: 22;
-        height: auto;
-        margin-bottom: 3rem;
-    }
-
-    .hero-chat-left,
-    .hero-chat-right {
-        position: static;
-        width: 100%;
+    /* Same overlay behavior as desktop — the chat layers over the hero and
+       the 3D model rather than flowing below them; only the offsets, widths,
+       and photo size shrink to phone scale. */
+    .hero-chat-left {
+        left: 1.25rem;
+        top: 9vh;
+        width: min(78vw, 340px);
     }
 
     .hero-chat-right {
-        margin-top: 0.75rem;
+        right: 1.25rem;
+        bottom: 8vh;
+        width: min(86vw, 380px);
+    }
+
+    .msg-photo img {
+        width: 150px;
     }
 }
 

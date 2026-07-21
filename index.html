@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Daniel Carrera</title>
     <link rel="icon" type="image/png" href="logo.png">
-    <link rel="stylesheet" href="styles.css?v=72">
+    <link rel="stylesheet" href="styles.css?v=84">
     <script src="cms-client.js?v=8"></script>
     <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 </head>
@@ -265,6 +265,17 @@
             // Pre-initialize audioData
             window.audioData = { bass: 0, mids: 0, treble: 0, active: false };
 
+            // Focus mode: while the track plays, fade out the rest of the page,
+            // shrink the row, and lock scrolling so the audio-reactive
+            // constellation plays unobstructed (see body.music-focus CSS).
+            const setMusicFocus = (on) => {
+                document.body.classList.toggle('music-focus', on);
+                if (on) {
+                    const row = document.getElementById('music-row-container');
+                    if (row) row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            };
+
             // Load audio file as buffer (bypasses SES restrictions)
             async function loadAudioBuffer() {
                 if (audioBuffer) return audioBuffer;
@@ -347,6 +358,7 @@
                             window.audioData.active = false;
                             playIcon.style.display = 'block';
                             pauseIcon.style.display = 'none';
+                            setMusicFocus(false);
                         }
                     };
 
@@ -357,6 +369,7 @@
 
                     playIcon.style.display = 'none';
                     pauseIcon.style.display = 'block';
+                    setMusicFocus(true);
 
                     startAnalysisLoop();
                     isLoading = false;
@@ -373,6 +386,7 @@
                 playIcon.style.display = 'block';
                 pauseIcon.style.display = 'none';
                 window.audioData.active = false;
+                setMusicFocus(false);
 
                 if (bufferSource) {
                     try {
@@ -428,6 +442,7 @@
                 if (isComingSoon) {
                     container.innerHTML = `
                         <article class="music-card music-row content-coming-soon" id="${track.id}">
+                            <img class="waveform-icon" src="op1.png" alt="OP-1 synthesizer" loading="lazy">
                             <div class="music-row-info">
                                 <h3>Coming Soon</h3>
                             </div>
@@ -443,6 +458,7 @@
 
                 container.innerHTML = `
                     <article class="music-card music-row" id="${track.id}">
+                        <img class="waveform-icon" src="op1.png" alt="OP-1 synthesizer" loading="lazy">
                         <div class="music-row-info">
                             <h3>${track.title}</h3>
                             <p class="track-meta">Made with the OP-1 by Teenage Engineering</p>
@@ -470,7 +486,7 @@
         </script>
 
         <section class="projects" id="software-section">
-            <h2>Software</h2>
+            <h2>Projects</h2>
             <div class="project-grid" id="software-grid"></div>
         </section>
         <script>
@@ -484,6 +500,27 @@
                 }
 
                 const CONTACT_EMAIL = 'deecarrera12@gmail.com';
+
+                // Demo videos per app, hardcoded by slug (not CMS-managed) so
+                // admin-panel re-syncs can't drop them. Files stream from R2 —
+                // never committed to the repo.
+                const MEDIA_BASE = 'https://pub-5193f7e1b49d490689bb55e386ae3971.r2.dev';
+                // YouTube tiles appended to the end of an app's screenshot strip:
+                // rendered as a cover-image facade, swapped for the embed iframe
+                // on click so YouTube's payload never loads up front.
+                const APP_EXTRA_MEDIA = {
+                    alltime: [
+                        { img: 'experience/media-alltime.jpg', embed: 'KypIimT1Mqc', caption: 'AllTime Full Overview' }
+                    ]
+                };
+                const APP_VIDEOS = {
+                    arrow: [
+                        { src: `${MEDIA_BASE}/arrow-deck.mp4`, poster: 'arrow/poster-deck.jpg', caption: 'Pitch Deck - Arrow Messaging' },
+                        { src: `${MEDIA_BASE}/arrow-5-steps.mp4`, poster: 'arrow/poster-5-steps.jpg', caption: 'Prototype Demo - Spatial Messaging in 5 Steps' },
+                        { src: `${MEDIA_BASE}/arrow-concept.mp4`, poster: 'arrow/poster-concept.jpg', caption: 'Concept - Use Cases' },
+                        { src: `${MEDIA_BASE}/arrow-first-demo.mp4`, poster: 'arrow/poster-first-demo.jpg', caption: 'Concept - First Demo' }
+                    ]
+                };
 
                 grid.innerHTML = apps.map((app) => {
                     const isComingSoon = app.status === 'coming_soon';
@@ -507,8 +544,22 @@
                     const isVisionOS = app.subtitle && app.subtitle.toLowerCase().includes('visionos');
                     const shots = Array.isArray(app.screenshots) ? app.screenshots : [];
                     const shotsHtml = shots.map((src) => `<img src="${src}" alt="${app.name} screenshot" class="screenshot-img" loading="lazy">`).join('');
-                    const screenshotsHtml = shots.length
-                        ? `<div class="app-screenshots"><div class="screenshot-scroll${isVisionOS ? ' horizontal' : ''}">${shotsHtml}</div></div>`
+                    const extras = APP_EXTRA_MEDIA[key] || [];
+                    const extrasHtml = extras.map((m) => `
+                        <div class="screenshot-yt" data-embed="${m.embed}" role="button" tabindex="0" aria-label="Play ${m.caption}">
+                            <img src="${m.img}" alt="${m.caption}" loading="lazy">
+                            <div class="yt-play-badge"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div>
+                        </div>`).join('');
+                    const screenshotsHtml = (shots.length || extras.length)
+                        ? `<div class="app-screenshots"><div class="screenshot-scroll${isVisionOS ? ' horizontal' : ''}">${shotsHtml}${extrasHtml}</div></div>`
+                        : '';
+                    const vids = APP_VIDEOS[key] || [];
+                    const videosHtml = vids.length
+                        ? `<div class="app-screenshots"><div class="screenshot-scroll project-videos">${vids.map((v) => `
+                            <div class="project-video-slide">
+                                <video controls playsinline preload="metadata" poster="${v.poster}" src="${v.src}"></video>
+                                <p class="unwrap-caption">${v.caption}</p>
+                            </div>`).join('')}</div></div>`
                         : '';
                     const ctaHtml = app.link
                         ? `<a href="${app.link}" class="app-store-btn">
@@ -533,126 +584,96 @@
                                 </div>
                             </div>
                             <div class="project-details"><div class="project-details-inner">
+                                ${videosHtml}
                                 ${screenshotsHtml}
                                 <div class="project-lower">
                                     ${app.description ? `<div class="app-store-description"><p>${app.description}</p></div>` : ''}
                                     ${techHtml ? `
                                     <button class="builtwith-toggle" type="button">
-                                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
                                         Built with
+                                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
                                     </button>
                                     <div class="tech-reveal"><div class="tech-reveal-inner">${techHtml}</div></div>` : ''}
                                 </div>
                             </div></div>
                             <div class="project-cta">${ctaHtml}</div>
                             <div class="project-expand-hint">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+                                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7M9 7h8v8"/></svg>
+                                Expand
                             </div>
                         </div>
                     `;
                 }).join('');
 
-                // Full-width expansion can move a card out from under the pointer
-                // (a mid-row card reflows to its own row), so :hover alone would
-                // flicker; expansion state lives on the grid instead and only a
-                // grid mouseleave collapses it.
-                // Switching focus is choreographed in phases so an open drawer is
-                // never reflowed into a half-width cell: close the current card's
-                // drawer at full width, swap grid positions while everything is
-                // compact, then spring the new card open at the top.
-                const hoverMedia = window.matchMedia('(hover: hover)');
+                // Click-to-expand rows, multiple open at once: opening a row never
+                // closes another (less friction, and no layout shift except the
+                // one the user explicitly asked for). A row closes only via its
+                // own header (or Enter/Space) — the drawer sits below the header,
+                // so closing never displaces content under the pointer.
                 const PHASE = 320;
-                let armed = true;
-                let pending = null;
-                let timer = null;
 
-                const setOpen = (card) => {
+                const openCard = (card) => {
                     card.classList.add('expanded');
-                    grid.classList.add('has-expanded');
                     requestAnimationFrame(() => card.classList.add('open'));
                 };
 
-                const requestExpand = (card) => {
-                    const current = grid.querySelector('.project-card.expanded');
-                    if (!current) {
-                        pending = null;
-                        setOpen(card);
-                        return;
-                    }
-                    if (current === card) {
-                        // Re-hovered the focused card (possibly mid-close): restore it.
-                        pending = null;
-                        if (timer) { clearTimeout(timer); timer = null; }
-                        card.classList.add('open');
-                        return;
-                    }
-                    pending = card;
-                    if (timer) return;
-                    current.classList.remove('open');
-                    timer = setTimeout(() => {
-                        timer = null;
-                        current.classList.remove('expanded', 'tech-open');
-                        if (pending) {
-                            const next = pending;
-                            pending = null;
-                            setOpen(next);
-                        } else {
-                            grid.classList.remove('has-expanded');
+                const closeCard = (card) => {
+                    card.classList.remove('open');
+                    setTimeout(() => {
+                        // Skip the style teardown if the row was reopened mid-close.
+                        if (!card.classList.contains('open')) {
+                            card.classList.remove('expanded', 'tech-open');
                         }
                     }, PHASE);
                 };
 
-                const requestCollapse = () => {
-                    pending = null;
-                    const current = grid.querySelector('.project-card.expanded');
-                    if (timer) { clearTimeout(timer); timer = null; }
-                    if (!current) {
-                        grid.classList.remove('has-expanded');
-                        return;
+                const toggleCard = (card, e) => {
+                    if (card.classList.contains('expanded')) {
+                        // Only the header collapses; clicks in the details never do.
+                        if (e.target.closest('.project-item-header')) {
+                            closeCard(card);
+                        }
+                    } else {
+                        openCard(card);
                     }
-                    current.classList.remove('open');
-                    timer = setTimeout(() => {
-                        timer = null;
-                        current.classList.remove('expanded', 'tech-open');
-                        grid.classList.remove('has-expanded');
-                    }, PHASE);
                 };
 
-                grid.addEventListener('mouseover', (e) => {
-                    if (!hoverMedia.matches) return;
-                    const card = e.target.closest('.project-card');
-                    if (!card || card.classList.contains('expanded')) {
-                        // Pointer over grid whitespace or the focused card re-arms
-                        // switching; a card that merely reflowed under a resting
-                        // pointer stays inert until a gap is crossed.
-                        armed = true;
-                        if (card) requestExpand(card);
+                grid.addEventListener('click', (e) => {
+                    const yt = e.target.closest('.screenshot-yt');
+                    if (yt) {
+                        if (!yt.dataset.loaded) {
+                            yt.dataset.loaded = '1';
+                            yt.innerHTML = `<iframe src="https://www.youtube.com/embed/${yt.dataset.embed}?autoplay=1" title="YouTube video player" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>`;
+                        }
                         return;
                     }
-                    if (!armed || !card.querySelector('.project-details')) return;
-                    armed = false;
-                    requestExpand(card);
-                });
-
-                grid.addEventListener('mouseleave', () => {
-                    if (!hoverMedia.matches) return;
-                    armed = true;
-                    requestCollapse();
-                });
-
-                grid.addEventListener('click', (e) => {
                     const toggle = e.target.closest('.builtwith-toggle');
                     if (toggle) {
                         toggle.closest('.project-card').classList.toggle('tech-open');
                         return;
                     }
-                    if (hoverMedia.matches || e.target.closest('a')) return;
+                    if (e.target.closest('a')) return;
                     const card = e.target.closest('.project-card');
                     if (!card || !card.querySelector('.project-details')) return;
+                    toggleCard(card, e);
+                });
+
+                grid.addEventListener('keydown', (e) => {
+                    if (e.key !== 'Enter' && e.key !== ' ') return;
+                    const yt = e.target.closest('.screenshot-yt');
+                    if (yt) {
+                        e.preventDefault();
+                        yt.click();
+                        return;
+                    }
+                    if (e.target.closest('a, button')) return;
+                    const card = e.target.closest('.project-card');
+                    if (!card || !card.querySelector('.project-details')) return;
+                    e.preventDefault();
                     if (card.classList.contains('expanded')) {
-                        requestCollapse();
+                        closeCard(card);
                     } else {
-                        requestExpand(card);
+                        openCard(card);
                     }
                 });
             })();
@@ -671,25 +692,10 @@
             <div class="experience-card">
                 <div class="experience-item" tabindex="0">
                     <div class="experience-item-header">
-                        <img class="experience-logo" src="experience/logo-dreamcast.jpg" alt="Dream Cast Media Group logo" loading="lazy">
-                        <div>
-                            <h3>Production Lead III, Sports Broadcasting</h3>
-                            <p class="experience-org">Dream Cast Media Group <time>Mar 2020 &ndash; Present</time></p>
-                        </div>
-                    </div>
-                    <div class="experience-details"><div class="experience-details-inner">
-                        <ul>
-                            <li>Built and retained relationships with marquee clients &mdash; ESPN, NBC Sports, and the LPGA &mdash; over six years, earning repeat business and four promotions.</li>
-                            <li>Day-to-day point of contact under live-broadcast deadline pressure.</li>
-                        </ul>
-                    </div></div>
-                </div>
-                <div class="experience-item" tabindex="0">
-                    <div class="experience-item-header">
                         <img class="experience-logo" src="experience/logo-alltime.jpg" alt="AllTime logo" loading="lazy">
                         <div>
-                            <h3>AllTime &mdash; Independent SaaS Project</h3>
-                            <p class="experience-org">Founder &amp; Developer <time>Nov 2025 &ndash; Jun 2026</time></p>
+                            <h3>Creator &amp; Solo Developer</h3>
+                            <p class="experience-org">AllTime &middot; Independent Project <time>Nov 2025 &ndash; Present</time></p>
                         </div>
                     </div>
                     <div class="experience-details"><div class="experience-details-inner">
@@ -698,6 +704,28 @@
                             <li>Cold-emailed my way into meetings with senior leaders at Google and Apple.</li>
                         </ul>
                     </div></div>
+                    <div class="experience-expand-hint">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+                    </div>
+                </div>
+                <div class="experience-item" tabindex="0">
+                    <div class="experience-item-header">
+                        <img class="experience-logo" src="experience/logo-dreamcast.jpg" alt="Dream Cast Media Group logo" loading="lazy">
+                        <div>
+                            <h3>Production Lead III, Sports Broadcasting</h3>
+                            <p class="experience-org">Dream Cast Media Group &middot; Contract <time>Mar 2020 &ndash; Present</time></p>
+                        </div>
+                    </div>
+                    <div class="experience-details"><div class="experience-details-inner">
+                        <ul>
+                            <li>Built and retained relationships with marquee clients &mdash; ESPN, NBC Sports, and the LPGA &mdash; over six years, earning repeat business and four promotions.</li>
+                            <li>Promoted four times &mdash; Production Lead (Aug 2021) &rarr; Production Lead II (Aug 2022) &rarr; Production Lead III (Mar 2023) &mdash; alongside Group Editor (Video &amp; Graphics) since Mar 2020.</li>
+                            <li>Day-to-day point of contact under live-broadcast deadline pressure.</li>
+                        </ul>
+                    </div></div>
+                    <div class="experience-expand-hint">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+                    </div>
                 </div>
                 <div class="experience-item" tabindex="0">
                     <div class="experience-item-header">
@@ -712,12 +740,42 @@
                             <li>Generated prospect interest for an international consultancy serving the World Bank and United Nations; managed CRM records and researched pipeline tools.</li>
                         </ul>
                     </div></div>
+                    <div class="experience-expand-hint">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+                    </div>
+                </div>
+                <div class="experience-item" tabindex="0">
+                    <div class="experience-item-header">
+                        <img class="experience-logo" src="experience/logo-westmont.jpg" alt="Westmont College seal" loading="lazy">
+                        <div>
+                            <h3>Features Writer</h3>
+                            <p class="experience-org">Westmont College <time>Jan &ndash; May 2024</time></p>
+                        </div>
+                    </div>
+                    <div class="experience-details"><div class="experience-details-inner">
+                        <ul>
+                            <li>Authored in-depth profiles of CEOs and C-suite leaders, distributed campus-wide.</li>
+                        </ul>
+                        <div class="experience-media">
+                            <a class="experience-media-tile" href="https://horizon.westmont.edu/thank-you/content-access-login/" target="_blank" rel="noopener">
+                                <img src="experience/media-fellows.jpg" alt="Fellows Keeps Santa Barbara in Shape" loading="lazy">
+                                <p class="unwrap-caption">Fellows Keeps Santa Barbara in Shape</p>
+                            </a>
+                            <a class="experience-media-tile" href="https://horizon.westmont.edu/13262/features/toyota-jack-at-westmont/" target="_blank" rel="noopener">
+                                <img src="experience/media-toyota.jpg" alt="Toyota Jack at Westmont" loading="lazy">
+                                <p class="unwrap-caption">Toyota Jack at Westmont</p>
+                            </a>
+                        </div>
+                    </div></div>
+                    <div class="experience-expand-hint">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+                    </div>
                 </div>
                 <div class="experience-item" tabindex="0">
                     <div class="experience-item-header">
                         <img class="experience-logo" src="experience/logo-scheinfeld.jpg" alt="Scheinfeld Center logo" loading="lazy">
                         <div>
-                            <h3>Competitive Pitch Winner &amp; Team Lead, New Venture Challenge</h3>
+                            <h3>Competitive Pitch Winner &amp; Team Lead (New Venture Challenge &amp; Get REAL Accelerator)</h3>
                             <p class="experience-org">Scheinfeld Center, SBCC <time>Aug &ndash; Dec 2023</time></p>
                         </div>
                     </div>
@@ -725,22 +783,73 @@
                         <ul>
                             <li>Won the $10,000 grand prize and $2,000 pitch prize against a field of 10 finalist teams, then led senior engineers from concept to MVP.</li>
                         </ul>
+                        <div class="experience-media">
+                            <a class="experience-media-tile" href="experience/media-awe.jpg" target="_blank" rel="noopener">
+                                <img src="experience/media-awe.jpg" alt="Pitching at Augmented World Expo (AWE) 2025" loading="lazy">
+                                <p class="unwrap-caption">Pitching at Augmented World Expo (AWE) 2025</p>
+                            </a>
+                        </div>
                     </div></div>
+                    <div class="experience-expand-hint">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+                    </div>
                 </div>
                 <div class="experience-item" tabindex="0">
                     <div class="experience-item-header">
-                        <img class="experience-logo" src="experience/logo-westmont.jpg" alt="Westmont College seal" loading="lazy">
+                        <img class="experience-logo" src="experience/logo-sbcc.jpg" alt="Santa Barbara City College logo" loading="lazy">
                         <div>
-                            <h3>B.A., Economics &amp; Business</h3>
-                            <p class="experience-org">Westmont College <time>2024</time></p>
+                            <h3>Committee Leader &amp; Member (Various)</h3>
+                            <p class="experience-org">Santa Barbara City College <time>Aug 2021 &ndash; Dec 2022</time></p>
                         </div>
                     </div>
                     <div class="experience-details"><div class="experience-details-inner">
                         <ul>
-                            <li>Honors in Economics (Omicron Delta Epsilon).</li>
-                            <li>Features Writer &mdash; in-depth profiles of CEOs and C-suite leaders, distributed campus-wide.</li>
+                            <li>Drove a 30% lift in event turnout by building websites, promotional materials, and digital-media campaigns across student government and ambassador programs.</li>
                         </ul>
                     </div></div>
+                    <div class="experience-expand-hint">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="homepage-section" id="education-section">
+            <h2>Education</h2>
+            <div class="experience-card">
+                <div class="experience-item" tabindex="0">
+                    <div class="experience-item-header">
+                        <img class="experience-logo" src="experience/logo-westmont.jpg" alt="Westmont College seal" loading="lazy">
+                        <div>
+                            <h3>Westmont College</h3>
+                            <p class="experience-org">Bachelor of Arts - BA <time>2024</time></p>
+                        </div>
+                    </div>
+                    <div class="experience-details"><div class="experience-details-inner">
+                        <ul>
+                            <li>Activities &amp; societies: Omicron Delta Epsilon Honors, Student Alumni Association, Horizon Newspaper, Rugby Club, DSPS Volunteer.</li>
+                        </ul>
+                    </div></div>
+                    <div class="experience-expand-hint">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+                    </div>
+                </div>
+                <div class="experience-item" tabindex="0">
+                    <div class="experience-item-header">
+                        <img class="experience-logo" src="experience/logo-sbcc.jpg" alt="Santa Barbara City College logo" loading="lazy">
+                        <div>
+                            <h3>Santa Barbara City College</h3>
+                            <p class="experience-org">Associate of Arts - AA <time>2022</time></p>
+                        </div>
+                    </div>
+                    <div class="experience-details"><div class="experience-details-inner">
+                        <ul>
+                            <li>Activities &amp; societies: Associated Student Government, Get REAL Accelerator Grand Prize Winner, New Venture Challenge Pitch Competition Awardee, District Technology Committee (student body representative), International Student Ambassador Program, Makerspace Committee, Passion Project Club, Book Club.</li>
+                        </ul>
+                    </div></div>
+                    <div class="experience-expand-hint">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+                    </div>
                 </div>
             </div>
         </section>
@@ -786,7 +895,7 @@
                 // Experience and About are hardcoded (not CMS-managed); keep them
                 // pinned below the CMS sections that sectionOrder just re-appended.
                 const mainEl = document.querySelector('main');
-                ['experience-section', 'about-section'].forEach((id) => {
+                ['experience-section', 'education-section', 'about-section', 'music-section'].forEach((id) => {
                     const el = document.getElementById(id);
                     if (el && mainEl) mainEl.appendChild(el);
                 });
@@ -797,7 +906,7 @@
     <footer>
         <p>&copy; 2026 Daniel Carrera</p>
     </footer>
-    <script src="animation.js?v=20"></script>
+    <script src="animation.js?v=21"></script>
     <script>
         // Page transition flash effect
         document.querySelectorAll('nav a').forEach(link => {
@@ -845,24 +954,14 @@
             let targetScaleSpeed = 1;
             let rotationTime = 0; // Time for rotation animation (moved up for click handler access)
 
-            // Update scale based on scroll position
+            // Model is anchored to the header (position: absolute) and keeps a
+            // constant scale; it no longer follows or grows with scroll.
             function updateScrollScale() {
-                const scrollY = window.scrollY;
-                // Start at 1.3, grow gradually without max cap
-                scrollScale = 1.3 + (scrollY / 500) * 0.4;
+                scrollScale = 1.3;
             }
 
-            // Track mouse position relative to model center (only when not paused)
-            function updateMousePosition(e) {
-                if (isPaused || isDragging) return;
-                const rect = heroModel.getBoundingClientRect();
-                const modelCenterX = rect.left + rect.width / 2;
-                const modelCenterY = rect.top + rect.height / 2;
-                const deltaX = e.clientX - modelCenterX;
-                const deltaY = e.clientY - modelCenterY;
-                mouseRotation = Math.atan2(deltaX, 300) * (180 / Math.PI) * -1;
-                mouseTilt = Math.atan2(deltaY, 300) * (180 / Math.PI) * -1;
-            }
+            // Mouse tracking disabled: mouseRotation/mouseTilt stay 0 and the
+            // model only runs its figure-8 (plus click-pause and drag).
 
             // Listen for nav link hover
             const navLinks = document.querySelectorAll('.nav-links a');
@@ -947,8 +1046,6 @@
                 try { clickOverlay.releasePointerCapture(e.pointerId); } catch(err) {}
             });
 
-            window.addEventListener('scroll', updateScrollScale, { passive: true });
-            window.addEventListener('mousemove', updateMousePosition, { passive: true });
             updateScrollScale();
 
             let lastTimestamp = null;

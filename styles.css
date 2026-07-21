@@ -263,8 +263,8 @@ nav {
 }
 
 #model-click-overlay {
-    position: fixed;
-    top: calc(50% - 4rem);
+    position: absolute;
+    top: calc(50vh - 4rem);
     left: 50%;
     transform: translate(-50%, -50%);
     width: 200px;
@@ -310,7 +310,7 @@ main {
 
 
     .hero-model {
-        top: calc(50% - 8rem);
+        top: calc(50vh - 8rem);
     }
 
     .nav-links {
@@ -318,7 +318,7 @@ main {
     }
 
     #model-click-overlay {
-        top: calc(50% - 8rem);
+        top: calc(50vh - 8rem);
     }
 }
 
@@ -366,8 +366,8 @@ main {
 }
 
 .hero-model {
-    position: fixed;
-    top: calc(50% - 4rem);
+    position: absolute;
+    top: calc(50vh - 4rem);
     left: 50%;
     transform: translate(-50%, -50%);
     width: 400px;
@@ -396,8 +396,8 @@ main {
 }
 
 #model-click-overlay {
-    position: fixed;
-    top: calc(50% - 4rem);
+    position: absolute;
+    top: calc(50vh - 4rem);
     left: 50%;
     transform: translate(-50%, -50%);
     width: 200px;
@@ -621,6 +621,7 @@ section h2 {
     position: relative;
     z-index: 20;
     display: block;
+    cursor: pointer;
     padding: 1.25rem 2rem;
     background: rgba(255, 255, 255, 0.5);
     backdrop-filter: blur(20px);
@@ -682,11 +683,12 @@ section h2 {
     flex-shrink: 0;
 }
 
-/* Project card hover expansion */
+/* Project card click expansion */
 .project-card.expanded {
     background: rgba(255, 255, 255, 0.7);
     box-shadow: 0 8px 40px rgba(0, 0, 0, 0.1);
     transform: none;
+    cursor: default;
 }
 
 .project-details {
@@ -745,7 +747,7 @@ section h2 {
 }
 
 .project-card.tech-open .builtwith-toggle svg {
-    transform: rotate(180deg);
+    transform: rotate(90deg);
 }
 
 .tech-reveal .app-tech-stack {
@@ -760,17 +762,97 @@ section h2 {
     padding: 0 2rem;
 }
 
+.project-video-slide {
+    flex-shrink: 0;
+}
+
+/* YouTube facade tile at the end of a screenshot strip (matches the
+   rendered height of the portrait screenshots: 158px x 2736/1260) */
+.screenshot-yt {
+    position: relative;
+    flex-shrink: 0;
+    width: 610px;
+    height: 343px;
+    border-radius: 12px;
+    overflow: hidden;
+    cursor: pointer;
+    background: #000;
+}
+
+.screenshot-yt img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.screenshot-yt iframe {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    display: block;
+}
+
+.yt-play-badge {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.65);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    transition: background 0.2s ease;
+}
+
+.yt-play-badge svg {
+    width: 24px;
+    height: 24px;
+    margin-left: 3px;
+}
+
+.screenshot-yt:hover .yt-play-badge {
+    background: rgba(0, 0, 0, 0.85);
+}
+
+@media (max-width: 768px) {
+    .screenshot-yt {
+        width: 480px;
+        height: 270px;
+    }
+}
+
+.project-video-slide .unwrap-caption {
+    text-align: center;
+}
+
+.project-video-slide video {
+    height: 240px;
+    width: auto;
+    aspect-ratio: 16 / 9;
+    border-radius: 12px;
+    background: #000;
+    display: block;
+}
+
 .project-cta {
     position: absolute;
-    top: 1.1rem;
+    top: 1.65rem;
     right: 1.5rem;
     opacity: 0;
+    transform: scale(0.85);
     pointer-events: none;
-    transition: opacity 0.3s ease;
+    transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
 .project-card.open .project-cta {
     opacity: 1;
+    transform: scale(1);
     pointer-events: auto;
 }
 
@@ -779,22 +861,34 @@ section h2 {
     position: static;
 }
 
+/* Expand pill sits where the CTA lands so the crossfade+scale between the
+   two reads as the pill transforming into the button. */
 .project-expand-hint {
     position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
+    top: 1.9rem;
     right: 1.5rem;
     display: inline-flex;
     align-items: center;
+    gap: 0.3rem;
+    padding: 0.3rem 0.7rem;
+    border-radius: 20px;
+    background: rgba(0, 0, 0, 0.05);
     color: var(--text-light);
-    line-height: 0;
-    opacity: 0.6;
+    font-size: 0.75rem;
+    font-weight: 500;
+    opacity: 0.7;
+    transform: scale(1);
     pointer-events: none;
-    transition: opacity 0.3s ease;
+    transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
 .project-card.expanded .project-expand-hint {
     opacity: 0;
+    transform: scale(0.85);
+}
+
+.project-card.expanded .project-item-header {
+    cursor: pointer;
 }
 
 @media (max-width: 768px) {
@@ -807,20 +901,13 @@ section h2 {
         padding: 0 1.5rem;
     }
 
+    .project-video-slide video {
+        height: 180px;
+    }
+
     .project-item-header .project-icon-img {
         width: 40px;
         height: 40px;
-    }
-}
-
-@media (hover: hover) {
-    .project-card:focus-within .project-details {
-        grid-template-rows: 1fr;
-    }
-
-    .project-card:focus-within .project-cta {
-        opacity: 1;
-        pointer-events: auto;
     }
 }
 
@@ -1611,8 +1698,39 @@ footer {
 }
 
 .experience-item {
+    position: relative;
     padding: 1.1rem 2rem;
     outline: none;
+}
+
+.experience-expand-hint {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 1.5rem;
+    display: inline-flex;
+    align-items: center;
+    color: var(--text-light);
+    line-height: 0;
+    opacity: 0.6;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.experience-expand-hint svg {
+    transition: transform 0.3s ease;
+}
+
+.experience-item:hover .experience-expand-hint svg,
+.experience-item:focus-within .experience-expand-hint svg {
+    transform: rotate(180deg);
+}
+
+@media (hover: none) {
+    /* Touch layouts keep experience bullets always expanded — no hint needed */
+    .experience-expand-hint {
+        display: none;
+    }
 }
 
 .experience-item-header {
@@ -1676,6 +1794,37 @@ footer {
     margin-bottom: 0.25rem;
 }
 
+.experience-media {
+    display: flex;
+    gap: 0.75rem;
+    margin: 0.75rem 0 0.25rem 3.75rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+.experience-media::-webkit-scrollbar {
+    display: none;
+}
+
+.experience-media-tile {
+    flex-shrink: 0;
+    max-width: 200px;
+    text-decoration: none;
+    color: var(--text);
+}
+
+.experience-media-tile img {
+    width: 200px;
+    height: auto;
+    border-radius: 10px;
+    display: block;
+}
+
+.experience-media-tile .unwrap-caption {
+    text-align: center;
+    font-size: 0.75rem;
+}
+
 @media (hover: none) {
     .experience-details {
         grid-template-rows: 1fr;
@@ -1734,6 +1883,10 @@ footer {
     }
 
     .experience-details ul {
+        margin-left: 0;
+    }
+
+    .experience-media {
         margin-left: 0;
     }
 
@@ -2009,10 +2162,56 @@ footer {
     z-index: 20;
     display: flex;
     align-items: center;
-    justify-content: space-between;
     gap: 1rem;
     border-radius: 24px;
     padding: 1.25rem 2rem;
+    /* 75rem exceeds main's content width, so at rest the row spans the full
+       container like every other card; the rem value exists to make the
+       focus-mode shrink animatable. */
+    max-width: 75rem;
+    margin: 0 auto;
+    transition: max-width 0.6s ease;
+}
+
+.music-row-info {
+    flex: 1;
+}
+
+.waveform-icon {
+    width: 64px;
+    height: auto;
+    flex-shrink: 0;
+}
+
+/* Music focus mode: while the track plays, everything but the row fades out,
+   the row narrows, and the page scroll locks so the audio-reactive
+   constellation is unobstructed. Opacity (not display) keeps layout stable —
+   the node ring centers on the row's rect. */
+main > section,
+footer,
+.hero-model,
+#model-click-overlay,
+.nav-links,
+#music-section h2 {
+    transition: opacity 0.5s ease;
+}
+
+body.music-focus {
+    overflow: hidden;
+}
+
+body.music-focus main > section:not(#music-section),
+body.music-focus footer,
+body.music-focus .hero-model,
+body.music-focus #model-click-overlay,
+body.music-focus .nav-links,
+body.music-focus #music-section h2 {
+    opacity: 0;
+    pointer-events: none;
+}
+
+body.music-focus .music-card.music-row {
+    max-width: 22rem;
 }
 
 .music-row h3 {

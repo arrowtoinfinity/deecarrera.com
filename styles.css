@@ -2220,11 +2220,6 @@ footer {
     margin-bottom: 0.25rem;
 }
 
-/* Bullets hidden for now (content pass pending); media strips still show */
-#experience-section .experience-details ul {
-    display: none;
-}
-
 .experience-media {
     display: flex;
     gap: 0.75rem;

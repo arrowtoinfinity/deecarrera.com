@@ -437,15 +437,26 @@ button.msg-option[data-target="unwrap-section"]:hover {
 }
 
 @media (max-width: 768px) {
-    /* The overlay itself keeps desktop behavior (absolute, layered above the
-       3D model). Inside it, the columns stack vertically so the action chips
-       sit directly under the message bubbles instead of anchoring to the
-       overlay's bottom edge (which lands inside the next section on phones). */
+    /* Phone hero: the title keeps its full-viewport stage (min-height), and
+       the chat sits IN FLOW so the page always reserves its real height — no
+       overlap with the next section regardless of message count. A negative
+       top margin pulls the conversation up over the statue's lower half, and
+       z-index keeps it painted above the absolutely-positioned model. */
+    .hero {
+        min-height: 100vh;
+        box-sizing: border-box;
+    }
+
     .hero-chat {
+        position: relative;
+        z-index: 22;
+        height: auto;
+        margin-top: -60vh;
+        margin-bottom: 2rem;
         display: flex;
         flex-direction: column;
         align-items: flex-start;
-        padding: 9vh 1.25rem 0;
+        padding: 0 1.25rem;
     }
 
     .hero-chat-left,

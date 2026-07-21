@@ -2014,15 +2014,18 @@ footer {
 .experience-spinner {
     width: 44px;
     height: 44px;
-    border-radius: 50%;
-    border: 3px solid rgba(0, 0, 0, 0.08);
-    border-top-color: #007AFF;
     flex-shrink: 0;
-    animation: experience-spin 1s linear infinite;
+    /* steps(12) matches the 12-tick artwork: the dark tick advances in 30-degree
+       jumps like the native control instead of smearing around */
+    animation: experience-spin 1s steps(12) infinite;
 }
 
 @keyframes experience-spin {
     to { transform: rotate(360deg); }
+}
+
+.loading-sub {
+    transition: opacity 0.25s ease;
 }
 
 .loading-dots::after {

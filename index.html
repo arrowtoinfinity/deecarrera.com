@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Daniel Carrera</title>
     <link rel="icon" type="image/png" href="logo.png">
-    <link rel="stylesheet" href="styles.css?v=104">
+    <link rel="stylesheet" href="styles.css?v=105">
     <script src="cms-client.js?v=8"></script>
     <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 </head>
@@ -816,9 +816,10 @@
             <div class="experience-card">
                 <div class="experience-item static">
                     <div class="experience-item-header">
-                        <div class="experience-spinner" aria-hidden="true"></div>
+                        <img class="experience-spinner" src="experience/spinner.png" alt="" aria-hidden="true">
                         <div>
                             <h3 class="loading-dots">Loading Career</h3>
+                            <p class="experience-org"><span class="loading-sub">Your company?</span> <time>Current</time></p>
                         </div>
                     </div>
                 </div>
@@ -828,7 +829,7 @@
                         <img class="experience-logo" src="experience/logo-alltime.jpg" alt="AllTime logo" loading="lazy">
                         <div>
                             <h3>Creator &amp; Solo Developer</h3>
-                            <p class="experience-org">AllTime &middot; Independent Project <time>Nov 2025 &ndash; Present</time></p>
+                            <p class="experience-org">AllTime &middot; Independent Project <time>Nov 2025 &ndash; Jun 2026</time></p>
                         </div>
                     </div>
                     <div class="experience-details"><div class="experience-details-inner">
@@ -951,7 +952,7 @@
                         <div class="experience-logo experience-logo-plain">🏄</div>
                         <div>
                             <h3>Sales Associate</h3>
-                            <p class="experience-org">Rincon Designs Surf Shop</p>
+                            <p class="experience-org">Rincon Designs Surf Shop <time>2018</time></p>
                         </div>
                     </div>
                 </div>
@@ -969,7 +970,7 @@
                         <div class="experience-logo experience-logo-plain">🌮</div>
                         <div>
                             <h3>Cashier</h3>
-                            <p class="experience-org">Taco Bell</p>
+                            <p class="experience-org">Taco Bell <time>2017</time></p>
                         </div>
                     </div>
                 </div>
@@ -978,12 +979,29 @@
                         <div class="experience-logo experience-logo-plain">🛟</div>
                         <div>
                             <h3>Lifeguard</h3>
-                            <p class="experience-org">City of Carpinteria</p>
+                            <p class="experience-org">City of Carpinteria <time>2019</time></p>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
+        <script>
+            (function() {
+                const sub = document.querySelector('.loading-sub');
+                if (!sub) return;
+                if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+                const phrases = ['Your company?', 'Dream job', 'Next big thing', 'Open to offers', 'Compiling references'];
+                let i = 0;
+                setInterval(() => {
+                    sub.style.opacity = '0';
+                    setTimeout(() => {
+                        i = (i + 1) % phrases.length;
+                        sub.textContent = phrases[i];
+                        sub.style.opacity = '1';
+                    }, 250);
+                }, 2400);
+            })();
+        </script>
 
         <section class="homepage-section" id="education-section">
             <h2>Education</h2>

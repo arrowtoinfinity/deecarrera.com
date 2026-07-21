@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin - Daniel Carrera</title>
     <link rel="icon" type="image/png" href="logo.png">
-    <link rel="stylesheet" href="styles.css?v=63">
+    <link rel="stylesheet" href="styles.css?v=88">
     <script src="cms-client.js?v=8"></script>
 </head>
 <body class="subpage">
@@ -1237,7 +1237,7 @@
         const textilesManager = createContentManager(TEXTILES_KEY, []);
 
         // ===== Render Functions =====
-        function renderContentList(containerId, items, type) {
+        function renderContentList(containerId, items, type, sortable = false) {
             const container = document.getElementById(containerId);
             if (!container) return;
 
@@ -1254,7 +1254,8 @@
                 const subtitle = item.subtitle || item.description || item.file || item.url || '';
 
                 return `
-                <div class="admin-content-card ${visibilityClass}" data-id="${item.id}">
+                <div class="admin-content-card ${visibilityClass}" data-id="${item.id}"${sortable ? ' draggable="true"' : ''}>
+                    ${sortable ? '<span class="admin-drag-handle">☰</span>' : ''}
                     <div class="admin-content-info">
                         <span class="admin-content-title">${title}</span>
                         ${subtitle ? `<span class="admin-content-subtitle">${subtitle.substring(0, 50)}${subtitle.length > 50 ? '...' : ''}</span>` : ''}
@@ -1276,8 +1277,60 @@
 
         function renderVideos() {
             const items = videosManager.getAll();
-            renderContentList('video-list', items, 'video');
+            renderContentList('video-list', items, 'video', true);
             setupContentListeners('video', videosManager, renderVideos);
+            setupContentDragAndDrop('video-list', videosManager, renderVideos);
+        }
+
+        // Drag-to-reorder for content lists (item order = display order on the
+        // site). Container-level listeners, wired once per list.
+        function setupContentDragAndDrop(listId, manager, renderFn) {
+            const list = document.getElementById(listId);
+            if (!list || list.dataset.dndWired) return;
+            list.dataset.dndWired = '1';
+            let draggedItem = null;
+
+            list.addEventListener('dragstart', (e) => {
+                const card = e.target.closest('.admin-content-card');
+                if (card) {
+                    draggedItem = card;
+                    card.classList.add('dragging');
+                }
+            });
+
+            list.addEventListener('dragend', () => {
+                if (!draggedItem) return;
+                draggedItem.classList.remove('dragging');
+                draggedItem = null;
+                const ids = Array.from(list.querySelectorAll('.admin-content-card')).map((c) => c.dataset.id);
+                const items = manager.getAll();
+                items.sort((a, b) => ids.indexOf(a.id) - ids.indexOf(b.id));
+                manager.save(items);
+                renderFn();
+            });
+
+            list.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                if (!draggedItem) return;
+                const after = getContentDragAfterElement(list, e.clientY);
+                if (after == null) {
+                    list.appendChild(draggedItem);
+                } else {
+                    list.insertBefore(draggedItem, after);
+                }
+            });
+        }
+
+        function getContentDragAfterElement(container, y) {
+            const els = [...container.querySelectorAll('.admin-content-card:not(.dragging)')];
+            return els.reduce((closest, child) => {
+                const box = child.getBoundingClientRect();
+                const offset = y - box.top - box.height / 2;
+                if (offset < 0 && offset > closest.offset) {
+                    return { offset: offset, element: child };
+                }
+                return closest;
+            }, { offset: Number.NEGATIVE_INFINITY }).element;
         }
 
         function renderPhotos() {

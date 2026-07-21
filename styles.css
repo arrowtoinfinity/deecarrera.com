@@ -1764,7 +1764,7 @@ footer {
     display: flex;
     justify-content: center;
     gap: 1.25rem;
-    margin-bottom: 0.5rem;
+    margin-bottom: 1.1rem;
 }
 
 .footer-links a {

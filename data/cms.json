@@ -269,7 +269,10 @@
       "description": "A visionOS app that turns music into a living, spatial visualization you can step inside. Built for personal use; reach out if you'd like TestFlight access.",
       "icon": "icon-boomsphere.png",
       "link": "",
-      "status": "available"
+      "status": "available",
+      "screenshots": [
+        "screenshots/boomsphere-01.png"
+      ]
     },
     {
       "id": "app_lifemates",

@@ -1296,6 +1296,13 @@ section h2 {
     height: 180px;
 }
 
+/* Real landscape screenshots (the placeholder rule above never covered imgs) */
+.screenshot-scroll.horizontal .screenshot-img {
+    width: auto;
+    height: 240px;
+    aspect-ratio: auto;
+}
+
 /* App description */
 .app-store-description {
     margin-top: 1.5rem;

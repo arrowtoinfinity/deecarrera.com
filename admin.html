@@ -19,7 +19,7 @@
                 Daniel Carrera
             </a>
             <div class="nav-links">
-                <a href="/literature.html">View Site</a>
+                <a href="/">View Site</a>
             </div>
         </nav>
 
@@ -27,26 +27,18 @@
             <section class="page-header admin-header-row">
                 <h1>Admin Dashboard</h1>
                 <div class="admin-capsule-group">
-                    <button class="admin-capsule active" data-panel="homepage">Homepage</button>
-                    <button class="admin-capsule" data-panel="navigation">Navigation</button>
+                    <button class="admin-capsule active" data-panel="software">Projects</button>
+                    <button class="admin-capsule" data-panel="visuals">Visuals</button>
+                    <button class="admin-capsule" data-panel="music">Music</button>
                 </div>
             </section>
-
-            <div class="admin-page-capsules">
-                <button class="admin-capsule" data-panel="art">Art</button>
-                <button class="admin-capsule" data-panel="hardware">Hardware</button>
-                <button class="admin-capsule" data-panel="literature">Literature</button>
-                <button class="admin-capsule" data-panel="music">Music</button>
-                <button class="admin-capsule" data-panel="software">Software</button>
-                <button class="admin-capsule" data-panel="textiles">Textiles</button>
-            </div>
 
             <div class="admin-actions" id="cms-sync-controls">
                 <button id="cms-config-btn" class="admin-btn">Configure Sync</button>
                 <span id="cms-sync-status" class="admin-empty">Sync idle</span>
             </div>
 
-            <section class="admin-panel" id="panel-homepage">
+            <section class="admin-panel" id="panel-homepage" style="display: none;">
                 <h2>Homepage Sections</h2>
                 <div class="admin-sortable-list" id="section-list">
                     <div class="admin-sortable-item" data-section="latest" draggable="true">
@@ -175,15 +167,17 @@
                 </div>
             </section>
 
+            <section class="admin-panel" id="panel-visuals" style="display: none;">
+                <h2>Visuals</h2>
+                <p class="admin-empty">Drag ☰ to reorder — this is the homepage carousel order.</p>
+                <div class="admin-actions">
+                    <button id="new-video-btn" class="admin-btn primary">+ New Video</button>
+                </div>
+                <div class="admin-content-list" id="video-list"></div>
+            </section>
+
             <section class="admin-panel" id="panel-art" style="display: none;">
                 <h2>Art Content</h2>
-                <div class="admin-subsection">
-                    <h3>Motion Pictures</h3>
-                    <div class="admin-actions">
-                        <button id="new-video-btn" class="admin-btn primary">+ New Video</button>
-                    </div>
-                    <div class="admin-content-list" id="video-list"></div>
-                </div>
                 <div class="admin-subsection">
                     <h3>Stills</h3>
                     <div class="admin-actions">
@@ -210,15 +204,16 @@
             </section>
 
             <section class="admin-panel" id="panel-music" style="display: none;">
-                <h2>Music Content</h2>
+                <h2>Music</h2>
                 <div class="admin-actions">
                     <button id="new-track-btn" class="admin-btn primary">+ New Track</button>
                 </div>
                 <div class="admin-content-list" id="track-list"></div>
             </section>
 
-            <section class="admin-panel" id="panel-software" style="display: none;">
-                <h2>Software Content</h2>
+            <section class="admin-panel" id="panel-software">
+                <h2>Projects</h2>
+                <p class="admin-empty">Drag ☰ to reorder — this is the homepage Projects order.</p>
                 <div class="admin-actions">
                     <button id="new-app-btn" class="admin-btn primary">+ New App</button>
                 </div>
@@ -1271,8 +1266,9 @@
 
         function renderApps() {
             const items = appsManager.getAll();
-            renderContentList('app-list', items, 'app');
+            renderContentList('app-list', items, 'app', true);
             setupContentListeners('app', appsManager, renderApps);
+            setupContentDragAndDrop('app-list', appsManager, renderApps);
         }
 
         function renderVideos() {

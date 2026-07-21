@@ -1951,7 +1951,9 @@ footer {
 
 .experience-expand-hint {
     position: absolute;
-    top: 50%;
+    /* Anchored to the header band (padding + half the logo) so it stays put
+       when the row expands, instead of sliding to the taller row's middle */
+    top: calc(1.1rem + 22px);
     transform: translateY(-50%);
     right: 1.5rem;
     display: inline-flex;
@@ -2223,6 +2225,10 @@ footer {
 
     .experience-divider {
         padding: 0.35rem 1.25rem;
+    }
+
+    .experience-expand-hint {
+        top: calc(1rem + 19px);
     }
 
     .experience-details ul {

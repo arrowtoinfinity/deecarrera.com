@@ -194,6 +194,63 @@
       ]
     },
     {
+      "id": "app_arrow",
+      "name": "Arrow",
+      "slug": "arrow",
+      "subtitle": "Meta Quest prototype for Spatial Messaging",
+      "description": "A Meta Quest prototype for spatial messaging by sending messages as physical objects and having them land in the recipients spatial environment. Built for personal use; reach out if you'd like access.",
+      "icon": "icon-arrow.png",
+      "link": "",
+      "techStack": [
+        {
+          "group": "Engine",
+          "items": [
+            "Unity 6",
+            "C#"
+          ]
+        },
+        {
+          "group": "Platform",
+          "items": [
+            "Meta Quest (Android arm64)"
+          ]
+        },
+        {
+          "group": "XR",
+          "items": [
+            "Meta XR Interaction SDK",
+            "Unity XR Management",
+            "Oculus XR Plugin",
+            "Hand tracking & controllers"
+          ]
+        },
+        {
+          "group": "Multiplayer",
+          "items": [
+            "Unity Netcode for GameObjects",
+            "Unity Relay",
+            "Unity Lobby"
+          ]
+        },
+        {
+          "group": "Rendering",
+          "items": [
+            "Universal Render Pipeline",
+            "ShaderLab / HLSL",
+            "OmniShade"
+          ]
+        },
+        {
+          "group": "Art & FX",
+          "items": [
+            "Synty POLYGON asset packs",
+            "Piloto Studio VFX"
+          ]
+        }
+      ],
+      "status": "available"
+    },
+    {
       "id": "app_boomsphere",
       "name": "BoomSphere",
       "slug": "boomsphere",
@@ -210,16 +267,6 @@
       "subtitle": "iOS app for keeping personal relationships consistent and healthy",
       "description": "An iOS app that nudges you to stay in touch with family and friends, on a cadence you set per person, with a simple log of every check-in. Built for personal use; reach out if you'd like TestFlight access.",
       "icon": "icon-lifemates.png",
-      "link": "",
-      "status": "available"
-    },
-    {
-      "id": "app_arrow",
-      "name": "Arrow",
-      "slug": "arrow",
-      "subtitle": "VisionOS app for Spatial Messaging",
-      "description": "A visionOS app for spatial messaging by sending messages as physical objects and having them land in the recipients spatial environment. Built for personal use; reach out if you'd like TestFlight access.",
-      "icon": "icon-arrow.png",
       "link": "",
       "status": "available"
     },
@@ -312,7 +359,7 @@
   "tracks": [
     {
       "id": "track_1",
-      "title": "Autumn",
+      "title": "Autumn by Daniel Carrera",
       "file": "Paradox.mp3",
       "visibility": "visible"
     }

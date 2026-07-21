@@ -34,7 +34,9 @@
     "showMusicNav": false,
     "showSoftwareNav": false,
     "showHardwareNav": false,
-    "showTextilesNav": false
+    "showTextilesNav": false,
+    "unwrapIntro": "Already ramping on the BDR toolkit — a working demo, plus HubSpot Academy sales certifications.",
+    "aboutBio": "I'm Daniel — a Carpinteria native based in Santa Barbara. I studied Economics & Business at Westmont College, I'm bilingual in English and Spanish, and I build and ship my own software (you're looking at some of it). I'm now taking that builder's instinct into software sales, where technical fluency meets the customer conversation."
   },
   "posts": [
     {
@@ -481,6 +483,93 @@
         "textiles/tarpitz-02.jpg"
       ],
       "visibility": "visible"
+    }
+  ],
+  "experience": [
+    {
+      "id": "exp_alltime",
+      "logo": "experience/logo-alltime.jpg",
+      "title": "Creator & Solo Developer",
+      "org": "AllTime · Independent Project",
+      "time": "Nov 2025 – Present",
+      "bullets": [
+        "Designed, shipped, and sold a full-stack SaaS product end to end, converting 17.7% of trials to paid.",
+        "Cold-emailed my way into meetings with senior leaders at Google and Apple."
+      ]
+    },
+    {
+      "id": "exp_dreamcast",
+      "logo": "experience/logo-dreamcast.jpg",
+      "title": "Production Lead III, Sports Broadcasting",
+      "org": "Dream Cast Media Group · Contract",
+      "time": "Mar 2020 – Present",
+      "bullets": [
+        "Built and retained relationships with marquee clients — ESPN, NBC Sports, and the LPGA — over six years, earning repeat business and four promotions.",
+        "Promoted four times — Production Lead (Aug 2021) → Production Lead II (Aug 2022) → Production Lead III (Mar 2023) — alongside Group Editor (Video & Graphics) since Mar 2020.",
+        "Day-to-day point of contact under live-broadcast deadline pressure."
+      ]
+    },
+    {
+      "id": "exp_gpa",
+      "logo": "experience/logo-gpa.jpg",
+      "title": "Business Development Intern",
+      "org": "Gillett, Preston & Associates",
+      "time": "Jan – May 2024",
+      "bullets": [
+        "Generated prospect interest for an international consultancy serving the World Bank and United Nations; managed CRM records and researched pipeline tools."
+      ]
+    },
+    {
+      "id": "exp_westmont_writer",
+      "logo": "experience/logo-westmont.jpg",
+      "title": "Features Writer",
+      "org": "Westmont College",
+      "time": "Jan – May 2024",
+      "bullets": [
+        "Authored in-depth profiles of CEOs and C-suite leaders, distributed campus-wide."
+      ]
+    },
+    {
+      "id": "exp_scheinfeld",
+      "logo": "experience/logo-scheinfeld.jpg",
+      "title": "Competitive Pitch Winner & Team Lead (New Venture Challenge & Get REAL Accelerator)",
+      "org": "Scheinfeld Center, SBCC",
+      "time": "Aug – Dec 2023",
+      "bullets": [
+        "Won the $10,000 grand prize and $2,000 pitch prize against a field of 10 finalist teams, then led senior engineers from concept to MVP."
+      ]
+    },
+    {
+      "id": "exp_sbcc_committees",
+      "logo": "experience/logo-sbcc.jpg",
+      "title": "Committee Leader & Member (Various)",
+      "org": "Santa Barbara City College",
+      "time": "Aug 2021 – Dec 2022",
+      "bullets": [
+        "Drove a 30% lift in event turnout by building websites, promotional materials, and digital-media campaigns across student government and ambassador programs."
+      ]
+    }
+  ],
+  "education": [
+    {
+      "id": "edu_westmont",
+      "logo": "experience/logo-westmont.jpg",
+      "title": "Westmont College",
+      "org": "Bachelor of Arts - BA",
+      "time": "2024",
+      "bullets": [
+        "Activities & societies: Omicron Delta Epsilon Honors, Student Alumni Association, Horizon Newspaper, Rugby Club, DSPS Volunteer."
+      ]
+    },
+    {
+      "id": "edu_sbcc",
+      "logo": "experience/logo-sbcc.jpg",
+      "title": "Santa Barbara City College",
+      "org": "Associate of Arts - AA",
+      "time": "2022",
+      "bullets": [
+        "Activities & societies: Associated Student Government, Get REAL Accelerator Grand Prize Winner, New Venture Challenge Pitch Competition Awardee, District Technology Committee (student body representative), International Student Ambassador Program, Makerspace Committee, Passion Project Club, Book Club."
+      ]
     }
   ]
 }

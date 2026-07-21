@@ -6,7 +6,7 @@
     <title>Admin - Daniel Carrera</title>
     <link rel="icon" type="image/png" href="logo.png">
     <link rel="stylesheet" href="styles.css?v=88">
-    <script src="cms-client.js?v=8"></script>
+    <script src="cms-client.js?v=9"></script>
 </head>
 <body class="subpage">
     <canvas id="constellation-bg"></canvas>
@@ -26,17 +26,75 @@
         <main>
             <section class="page-header admin-header-row">
                 <h1>Admin Dashboard</h1>
-                <div class="admin-capsule-group">
-                    <button class="admin-capsule active" data-panel="software">Projects</button>
-                    <button class="admin-capsule" data-panel="visuals">Visuals</button>
-                    <button class="admin-capsule" data-panel="music">Music</button>
-                </div>
             </section>
 
             <div class="admin-actions" id="cms-sync-controls">
                 <button id="cms-config-btn" class="admin-btn">Configure Sync</button>
                 <span id="cms-sync-status" class="admin-empty">Sync idle</span>
             </div>
+
+            <section class="admin-panel" id="panel-unwrap">
+                <h2>Unwrap</h2>
+                <div class="admin-form-group">
+                    <label for="unwrap-intro">Intro text</label>
+                    <textarea id="unwrap-intro" rows="3" placeholder="Unwrap section intro"></textarea>
+                </div>
+            </section>
+
+
+            <section class="admin-panel" id="panel-software">
+                <h2>Projects</h2>
+                <p class="admin-empty">Drag ☰ to reorder — this is the homepage Projects order.</p>
+                <div class="admin-actions">
+                    <button id="new-app-btn" class="admin-btn primary">+ New App</button>
+                </div>
+                <div class="admin-content-list" id="app-list"></div>
+            </section>
+            <section class="admin-panel" id="panel-experience">
+                <h2>Experience</h2>
+                <p class="admin-empty">Drag ☰ to reorder — this is the homepage Experience order. (Site wiring pending: edits here go live once the homepage reads these fields.)</p>
+                <div class="admin-actions">
+                    <button id="new-experience-btn" class="admin-btn primary">+ New Role</button>
+                </div>
+                <div class="admin-content-list" id="experience-list"></div>
+            </section>
+
+            <section class="admin-panel" id="panel-education">
+                <h2>Education</h2>
+                <p class="admin-empty">Drag ☰ to reorder — this is the homepage Education order.</p>
+                <div class="admin-actions">
+                    <button id="new-education-btn" class="admin-btn primary">+ New School</button>
+                </div>
+                <div class="admin-content-list" id="education-list"></div>
+            </section>
+
+            <section class="admin-panel" id="panel-about">
+                <h2>About</h2>
+                <div class="admin-form-group">
+                    <label for="about-bio">Bio</label>
+                    <textarea id="about-bio" rows="5" placeholder="About section biography"></textarea>
+                </div>
+            </section>
+
+
+            <section class="admin-panel" id="panel-visuals">
+                <h2>Visuals</h2>
+                <p class="admin-empty">Drag ☰ to reorder — this is the homepage carousel order.</p>
+                <div class="admin-actions">
+                    <button id="new-video-btn" class="admin-btn primary">+ New Video</button>
+                </div>
+                <div class="admin-content-list" id="video-list"></div>
+            </section>
+
+
+            <section class="admin-panel" id="panel-music">
+                <h2>Music</h2>
+                <div class="admin-actions">
+                    <button id="new-track-btn" class="admin-btn primary">+ New Track</button>
+                </div>
+                <div class="admin-content-list" id="track-list"></div>
+            </section>
+
 
             <section class="admin-panel" id="panel-homepage" style="display: none;">
                 <h2>Homepage Sections</h2>
@@ -167,15 +225,6 @@
                 </div>
             </section>
 
-            <section class="admin-panel" id="panel-visuals" style="display: none;">
-                <h2>Visuals</h2>
-                <p class="admin-empty">Drag ☰ to reorder — this is the homepage carousel order.</p>
-                <div class="admin-actions">
-                    <button id="new-video-btn" class="admin-btn primary">+ New Video</button>
-                </div>
-                <div class="admin-content-list" id="video-list"></div>
-            </section>
-
             <section class="admin-panel" id="panel-art" style="display: none;">
                 <h2>Art Content</h2>
                 <div class="admin-subsection">
@@ -201,23 +250,6 @@
                     <button id="new-post-btn" class="admin-btn primary">+ New Post</button>
                 </div>
                 <div class="admin-content-list" id="post-list"></div>
-            </section>
-
-            <section class="admin-panel" id="panel-music" style="display: none;">
-                <h2>Music</h2>
-                <div class="admin-actions">
-                    <button id="new-track-btn" class="admin-btn primary">+ New Track</button>
-                </div>
-                <div class="admin-content-list" id="track-list"></div>
-            </section>
-
-            <section class="admin-panel" id="panel-software">
-                <h2>Projects</h2>
-                <p class="admin-empty">Drag ☰ to reorder — this is the homepage Projects order.</p>
-                <div class="admin-actions">
-                    <button id="new-app-btn" class="admin-btn primary">+ New App</button>
-                </div>
-                <div class="admin-content-list" id="app-list"></div>
             </section>
 
             <section class="admin-panel" id="panel-textiles" style="display: none;">
@@ -503,6 +535,74 @@
         </div>
     </div>
 
+    <!-- Experience Editor Modal -->
+    <div id="experience-modal" class="admin-modal" style="display: none;">
+        <div class="admin-modal-content">
+            <h2 id="experience-editor-title">New Experience</h2>
+            <form id="experience-form">
+                <input type="hidden" id="experience-id">
+                <div class="admin-form-group">
+                    <label for="experience-title">Title</label>
+                    <input type="text" id="experience-title" placeholder="Role or degree" required>
+                </div>
+                <div class="admin-form-group">
+                    <label for="experience-org">Organization</label>
+                    <input type="text" id="experience-org" placeholder="Company or school">
+                </div>
+                <div class="admin-form-group">
+                    <label for="experience-time">Dates</label>
+                    <input type="text" id="experience-time" placeholder="e.g. Mar 2020 &ndash; Present">
+                </div>
+                <div class="admin-form-group">
+                    <label for="experience-logo">Logo path</label>
+                    <input type="text" id="experience-logo" placeholder="experience/logo-example.jpg">
+                </div>
+                <div class="admin-form-group">
+                    <label for="experience-bullets">Bullets (one per line)</label>
+                    <textarea id="experience-bullets" rows="5" placeholder="One bullet per line"></textarea>
+                </div>
+                <div class="admin-form-actions">
+                    <button type="button" class="admin-btn cancel-modal">Cancel</button>
+                    <button type="submit" class="admin-btn primary">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Education Editor Modal -->
+    <div id="education-modal" class="admin-modal" style="display: none;">
+        <div class="admin-modal-content">
+            <h2 id="education-editor-title">New Education</h2>
+            <form id="education-form">
+                <input type="hidden" id="education-id">
+                <div class="admin-form-group">
+                    <label for="education-title">Title</label>
+                    <input type="text" id="education-title" placeholder="Role or degree" required>
+                </div>
+                <div class="admin-form-group">
+                    <label for="education-org">Organization</label>
+                    <input type="text" id="education-org" placeholder="Company or school">
+                </div>
+                <div class="admin-form-group">
+                    <label for="education-time">Dates</label>
+                    <input type="text" id="education-time" placeholder="e.g. Mar 2020 &ndash; Present">
+                </div>
+                <div class="admin-form-group">
+                    <label for="education-logo">Logo path</label>
+                    <input type="text" id="education-logo" placeholder="experience/logo-example.jpg">
+                </div>
+                <div class="admin-form-group">
+                    <label for="education-bullets">Bullets (one per line)</label>
+                    <textarea id="education-bullets" rows="5" placeholder="One bullet per line"></textarea>
+                </div>
+                <div class="admin-form-actions">
+                    <button type="button" class="admin-btn cancel-modal">Cancel</button>
+                    <button type="submit" class="admin-btn primary">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
         const STORAGE_KEY = 'literature_posts';
         const SETTINGS_KEY = 'site_settings';
@@ -512,10 +612,12 @@
         const TRACKS_KEY = 'music_tracks';
         const HARDWARE_KEY = 'hardware_projects';
         const TEXTILES_KEY = 'textiles_items';
+        const EXPERIENCE_KEY = 'experience_items';
+        const EDUCATION_KEY = 'education_items';
         const CMS_MIGRATION_FLAG = 'cms_migrated_v1';
         const CMS_WORKER_URL_KEY = 'cms_worker_url';
         const DEFAULT_CMS_WORKER_URL = 'https://deecarrera-cms.suzanneshwagerwebsite.workers.dev';
-        const CMS_KEYS = [STORAGE_KEY, SETTINGS_KEY, APPS_KEY, VIDEOS_KEY, PHOTOS_KEY, TRACKS_KEY, HARDWARE_KEY, TEXTILES_KEY];
+        const CMS_KEYS = [STORAGE_KEY, SETTINGS_KEY, APPS_KEY, VIDEOS_KEY, PHOTOS_KEY, TRACKS_KEY, HARDWARE_KEY, TEXTILES_KEY, EXPERIENCE_KEY, EDUCATION_KEY];
 
         let cmsHydrating = false;
         let cmsSyncTimer = null;
@@ -564,7 +666,9 @@
                 photos: parseStorageArray(PHOTOS_KEY, []),
                 tracks: parseStorageArray(TRACKS_KEY, []),
                 hardware: parseStorageArray(HARDWARE_KEY, []),
-                textiles: parseStorageArray(TEXTILES_KEY, [])
+                textiles: parseStorageArray(TEXTILES_KEY, []),
+                experience: parseStorageArray(EXPERIENCE_KEY, []),
+                education: parseStorageArray(EDUCATION_KEY, [])
             });
         }
 
@@ -579,6 +683,8 @@
                 localStorage.setItem(TRACKS_KEY, JSON.stringify(cms.tracks || []));
                 localStorage.setItem(HARDWARE_KEY, JSON.stringify(cms.hardware || []));
                 localStorage.setItem(TEXTILES_KEY, JSON.stringify(cms.textiles || []));
+                localStorage.setItem(EXPERIENCE_KEY, JSON.stringify(cms.experience || []));
+                localStorage.setItem(EDUCATION_KEY, JSON.stringify(cms.education || []));
             } finally {
                 cmsHydrating = false;
             }
@@ -723,7 +829,9 @@
                 showMusicNav: true,
                 showSoftwareNav: true,
                 showHardwareNav: true,
-                showTextilesNav: true
+                showTextilesNav: true,
+                unwrapIntro: '',
+                aboutBio: ''
             };
             return data ? { ...defaults, ...JSON.parse(data) } : defaults;
         }
@@ -735,6 +843,9 @@
 
         function loadSettingsUI() {
             const settings = getSettings();
+
+            document.getElementById('unwrap-intro').value = settings.unwrapIntro || '';
+            document.getElementById('about-bio').value = settings.aboutBio || '';
 
             // Homepage sections
             document.getElementById('show-latest-section').checked = settings.showLatestSection !== false;
@@ -851,6 +962,18 @@
             document.getElementById('latest-section-title').addEventListener('input', (e) => {
                 const settings = getSettings();
                 settings.latestSectionTitle = e.target.value || 'Latest';
+                saveSettings(settings);
+            });
+
+            document.getElementById('unwrap-intro').addEventListener('input', (e) => {
+                const settings = getSettings();
+                settings.unwrapIntro = e.target.value;
+                saveSettings(settings);
+            });
+
+            document.getElementById('about-bio').addEventListener('input', (e) => {
+                const settings = getSettings();
+                settings.aboutBio = e.target.value;
                 saveSettings(settings);
             });
 
@@ -1230,6 +1353,8 @@
         const tracksManager = createContentManager(TRACKS_KEY, defaultTracks);
         const hardwareManager = createContentManager(HARDWARE_KEY, []);
         const textilesManager = createContentManager(TEXTILES_KEY, []);
+        const experienceManager = createContentManager(EXPERIENCE_KEY, []);
+        const educationManager = createContentManager(EDUCATION_KEY, []);
 
         // ===== Render Functions =====
         function renderContentList(containerId, items, type, sortable = false) {
@@ -1246,7 +1371,7 @@
                 const visibilityClass = visibility === 'hidden' ? 'status-hidden' :
                                         visibility === 'coming_soon' ? 'status-coming-soon' : '';
                 const title = item.name || item.title || 'Untitled';
-                const subtitle = item.subtitle || item.description || item.file || item.url || '';
+                const subtitle = item.subtitle || item.org || item.description || item.file || item.url || '';
 
                 return `
                 <div class="admin-content-card ${visibilityClass}" data-id="${item.id}"${sortable ? ' draggable="true"' : ''}>
@@ -1353,6 +1478,20 @@
             setupContentListeners('textile', textilesManager, renderTextiles);
         }
 
+        function renderExperience() {
+            const items = experienceManager.getAll();
+            renderContentList('experience-list', items, 'experience', true);
+            setupContentListeners('experience', experienceManager, renderExperience);
+            setupContentDragAndDrop('experience-list', experienceManager, renderExperience);
+        }
+
+        function renderEducation() {
+            const items = educationManager.getAll();
+            renderContentList('education-list', items, 'education', true);
+            setupContentListeners('education', educationManager, renderEducation);
+            setupContentDragAndDrop('education-list', educationManager, renderEducation);
+        }
+
         function setupContentListeners(type, manager, renderFn) {
             document.querySelectorAll(`.edit-${type}-btn`).forEach(btn => {
                 btn.addEventListener('click', () => openContentEditor(type, btn.dataset.id));
@@ -1378,7 +1517,8 @@
 
             const managers = {
                 app: appsManager, video: videosManager, photo: photosManager,
-                track: tracksManager, hardware: hardwareManager, textile: textilesManager
+                track: tracksManager, hardware: hardwareManager, textile: textilesManager,
+                experience: experienceManager, education: educationManager
             };
             const manager = managers[type];
 
@@ -1420,6 +1560,12 @@
                         document.getElementById('textile-description').value = item.description || '';
                         document.getElementById('textile-image').value = item.image || '';
                         document.getElementById('textile-visibility').value = item.visibility || 'visible';
+                    } else if (type === 'experience' || type === 'education') {
+                        document.getElementById(`${type}-logo`).value = item.logo || '';
+                        document.getElementById(`${type}-title`).value = item.title || '';
+                        document.getElementById(`${type}-org`).value = item.org || '';
+                        document.getElementById(`${type}-time`).value = item.time || '';
+                        document.getElementById(`${type}-bullets`).value = (item.bullets || []).join('\n');
                     }
                 }
             } else {
@@ -1441,7 +1587,9 @@
                 { type: 'photo', manager: photosManager, render: renderPhotos, fields: ['title', 'url', 'visibility'] },
                 { type: 'track', manager: tracksManager, render: renderTracks, fields: ['title', 'file', 'visibility'] },
                 { type: 'hardware', manager: hardwareManager, render: renderHardware, fields: ['title', 'description', 'image', 'link', 'visibility'] },
-                { type: 'textile', manager: textilesManager, render: renderTextiles, fields: ['title', 'description', 'image', 'visibility'] }
+                { type: 'textile', manager: textilesManager, render: renderTextiles, fields: ['title', 'description', 'image', 'visibility'] },
+                { type: 'experience', manager: experienceManager, render: renderExperience, fields: ['logo', 'title', 'org', 'time', 'bullets'] },
+                { type: 'education', manager: educationManager, render: renderEducation, fields: ['logo', 'title', 'org', 'time', 'bullets'] }
             ];
 
             formConfigs.forEach(({ type, manager, render, fields }) => {
@@ -1455,7 +1603,10 @@
 
                     fields.forEach(field => {
                         const el = document.getElementById(`${type}-${field}`);
-                        if (el) data[field] = el.value;
+                        if (!el) return;
+                        data[field] = field === 'bullets'
+                            ? el.value.split('\n').map((b) => b.trim()).filter(Boolean)
+                            : el.value;
                     });
 
                     if (id) {
@@ -1476,6 +1627,8 @@
             document.getElementById('new-track-btn')?.addEventListener('click', () => openContentEditor('track'));
             document.getElementById('new-hardware-btn')?.addEventListener('click', () => openContentEditor('hardware'));
             document.getElementById('new-textile-btn')?.addEventListener('click', () => openContentEditor('textile'));
+            document.getElementById('new-experience-btn')?.addEventListener('click', () => openContentEditor('experience'));
+            document.getElementById('new-education-btn')?.addEventListener('click', () => openContentEditor('education'));
 
             // Cancel buttons for all modals
             document.querySelectorAll('.cancel-modal').forEach(btn => {
@@ -1493,33 +1646,6 @@
             });
         }
 
-        // ===== Panel Toggle Functions =====
-        function setupPanelToggles() {
-            const capsules = document.querySelectorAll('.admin-capsule');
-            const panels = document.querySelectorAll('.admin-panel');
-
-            capsules.forEach(capsule => {
-                capsule.addEventListener('click', () => {
-                    const panelId = capsule.dataset.panel;
-                    const targetPanel = document.getElementById('panel-' + panelId);
-
-                    if (capsule.classList.contains('active')) {
-                        // Clicking active capsule hides it
-                        capsule.classList.remove('active');
-                        if (targetPanel) targetPanel.style.display = 'none';
-                    } else {
-                        // Hide all panels and deactivate all capsules
-                        capsules.forEach(c => c.classList.remove('active'));
-                        panels.forEach(p => p.style.display = 'none');
-
-                        // Show selected panel and activate capsule
-                        capsule.classList.add('active');
-                        if (targetPanel) targetPanel.style.display = 'block';
-                    }
-                });
-            });
-        }
-
         // ===== Event Listeners =====
         document.addEventListener('DOMContentLoaded', async () => {
             try {
@@ -1528,8 +1654,6 @@
                 setSyncStatus(`Using local fallback: ${error.message}`);
             }
 
-            // Setup panel toggles
-            setupPanelToggles();
             // Load site settings
             loadSettingsUI();
             setupSettingsListeners();
@@ -1549,6 +1673,8 @@
             renderTracks();
             renderHardware();
             renderTextiles();
+            renderExperience();
+            renderEducation();
 
             // Setup content forms
             setupContentForms();

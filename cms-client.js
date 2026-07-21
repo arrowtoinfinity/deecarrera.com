@@ -212,7 +212,9 @@
                 ],
                 visibility: 'visible'
             }
-        ]
+        ],
+        experience: [],
+        education: []
     };
 
     let memoryCms = null;
@@ -254,7 +256,9 @@
             photos: asArray(cms.photos, DEFAULT_CMS.photos),
             tracks: asArray(cms.tracks, DEFAULT_CMS.tracks),
             hardware: asArray(cms.hardware, DEFAULT_CMS.hardware),
-            textiles: asArray(cms.textiles, DEFAULT_CMS.textiles)
+            textiles: asArray(cms.textiles, DEFAULT_CMS.textiles),
+            experience: asArray(cms.experience, DEFAULT_CMS.experience),
+            education: asArray(cms.education, DEFAULT_CMS.education)
         };
     }
 

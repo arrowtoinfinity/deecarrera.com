@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Daniel Carrera</title>
     <link rel="icon" type="image/png" href="logo.png">
-    <link rel="stylesheet" href="styles.css?v=124">
+    <link rel="stylesheet" href="styles.css?v=125">
     <script src="cms-client.js?v=11"></script>
     <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 </head>
@@ -1278,6 +1278,42 @@
             })();
         </script>
     </main>
+
+    <div class="lightbox" id="lightbox" hidden role="dialog" aria-modal="true" aria-label="Image viewer">
+        <img src="" alt="">
+    </div>
+    <script>
+        // Links that target an image file open in a simple lightbox overlay
+        // instead of a new tab; links to pages keep their normal behavior.
+        (function() {
+            const box = document.getElementById('lightbox');
+            if (!box) return;
+            const img = box.querySelector('img');
+            const IMAGE_RE = /\.(jpe?g|png|webp|gif)$/i;
+
+            document.addEventListener('click', (e) => {
+                const link = e.target.closest('a');
+                if (!link || !IMAGE_RE.test(link.getAttribute('href') || '')) return;
+                e.preventDefault();
+                const thumb = link.querySelector('img');
+                img.src = link.href;
+                img.alt = thumb ? thumb.alt : '';
+                box.hidden = false;
+                requestAnimationFrame(() => box.classList.add('shown'));
+                document.body.classList.add('lightbox-open');
+            });
+
+            const close = () => {
+                box.classList.remove('shown');
+                document.body.classList.remove('lightbox-open');
+                setTimeout(() => { box.hidden = true; img.src = ''; }, 200);
+            };
+            box.addEventListener('click', close);
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && !box.hidden) close();
+            });
+        })();
+    </script>
 
     <footer>
         <p class="footer-links">

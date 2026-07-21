@@ -315,13 +315,13 @@ main {
 }
 
 .hero-chat-left {
-    left: 1rem;
+    left: 4rem;
     top: 14vh;
     align-items: flex-start;
 }
 
 .hero-chat-right {
-    right: 1rem;
+    right: 4rem;
     bottom: 16vh;
     flex-direction: row;
     flex-wrap: wrap;

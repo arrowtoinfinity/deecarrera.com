@@ -1988,6 +1988,10 @@ footer {
     outline: none;
 }
 
+.experience-item[tabindex] .experience-item-header {
+    cursor: pointer;
+}
+
 .experience-expand-hint {
     position: absolute;
     /* Anchored to the header band (padding + half the logo) so it stays put
@@ -2008,8 +2012,7 @@ footer {
     transition: transform 0.3s ease;
 }
 
-.experience-item:hover .experience-expand-hint svg,
-.experience-item:focus-within .experience-expand-hint svg {
+.experience-item.open .experience-expand-hint svg {
     transform: rotate(180deg);
 }
 
@@ -2146,9 +2149,7 @@ footer {
     min-height: 0;
 }
 
-.experience-item:hover .experience-details,
-.experience-item:focus-within .experience-details,
-.experience-item:focus .experience-details {
+.experience-item.open .experience-details {
     grid-template-rows: 1fr;
 }
 

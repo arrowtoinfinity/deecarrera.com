@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Daniel Carrera</title>
     <link rel="icon" type="image/png" href="logo.png">
-    <link rel="stylesheet" href="styles.css?v=119">
+    <link rel="stylesheet" href="styles.css?v=120">
     <script src="cms-client.js?v=11"></script>
     <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 </head>
@@ -1092,6 +1092,27 @@
                 </div>
             </div>
         </section>
+        <script>
+            // Experience/Education rows: hovering opens a row and it STAYS
+            // open; only a deliberate click on the row header (or Enter/Space
+            // on the focused row) closes it again. Static rows (Loading, the
+            // high-school jobs) have no details and are skipped.
+            document.querySelectorAll('#experience-section .experience-item, #education-section .experience-item').forEach((item) => {
+                if (!item.querySelector('.experience-details')) return;
+                item.addEventListener('mouseenter', () => item.classList.add('open'));
+                item.addEventListener('click', (e) => {
+                    if (e.target.closest('a')) return;
+                    if (!e.target.closest('.experience-item-header')) return;
+                    item.classList.toggle('open');
+                });
+                item.addEventListener('keydown', (e) => {
+                    if (e.key !== 'Enter' && e.key !== ' ') return;
+                    if (e.target !== item) return;
+                    e.preventDefault();
+                    item.classList.toggle('open');
+                });
+            });
+        </script>
 
         <section class="homepage-section" id="github-section" style="display: none;">
             <h2>GitHub</h2>

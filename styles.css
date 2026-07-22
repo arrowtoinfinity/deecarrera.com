@@ -1937,6 +1937,17 @@ footer {
     opacity: 0;
 }
 
+/* Full-frame cover overlays fill the video tile edge to edge */
+.unwrap-slide .unwrap-overlay-fill {
+    top: 0;
+    left: 0;
+    transform: none;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 12px;
+}
+
 /* Apollo wordmark is white — a soft shadow keeps it legible on the light UI */
 .unwrap-slide .unwrap-overlay-apollo {
     width: 62%;

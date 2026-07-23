@@ -34,59 +34,6 @@
             <img src="logo.png" alt="Logo" class="nav-logo">
             Daniel Carrera
         </a>
-        <div class="nav-links" id="nav-links">
-            <a href="/art.html" id="nav-art">Art</a>
-            <a href="/literature.html" id="nav-literature">Literature</a>
-            <a href="/music.html" id="nav-music">Music</a>
-            <a href="/software.html" id="nav-software">Software</a>
-            <a href="/hardware.html" id="nav-hardware">Hardware</a>
-            <a href="/textiles.html" id="nav-textiles">Textiles</a>
-        </div>
-        <script>
-            (async function() {
-                const cms = await window.CMS.fetchCms();
-                const settings = cms.settings || {};
-                const navContainer = document.getElementById('nav-links');
-
-                const navItems = [
-                    { id: 'nav-art', key: 'art', showKey: 'showArtNav' },
-                    { id: 'nav-literature', key: 'literature', showKey: 'showLiteratureNav' },
-                    { id: 'nav-music', key: 'music', showKey: 'showMusicNav' },
-                    { id: 'nav-software', key: 'software', showKey: 'showSoftwareNav' },
-                    { id: 'nav-hardware', key: 'hardware', showKey: 'showHardwareNav' },
-                    { id: 'nav-textiles', key: 'textiles', showKey: 'showTextilesNav' }
-                ];
-
-                navItems.forEach(({ id, showKey }) => {
-                    const el = document.getElementById(id);
-                    if (el && settings[showKey] === false) {
-                        el.style.display = 'none';
-                    }
-                });
-
-                if (settings.navOrder && navContainer) {
-                    settings.navOrder.forEach((key) => {
-                        const el = document.getElementById(`nav-${key}`);
-                        if (el) navContainer.appendChild(el);
-                    });
-                }
-
-                const visibleItems = Array.from(navContainer.querySelectorAll('a')).filter((el) => el.style.display !== 'none');
-                const count = visibleItems.length || 1;
-
-                function repositionNavItems() {
-                    const radius = window.innerWidth >= 768 ? 250 : 180;
-                    visibleItems.forEach((el, i) => {
-                        const angle = -90 + i * (360 / count);
-                        el.style.transform = `translate(-50%, -50%) rotate(${angle}deg) translateX(${radius}px) rotate(90deg)`;
-                    });
-                }
-
-                repositionNavItems();
-                window.repositionNav = repositionNavItems;
-                window.addEventListener('resize', window.repositionNav);
-            })();
-        </script>
     </nav>
 
     <main>

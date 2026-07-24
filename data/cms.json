@@ -38,7 +38,7 @@
     "unwrapIntro": "Already ramping on the BDR toolkit. Working demos, plus HubSpot Academy sales certifications.",
     "aboutBio": "I'm Daniel — a Carpinteria native based in Santa Barbara. I studied Economics & Business at Westmont College, I'm bilingual in English and Spanish, and I build and ship my own software (you're looking at some of it). I'm now taking that builder's instinct into software sales, where technical fluency meets the customer conversation.",
     "sectionTitles": {
-      "unwrap": "BDR - AI Forward Tooling",
+      "unwrap": "Unwrap",
       "software": "Projects",
       "experience": "Experience",
       "education": "Education",
@@ -628,7 +628,7 @@
     {
       "id": "chip_unwrap",
       "target": "unwrap-section",
-      "label": "🔥 BDR Ramp demo"
+      "label": "🔥 Unwrap demo"
     },
     {
       "id": "chip_software",

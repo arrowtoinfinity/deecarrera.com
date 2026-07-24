@@ -520,6 +520,17 @@
       ]
     },
     {
+      "id": "exp_freelance",
+      "logo": "logo.png",
+      "title": "Freelance — Web, Video, Design & IT",
+      "org": "Independent",
+      "time": "2016 – Present",
+      "bullets": [
+        "Sustained a repeat local client base for 9+ years — measured by continuous engagements since 2016 — by delivering websites, promotional video, brand design, and IT support end to end.",
+        "Owned every engagement from first conversation to paid invoice — measured by clients returning for follow-on work — by scoping projects directly with owners and delivering on deadline."
+      ]
+    },
+    {
       "id": "exp_dreamcast",
       "logo": "experience/logo-dreamcast.jpg",
       "title": "Production Lead III, Sports Broadcasting",

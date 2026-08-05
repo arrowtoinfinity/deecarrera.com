@@ -647,14 +647,14 @@
       "label": "🎓 Education"
     },
     {
+      "id": "chip_github",
+      "target": "github-section",
+      "label": "💻 GitHub"
+    },
+    {
       "id": "chip_visuals",
       "target": "visuals-section",
       "label": "🎬 Visuals"
-    },
-    {
-      "id": "chip_music",
-      "target": "music-section",
-      "label": "🎵 Music"
     }
   ]
 }

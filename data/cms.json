@@ -632,14 +632,14 @@
       "label": "🔥 Unwrap demo"
     },
     {
-      "id": "chip_software",
-      "target": "software-section",
-      "label": "🛠️ Projects"
-    },
-    {
       "id": "chip_experience",
       "target": "experience-section",
       "label": "💼 Experience"
+    },
+    {
+      "id": "chip_software",
+      "target": "software-section",
+      "label": "🛠️ Projects"
     },
     {
       "id": "chip_education",

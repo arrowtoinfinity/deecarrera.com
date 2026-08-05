@@ -510,7 +510,7 @@
     {
       "id": "exp_alltime",
       "logo": "experience/logo-alltime.jpg",
-      "title": "Creator & Solo Developer",
+      "title": "Founder & Solo Developer",
       "org": "AllTime · Independent Project",
       "time": "Nov 2025 – Jun 2026",
       "bullets": [
@@ -522,8 +522,8 @@
     {
       "id": "exp_freelance",
       "logo": "logo.png",
-      "title": "Freelance — Web, Video, Design & IT",
-      "org": "Independent",
+      "title": "Independent Consultant — Business Development",
+      "org": "Self-Sourced Book of Business",
       "time": "2016 – Present",
       "bullets": [
         "Built a repeat, referral-driven client base over 9+ years, as measured by 40+ projects delivered and ~$50K in cumulative revenue, by managing every relationship from first conversation to signed scope to paid invoice.",
@@ -533,7 +533,7 @@
     {
       "id": "exp_dreamcast",
       "logo": "experience/logo-dreamcast.jpg",
-      "title": "Production Lead III, Sports Broadcasting",
+      "title": "Client & Account Management (Production Lead III)",
       "org": "Dream Cast Media Group · Contract",
       "time": "Mar 2020 – Present",
       "bullets": [
@@ -545,7 +545,7 @@
     {
       "id": "exp_gpa",
       "logo": "experience/logo-gpa.jpg",
-      "title": "Business Development Intern",
+      "title": "Business Development & Research Intern",
       "org": "Gillett, Preston & Associates",
       "time": "Jan – May 2024",
       "bullets": [
@@ -568,7 +568,7 @@
     {
       "id": "exp_scheinfeld",
       "logo": "experience/logo-scheinfeld.jpg",
-      "title": "Competitive Pitch Winner & Team Lead (New Venture Challenge & Get REAL Accelerator)",
+      "title": "Founder & Team Lead — Arrow (Get REAL Accelerator)",
       "org": "Scheinfeld Center, SBCC",
       "time": "Aug – Dec 2023",
       "bullets": [

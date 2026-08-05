@@ -1368,8 +1368,8 @@
     </footer>
     <script src="animation.js?v=21"></script>
     <script>
-        // Page transition flash effect
-        document.querySelectorAll('nav a').forEach(link => {
+        // Page transition flash effect (brand link scroll-to-top is handled up top)
+        document.querySelectorAll('nav a:not(.nav-name)').forEach(link => {
             function navigate(e) {
                 e.preventDefault();
                 if (link.href && !link.href.includes('#')) {

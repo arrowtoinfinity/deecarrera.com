@@ -35,6 +35,13 @@
             Daniel Carrera
         </a>
     </nav>
+    <script>
+        document.querySelector('.nav-name').addEventListener('click', (e) => {
+            if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    </script>
 
     <main>
         <section class="hero">
